@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 355px;
+  background: lightblue;
+
+  .info-card {
+    margin-left: 58px;
+    height: 100%;
+    background: lightblue;
+  }
+}

@@ -1,0 +1,51 @@
+:root {
+  /* Breakpoints */
+  --device-width-md: 601px;
+  --device-width-lg: 961px;
+  --device-width-xl: 1601px;
+
+  /* Grid */
+  --grid-margin: 32px;
+  --grid-gutter: 32px;
+
+  /* Margins */
+  --margin-xs: 8px;
+  --margin-sm: 16px;
+  --margin-md: 24px;
+  --margin-lg: 32px;
+  --margin-xl: 40px;
+
+  /* Paddings */
+  --padding-xs: 8px;
+  --padding-sm: 16px;
+  --padding-md: 24px;
+  --padding-lg: 32px;
+  --padding-xl: 40px;
+
+  /* Layer */
+  --layer-base: 1; /* Basic Content */
+  --layer-navigation: 2; /* Navigation: Top Bar, Bottom Bar */
+  --layer-menu: 3; /* Flyouts, Tooltips, Menu */
+  --layer-overlay: 4; /* Overlay */
+  --layer-popup: 5; /* Pop-Up, Temporary Overlay */
+  --layer-error: 2147483646; /* Error Message max z-index - 1 */
+  --layer-fatal-error: 2147483647; /* Fatal Error Message, max z-index */
+
+  /* Icons */
+  --basic-icon-width: 24px;
+  --basic-icon-height: 24px;
+}
+
+// Desktop Large
+@media (min-width: 961px) {
+  :root {
+    --grid-margin: 64px;
+  }
+}
+
+// Desktop Extra Large
+@media (min-width: 1601px) {
+  :root {
+    --grid-gutter: 64px;
+  }
+}
