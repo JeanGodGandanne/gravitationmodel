@@ -2,8 +2,10 @@
   <!-- base map -->
   <app-base-map baseMapId="map">
   </app-base-map>
+  <!-- Standard-Toolset -->
+  <app-standard-toolset></app-standard-toolset>
   <!-- info box -->
   <app-info-box></app-info-box>
   <!-- object window -->
-  <app-object-window></app-object-window>
+  <app-object-window *ngIf="objectWindowService.isObjectWindowVisible"></app-object-window>
 </ng-container>

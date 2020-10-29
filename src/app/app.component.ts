@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ObjectWindowService} from './object-window/object-window.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Masterarbeit';
+
+  constructor(public objectWindowService: ObjectWindowService) {
+  }
 }

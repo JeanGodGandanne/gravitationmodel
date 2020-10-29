@@ -7,6 +7,7 @@ import {BaseMapModule} from './base-map/base-map.module';
 import {LayerModule} from './layer/layer.module';
 import {InfoBoxModule} from './info-box/info-box.module';
 import {ObjectWindowModule} from './object-window/object-window.module';
+import {StandardToolsetModule} from './standard-toolset/standard-toolset.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {ObjectWindowModule} from './object-window/object-window.module';
         BaseMapModule,
         LayerModule,
         InfoBoxModule,
-        ObjectWindowModule
+        ObjectWindowModule,
+        StandardToolsetModule
     ],
   providers: [],
   bootstrap: [AppComponent]

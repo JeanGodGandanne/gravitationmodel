@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ObjectWindowService} from '../object-window.service';
 
 @Component({
   selector: 'app-object-window',
@@ -6,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./object-window.component.scss']
 })
 export class ObjectWindowComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit(): void {

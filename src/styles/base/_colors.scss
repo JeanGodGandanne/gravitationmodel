@@ -1,24 +1,24 @@
 :root {
-  --white: var(--brand-secondary-1); /* sidebar bg, standard component bg */
-  --black: var(--brand-secondary-8);
+  --white: 'FFFFFF'; /* sidebar bg, standard component bg */
+  --black: '000000';
 
   /* shades of grey */
-  --eggshell: var(--brand-secondary-2); /* details bg on master-details pages */
-  --light-grey-1: var(--brand-secondary-3); /* list item on hover */
-  --light-grey-2: var(--brand-secondary-5); /* list item on hover */
-  --grey: var(--brand-secondary-5);
-  --dark-grey: var(--brand-secondary-6);
-  --light-black: var(--brand-secondary-7);
+  --eggshell: 'F8F8F8'; /* details bg on master-details pages */
+  --light-grey-1: 'EDEDED'; /* list item on hover */
+  --light-grey-2: 'D2D2D2'; /* list item on hover */
+  --grey: 'D2D2D2';
+  --dark-grey: 'A9A9A9';
   --overlay-grey: rgba(0, 0, 0, 0.6);
+  --light-black: '464646';
 
   /* base colors */
-  --blue: var(--exp-brand-primary); /* selected list item, toggle buttons, primary text-buttons */
-  --light-blue: var(--brand-primary-2);
-  --medium-blue: var(--brand-primary-3);
-  --dark-blue: var(--exp-brand-dark);
-  --red: var(--red-5);
-  --orange: var(--orange-5);
-  --green: var(--green-5);
+  --blue: '0079CE'; /* selected list item, toggle buttons, primary text-buttons */
+  --light-blue: 'B2D6F0';
+  --medium-blue: '77BCED';
+  --dark-blue: '0060A3';
+  --red: 'E42912';
+  --orange: 'FF9800';
+  --green: '43B970';
 
   /* gradients */
   --blue-gradient: linear-gradient(90deg, #2b99e7 0%, #0079ce 100%); /* top bar, objektfenster header */
