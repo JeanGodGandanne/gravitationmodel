@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {ObjectWindowService} from './object-window/object-window.service';
+import {InfoBoxService} from './info-box/service/info-box.service';
 
 @Component({
   selector: 'app-root',

@@ -2,6 +2,11 @@ import { Component, ElementRef, HostListener } from '@angular/core';
 import { StandardToolsetEnum } from '../model/standard-toolset.enum';
 import { By } from '@angular/platform-browser';
 import {expand} from '../../animations';
+import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
+import {BaseMapService} from '../../base-map/base-map.service';
+import VectorImageLayer from 'ol/layer/VectorImage';
+import VectorSource from 'ol/source/Vector';
+import Point from 'ol/geom/Point';
 
 @Component({
     selector: 'app-standard-toolset',
@@ -18,7 +23,7 @@ export class StandardToolsetComponent {
     StandardToolsetEnum.LAYER_MANAGER,
   ];
 
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef, private baseMapService: BaseMapService) {
   }
 
   /**
@@ -43,7 +48,7 @@ export class StandardToolsetComponent {
   }
 
   private clickedOutsideAnimationContainer(event: MouseEvent): boolean {
-    const animationContainerElement = this.elementRef.nativeElement.getElementsByClassName('animation-container')[0];
+    const animationContainerElement = this.elementRef.nativeElement.getElementsByClassName('layer-manager-container')[0];
     if (animationContainerElement) {
       const elementRefDOMRect = animationContainerElement.getBoundingClientRect();
       return event.y < elementRefDOMRect.top
@@ -65,5 +70,14 @@ export class StandardToolsetComponent {
     } else {
       this.activeTool = standardToolsetEnum;
     }
+  }
+
+  getFeatures(): void {
+    const layer = this.baseMapService.getLayer('filialen_layer') as VectorImageLayer;
+    const source = (layer.getSource() as VectorSource).getFeatures();
+    source.splice(25, source.length - 1);
+    source.forEach(s => {
+      console.log((s.getGeometry() as Point).getCoordinates());
+    });
   }
 }

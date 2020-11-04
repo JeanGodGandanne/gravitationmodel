@@ -2,6 +2,7 @@ import FeatureLayer from '../shared/feature-layer';
 import EinzugsbereicheFeatureStyle from './einzugsbereiche-feature-style';
 import {HttpClient} from '@angular/common/http';
 import VectorLayer from 'ol/layer/Vector';
+import {EzbService} from './ezb.service';
 
 /**
  * Layer implementation for Filiale Offen Einzugsbereiche based on OL VectorTileLayer
@@ -17,7 +18,7 @@ export default class EinzugsbereicheFilialenOffenLayer extends FeatureLayer {
 
   private createLayer(): void {
     const layer = new VectorLayer({
-      visible: false,
+      visible: true,
     });
 
     const source = this.createVectorSource(''); // do not load smaller tiles to prevent many requests, assuming there is no more detail

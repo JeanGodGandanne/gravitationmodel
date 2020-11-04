@@ -6,6 +6,7 @@ import { AddFilialeComponent } from './components/add-filiale/add-filiale.compon
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -16,12 +17,13 @@ import {MatIconModule} from '@angular/material/icon';
   exports: [
     StandardToolsetComponent
   ],
-  imports: [
-    CommonModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+    imports: [
+        CommonModule,
+        MatCheckboxModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+    ],
   providers: [
     KeyValuePipe
   ]

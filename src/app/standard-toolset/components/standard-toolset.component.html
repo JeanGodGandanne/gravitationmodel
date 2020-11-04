@@ -1,7 +1,7 @@
 <!-- Toolset buttons -->
 <div class="shadow-box tool-button">
   <!-- Point of Interest tool button -->
-  <button mat-icon-button color="primary">
+  <button mat-icon-button color="primary" (click)="getFeatures()">
     <mat-icon>
       add_circle
     </mat-icon>
@@ -11,7 +11,7 @@
 <span id="spacer"></span>
 <div class="shadow-box tool-button">
   <!-- Layermanager tool button -->
-  <button mat-icon-button color="primary">
+  <button mat-icon-button color="primary" (click)="onToolButtonClick(StandardToolsetEnum.LAYER_MANAGER)">
     <mat-icon>
       layers
     </mat-icon>
@@ -20,6 +20,4 @@
 
 <!-- Toolset Templates -->
 <!-- Layermanager Tool Window -->
-<div class="animation-container" *ngIf="activeTool === StandardToolsetEnum.LAYER_MANAGER" [@expand]="{value: 'expand', params: {height: ((16 * 40) + 13) + 'px'}}">
-  <app-layer-manager></app-layer-manager>
-</div>
+<app-layer-manager  *ngIf="activeTool === StandardToolsetEnum.LAYER_MANAGER"></app-layer-manager>

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { LayerIdentifier } from '../../../layer/model/layer-identifier';
+import {BaseMapService} from '../../../base-map/base-map.service';
 
 type LayerManagerEntry = { layerIdentifier: LayerIdentifier, zIndex: number };
 
@@ -13,8 +14,13 @@ export class LayerManagerComponent {
   public layerManagerEntries: LayerManagerEntry[];
 
   constructor(
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private baseMapService: BaseMapService
   ) {
+    this.layerManagerEntries = baseMapService.getLayers().getArray().map(layer => {
+      return {layerIdentifier: layer.get('name'),
+              zIndex: layer.getZIndex()} as LayerManagerEntry;
+    });
   }
 
   setLayerVisibility(event: any, layerIdentifier: LayerIdentifier): void {

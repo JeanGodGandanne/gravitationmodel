@@ -1,4 +1,20 @@
 :host {
   display: block;
   background: white;
+  overflow: hidden;
+  position: absolute;
+  bottom: calc(var(--margin-sm) + 40px);
+  left: calc(var(--margin-sm) + 40px);
+
+  .items {
+    display: flex;
+    align-items: center;
+  }
+
+  .items-checkbox {
+    padding-right: 10px;
+  }
+  //border-radius: 0;
+  //border: 1px solid var(--blue);
+  //z-index: var(--layer-base);
 }

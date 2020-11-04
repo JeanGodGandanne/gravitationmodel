@@ -1,4 +1,4 @@
-import {Component, HostBinding, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostBinding, Input, OnInit} from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {InfoBoxService, InfoBoxState} from '../service/info-box.service';
 
@@ -28,6 +28,7 @@ export class InfoBoxComponent implements OnInit {
   constructor(public infoBoxService: InfoBoxService) { }
 
   ngOnInit(): void {
+    // this.switchInfoBoxState();
   }
 
   switchInfoBoxState(): void {

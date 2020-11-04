@@ -116,6 +116,10 @@ export class BaseMapService {
     return this._baseMap.getLayers();
   }
 
+  public getLayer(layerName: string): BaseLayer {
+    return this._baseMap.getLayers().getArray().find(layer => layer.get('name') === layerName);
+  }
+
   /**
    * Adds an interaction to base map.
    */

@@ -2,6 +2,7 @@ import FeatureLayer from '../shared/feature-layer';
 import {HttpClient} from '@angular/common/http';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import FilialeFeatureStyle from './filiale-feature-style';
+import {EzbService} from '../einzugsgebiete/ezb.service';
 
 /**
  * Layer implementation for Filiale Offen based on OL VectorImageLayer
@@ -17,7 +18,7 @@ export default class FilialenOffenLayer extends FeatureLayer {
 
   private createLayer(): void {
     const layer = new VectorImageLayer({// so much faster while panning than: VectorLayer
-      visible: false,
+      visible: true,
       imageRatio: 2 // render more than the viewport so panning does not trigger rendering
     });
 

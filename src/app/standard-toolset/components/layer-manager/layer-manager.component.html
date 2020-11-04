@@ -1,12 +1,12 @@
-  <div class="tree-list-wrapper">
-    <div class="list">
-      <ng-container *ngFor="let layerConfiguration of layerManagerEntries; let first = first; let last = last">
-        <div class="list-item">
-          <mat-checkbox
-            [checked]="true"
-            (change)="setLayerVisibility($event, layerConfiguration.layerIdentifier)"
-          >{{ layerConfiguration.zIndex }}</mat-checkbox>
-        </div>
-      </ng-container>
-    </div>
-  </div>
+<div>
+    <ng-container *ngFor="let layerConfiguration of layerManagerEntries; let first = first; let last = last">
+        <mat-card class="items">
+            <mat-checkbox class="items-checkbox" [checked]="true" (change)="setLayerVisibility($event, layerConfiguration.layerIdentifier)">
+                {{ layerConfiguration.zIndex }}
+            </mat-checkbox>
+            <mat-card-title>
+                {{layerConfiguration.layerIdentifier}}
+            </mat-card-title>
+        </mat-card>
+    </ng-container>
+</div>
