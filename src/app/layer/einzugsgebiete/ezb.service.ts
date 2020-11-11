@@ -9,28 +9,56 @@ import Point from 'ol/geom/Point';
 import Style from 'ol/style/Style';
 import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
+import {HttpClient} from '@angular/common/http';
+import GeoJSON from 'ol/format/GeoJSON';
+import {getDistance} from 'ol/sphere';
+import Polygon from 'ol/geom/Polygon';
+import MultiPolygon from 'ol/geom/MultiPolygon';
+import LineString from 'ol/geom/LineString';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EzbService {
 
-  constructor(private readonly baseMapService: BaseMapService) { }
+  protected readonly geoJSONFormat = new GeoJSON({
+    dataProjection: 'EPSG:4326',
+    featureProjection: 'EPSG:3857'
+  });
+
+  constructor(private readonly baseMapService: BaseMapService,
+              private readonly http: HttpClient) { }
 
   // addFiliale(): void {
   //
   // }
 
+  drawFilialen(): void {
+    const filialeLayer = this.baseMapService.getLayer('filialen_layer') as VectorImageLayer;
+    this.http.get('../assets/map.json').subscribe(value => {
+      const readFeatures = this.geoJSONFormat.readFeatures(value);
+      readFeatures.forEach(feature => feature.setId(feature.get('id')));
+      (filialeLayer.getSource() as VectorSource).addFeatures(readFeatures);
+    });
+  }
+
+  drawZensusGebiete(): void {
+    const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
+    this.http.get('../assets/Verkehrsbezirke.json').subscribe(value => {
+      (zensusLayer.getSource() as VectorSource).addFeatures(this.geoJSONFormat.readFeatures(value));
+    });
+  }
+
   drawEZB(): void {
     const ezbLayer = this.baseMapService.getLayer('einzugsbereich') as VectorLayer;
-    const filialLayerSource = (this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource;
     const ezbStyle = new Style({
       stroke: new Stroke({
-        color: 'rgba(255,0,0,0.4)',
+        color: 'black',
+        lineDash: [0.1, 7],
         width: 2,
       }),
       fill: new Fill({
-        color: 'rgba(255,0,0,0.2)',
+        color: 'rgba(253, 229, 147, 0.3)',
       })
     });
     const featArr = [
@@ -66,5 +94,58 @@ export class EzbService {
       feature.setStyle(ezbStyle);
       ezbLayer.getSource().addFeature(feature);
     });
+  }
+
+  drawGravitationModel(filialId: number): void {
+    const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
+    const filiale = ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource).getFeatureById(filialId);
+    const source = zensusLayer.getSource() as VectorSource;
+    source.getFeatures().forEach(feature => {
+      this.colorGebiet(filiale, feature);
+    });
+  }
+
+  private colorGebiet(filiale: Feature, gebiet: Feature): void {
+    const filialCoordinates = (filiale.getGeometry() as Point).getCoordinates();
+    const gebietCoordinates = (gebiet.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2);
+    // const distance = getDistance(filialCoordinates, gebietCoordinates);
+    const distance = Math.round(new LineString([filialCoordinates, gebietCoordinates]).getLength());
+
+    if (distance > 50000) {
+      gebiet.set('indicator', 11);
+    }
+    else if (distance < 50000 && distance > 40000) {
+      gebiet.set('indicator', 10);
+    }
+    else if (distance < 40000 && distance > 30000) {
+      gebiet.set('indicator', 9);
+    }
+    else if (distance < 30000 && distance > 20000) {
+      gebiet.set('indicator', 8);
+    }
+    else if (distance < 20000 && distance > 10000) {
+      gebiet.set('indicator', 7);
+    }
+    else if (distance < 10000 && distance > 5000) {
+      gebiet.set('indicator', 6);
+    }
+    else if (distance < 5000 && distance > 4000) {
+      gebiet.set('indicator', 5);
+    }
+    else if (distance < 4000 && distance > 3000) {
+      gebiet.set('indicator', 4);
+    }
+    else if (distance < 3000 && distance > 2000) {
+      gebiet.set('indicator', 3);
+    }
+    else if (distance < 2000 && distance > 1000) {
+      gebiet.set('indicator', 2);
+    }
+    else if (distance < 1000 && distance > 700) {
+      gebiet.set('indicator', 1);
+    }
+    else {
+      gebiet.set('indicator', 0);
+    }
   }
 }

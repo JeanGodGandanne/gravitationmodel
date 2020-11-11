@@ -1,7 +1,7 @@
 import {Layer} from 'ol/layer';
 import {HttpClient} from '@angular/common/http';
 import {get as getProjection} from 'ol/proj';
-import {getWidth} from 'ol/extent';
+import {Extent, getWidth} from 'ol/extent';
 import {bbox, tile} from 'ol/loadingstrategy';
 import TileGrid from 'ol/tilegrid/TileGrid';
 import VectorSource, {Options as VectorSourceOptions} from 'ol/source/Vector';
@@ -59,7 +59,6 @@ export default abstract class FeatureLayer {
     protected createVectorSource(url: string, tileGrid?: TileGrid, options?: VectorSourceOptions): VectorSource {
         const defaultOptions: VectorSourceOptions = {
             format: FeatureLayer.geoJSONFormat,
-            url,
             strategy: tileGrid ? tile(tileGrid) : bbox
         };
 

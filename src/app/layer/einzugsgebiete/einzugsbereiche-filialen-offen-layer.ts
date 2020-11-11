@@ -9,7 +9,8 @@ import {EzbService} from './ezb.service';
  */
 export default class EinzugsbereicheFilialenOffenLayer extends FeatureLayer {
 
-  private readonly ezbFeatureLayerStyle: EinzugsbereicheFeatureStyle = new EinzugsbereicheFeatureStyle('rgba(253, 229, 147, 0.7)');
+  // private readonly ezbFeatureLayerStyle: EinzugsbereicheFeatureStyle = new EinzugsbereicheFeatureStyle('rgba(253, 229, 147, 0.1)');
+  private readonly ezbFeatureLayerStyle: EinzugsbereicheFeatureStyle = new EinzugsbereicheFeatureStyle('#FDE593');
 
   constructor(http: HttpClient) {
     super(http);
@@ -19,6 +20,7 @@ export default class EinzugsbereicheFilialenOffenLayer extends FeatureLayer {
   private createLayer(): void {
     const layer = new VectorLayer({
       visible: true,
+      zIndex: 3
     });
 
     const source = this.createVectorSource(''); // do not load smaller tiles to prevent many requests, assuming there is no more detail

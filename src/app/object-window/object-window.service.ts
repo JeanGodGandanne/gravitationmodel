@@ -8,6 +8,8 @@ export class ObjectWindowService {
 
   isObjectWindowVisible = false;
 
+  currentlySelectedFiliale: number | string;
+
 }
 
 export enum ObjectWindowState {

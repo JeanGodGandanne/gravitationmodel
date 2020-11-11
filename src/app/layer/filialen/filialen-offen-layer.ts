@@ -19,6 +19,7 @@ export default class FilialenOffenLayer extends FeatureLayer {
   private createLayer(): void {
     const layer = new VectorImageLayer({// so much faster while panning than: VectorLayer
       visible: true,
+      zIndex: 10,
       imageRatio: 2 // render more than the viewport so panning does not trigger rendering
     });
 

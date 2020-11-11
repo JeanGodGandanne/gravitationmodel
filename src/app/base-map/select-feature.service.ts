@@ -57,7 +57,7 @@ export class SelectFeatureService{
   }
 
   private selectFeature(e: SelectEvent): void {
-    console.log(e);
+    this.objectWindowService.currentlySelectedFiliale = e.selected[0].getId();
 
     this.objectWindowService.isObjectWindowVisible = !this.objectWindowService.isObjectWindowVisible;
     this.objectWindowService.objectWindowCurrentState === ObjectWindowState.OPEN ?

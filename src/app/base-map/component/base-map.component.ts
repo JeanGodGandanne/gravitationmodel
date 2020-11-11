@@ -7,6 +7,8 @@ import {SelectFeatureService} from '../select-feature.service';
 import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
 import VectorSource from 'ol/source/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
+import EinzugsbereicheLayer from '../../layer/einzugsgebiete/einzugsbereiche-layer';
+import HeatmapLayer from '../../layer/einzugsgebiete/heatmap';
 
 @Component({
   selector: 'app-base-map',
@@ -33,11 +35,21 @@ export class BaseMapComponent implements AfterViewInit {
     selectableLayers.push(filialLayer);
     this.baseMapService.addLayer(filialLayer);
 
-    const einzugsbereichLayer = new EinzugsbereicheFilialenOffenLayer(this.http).layer;
-    selectableLayers.push(einzugsbereichLayer);
-    this.baseMapService.addLayer(einzugsbereichLayer);
+    // const einzugsbereichLayer = new EinzugsbereicheFilialenOffenLayer(this.http).layer;
+    // selectableLayers.push(einzugsbereichLayer);
+    // this.baseMapService.addLayer(einzugsbereichLayer);
 
-    this.ezbService.drawEZB();
+    const zensusgebieteLayer = new EinzugsbereicheLayer(this.http).layer;
+    selectableLayers.push(zensusgebieteLayer);
+    this.baseMapService.addLayer(zensusgebieteLayer);
+
+    // const heatmapLayer = new HeatmapLayer(this.http).layer;
+    // selectableLayers.push(heatmapLayer);
+    // this.baseMapService.addLayer(heatmapLayer);
+
+    this.ezbService.drawZensusGebiete();
+    this.ezbService.drawFilialen();
+    // this.ezbService.drawEZB();
 
     this.selectFeatureService.createLayerInteractionSelect(selectableLayers, null);
     this.baseMapService.addInteraction(this.selectFeatureService.layerInteractionSelect);
