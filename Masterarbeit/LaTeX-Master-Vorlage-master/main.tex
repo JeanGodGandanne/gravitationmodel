@@ -1,0 +1,84 @@
+%Dokumenteinstellungen und Anpassungen
+\input{resources/settings/settings}
+\input{resources/styles/adjustments}
+
+%Titelformen - gewünschtes Layout einkommentieren
+
+%%Graduation
+\include{titles/graduation}
+\gradeType{Master of Science (M.Sc.)}
+\secondExaminer{Sumit Kapoor}
+
+%Research paper
+%\include{titles/research_papger}
+%\subTitle{Ein optionaler Untertitel der Arbeit}
+%\researchPart{A}
+
+%Angaben zur Arbeit und dem Author (von beiden Layouts genutzt)
+\title{Untersuchung der Algorithmen und Prozesse der Standortanalyse im Kontext einer Filialplanung eines Einzelhändlers}
+\author{Moritz Thomas}
+\matrikelnr{s0544877}
+\submitDate{25.04.2017}
+\firstExaminer{Prof. Dr. Tobias Lenz}
+
+%Verzeichnisse generieren
+\makeglossaries
+\loadglsentries{references/glossary_acronyms.tex}
+\setacronymstyle{long-short}
+
+\makeindex[columns=2, title=Stichwortverzeichnis, options= -s resources/styles/indexstyle.ist, intoc]
+\indexsetup{level=\chapter*,toclevel=chapter}
+
+%Start des Inhalts
+\begin{document}
+
+%Notwendiger Workaround
+\pagenumbering{alph}
+
+%Deckblatt erzeugen
+\maketitle
+
+\pagenumbering{Roman}
+
+\include{chapter/Vorwort} \clearpage
+\include{chapter/Abstract} \clearpage
+% Eigenständigkeitserklärung
+\include{chapter/Eigenstaendigkeitserklaerung} \clearpage
+
+%Inhaltsverzeichnis
+\tableofcontents \newpage
+
+%Hauptteil
+\pagenumbering{arabic}
+\input{chapter/Einleitung} \clearpage
+\input{chapter/Grundlagen} \clearpage
+\input{chapter/Konzept} \clearpage
+\input{chapter/Implementierung} \clearpage
+\input{chapter/Auswertung} \clearpage
+%\input{chapter/Beispiele} \clearpage
+
+%Anhang
+\pagenumbering{Alph}
+
+%Abbildungsverzeichnis
+\listoffigures \clearpage
+%Tabellenverzeichnis
+\listoftables \clearpage
+%Quelltextverzeichnis
+\lstlistoflistings \clearpage
+%Stichwortverzeichnis
+\printindex \clearpage
+%Glossar
+\printglossary[title={Glossar}] \clearpage
+%Abkürzungsverzeichnis
+\printglossary[style=dottedlocations,type=\acronymtype,title={Abkürzungsverzeichnis}] \clearpage
+
+%Literaturverzeichnisse (getrennt nach Stichwort)
+\printbibliography[heading=bibintoc, keyword={book}, title={Literaturverzeichnis}]\clearpage
+\printbibliography[heading=bibintoc, keyword={online}, title={Onlinequellen}]\clearpage
+\printbibliography[heading=bibintoc, keyword={image}, title={Bildquellen}]\clearpage
+
+% Anhang
+\input{chapter/Anhang}
+
+\end{document}

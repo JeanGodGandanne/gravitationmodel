@@ -1,0 +1,47 @@
+\makeatletter
+
+\newcommand*{\gradeType}[1]{\gdef\@gradeType{#1}}
+\newcommand*{\firstExaminer}[1]{\gdef\@firstExaminer{#1}}
+\newcommand*{\secondExaminer}[1]{\gdef\@secondExaminer{#1}}
+\newcommand*{\matrikelnr}[1]{\gdef\@matrikelnr{#1}}
+\newcommand*{\submitDate}[1]{\gdef\@submitDate{#1}}
+
+\renewcommand*{\maketitle}{
+	\begin{titlepage}
+		\newgeometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[]{resources/images/S04_HTW_Berlin_Logo_pos_FARBIG_RGB}
+			\label{img:htw_logo}
+		\end{figure}
+		\begin{center}
+			\rule{\textwidth}{0.2mm}
+			{\Large \bfseries \textcolor{htw_green}{\@title}\par}
+			\rule{\textwidth}{0.2mm}
+			\vskip 0.2cm
+			{\large \bfseries Masterarbeit\par}
+			\vskip 2cm
+			{\large Name des Studiengangs}
+			\vskip 0.2cm
+			{\large \bfseries Internationale Medieninformatik}
+			\vskip 0.2cm
+			{\large \bfseries \textcolor{htw_green}{Fachbereich 4}}
+			\vskip 0.2cm
+			{\large vorgelegt von}
+			\vskip 0.2cm
+			{\large \bfseries Moritz Thomas}
+			\vskip 0.2cm
+			{\large \@matrikelnr}
+			\vskip 2cm
+			{\large Datum:}
+			\vskip 0.2cm
+			{\large Berlin, 01.09.2020}
+			\vskip 0.5cm
+			{\large \bfseries Erstgutachter\_in: \@firstExaminer}
+			\vskip 0.2cm
+			{\large \bfseries Zweitgutachter\_in: \@secondExaminer}
+		\end{center}
+		\restoregeometry
+	\end{titlepage}
+}
+\makeatother
