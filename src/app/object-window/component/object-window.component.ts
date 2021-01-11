@@ -16,5 +16,6 @@ export class ObjectWindowComponent implements OnInit {
 
   calculateGravitationModelForFiliale(): void {
     this.ezbService.drawGravitationModel(this.objectWindowsService.currentlySelectedFiliale as number);
+    this.ezbService.calculateHuffModel(this.objectWindowsService.currentlySelectedFiliale as number);
   }
 }

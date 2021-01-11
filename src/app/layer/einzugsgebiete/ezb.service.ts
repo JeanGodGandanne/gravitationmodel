@@ -15,11 +15,40 @@ import {getDistance} from 'ol/sphere';
 import Polygon from 'ol/geom/Polygon';
 import MultiPolygon from 'ol/geom/MultiPolygon';
 import LineString from 'ol/geom/LineString';
+import {Coordinate} from 'ol/coordinate';
+
+export type FilialeInfo = {
+  id: number,
+  attractiveness: number,
+  distanceToZensus: number,
+  coordinates: Coordinate
+};
+
+export type FilialeProperties = {
+  id: number,
+  parkplaetze: number,
+  verkaufsflaeche: number,
+  coordinates: Coordinate
+};
+
+export type ZensusProperties = {
+  id: number,
+  einwohner: number,
+  distanceToFiliale: number,
+  coordinates: Coordinate,
+  kaufkraft?: number
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class EzbService {
+
+  private static ATT_ENHANCE_FACTOR = 0;
+  private static DIST_DECAY = 1.5;
+
+  private storeMap: Map<number, FilialeInfo> = new Map<number, FilialeInfo>();
+  private zensusMap: Map<number, ZensusProperties> = new Map<number, ZensusProperties>();
 
   protected readonly geoJSONFormat = new GeoJSON({
     dataProjection: 'EPSG:4326',
@@ -27,7 +56,8 @@ export class EzbService {
   });
 
   constructor(private readonly baseMapService: BaseMapService,
-              private readonly http: HttpClient) { }
+              private readonly http: HttpClient) {
+  }
 
   // addFiliale(): void {
   //
@@ -96,6 +126,58 @@ export class EzbService {
     });
   }
 
+  instantiateMaps(): void {
+    ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource).getFeatures().forEach(feature => {
+      this.storeMap.set(
+          feature.get('id'),
+          {
+            id: feature.get('id'),
+            attractiveness: this.calculateAttractivenessForFiliale(feature.getProperties() as FilialeProperties),
+            distanceToZensus: 0,
+            coordinates: (feature.getGeometry() as Point).getCoordinates()
+          });
+    });
+    ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer).getSource() as VectorSource).getFeatures().forEach(feature => {
+      this.zensusMap.set(
+          feature.get('FID'),
+          {
+            id: feature.get('FID'),
+            einwohner: Math.random() * 1000,
+            distanceToFiliale: 0,
+            coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2)
+          }
+      );
+    });
+  }
+
+  calculateHuffModel(filialId: number): void {
+    this.instantiateMaps();
+    const filiale = this.storeMap.get(filialId);
+    let netzProbability = 0;
+    let filialProbability;
+    this.zensusMap.forEach(gebiet => {
+      filialProbability = filiale.attractiveness / this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates);
+      this.storeMap.forEach(store => {
+        // exclude selected store from filialNetz?
+        netzProbability += store.attractiveness / this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates);
+      });
+      this.drawMap( gebiet.id, filialProbability / netzProbability);
+    });
+  }
+
+  setDistancesForFiliale(filialId: number): void {
+    const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
+    const source = zensusLayer.getSource() as VectorSource;
+    const filiale = ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer)
+        .getSource() as VectorSource)
+        .getFeatureById(filialId);
+
+    source.getFeatures().forEach(feature => {
+      const gebiet = this.zensusMap.get(feature.get('FID'));
+      gebiet.distanceToFiliale = this.calculateDistancesForFiliale((filiale.getGeometry() as Point).getCoordinates(), gebiet.coordinates);
+    });
+  }
+
   drawGravitationModel(filialId: number): void {
     const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
     const filiale = ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource).getFeatureById(filialId);
@@ -103,6 +185,22 @@ export class EzbService {
     source.getFeatures().forEach(feature => {
       this.colorGebiet(filiale, feature);
     });
+  }
+
+  private calculateAttractivenessForFiliale(filialeProperties: FilialeProperties): number {
+    // calculate attratciveness based on parkplaetze & verkaufsflaeche
+    return 1;
+  }
+
+  private calculateDistancesForFiliale(filialeCoords: Coordinate, zensusCoords: Coordinate): number {
+    return Math.round(new LineString([filialeCoords, zensusCoords]).getLength());
+  }
+
+  private getDistanceForFiliale(filiale: Feature, gebiet): number {
+    const filialCoordinates = (filiale.getGeometry() as Point).getCoordinates();
+    const gebietCoordinates = (gebiet.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2);
+    // const distance = getDistance(filialCoordinates, gebietCoordinates);
+    return Math.round(new LineString([filialCoordinates, gebietCoordinates]).getLength());
   }
 
   private colorGebiet(filiale: Feature, gebiet: Feature): void {
@@ -147,5 +245,11 @@ export class EzbService {
     else {
       gebiet.set('indicator', 0);
     }
+  }
+
+  private drawMap(gebietId: number, probability: number): void {
+    const zensusLayerSource = (this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer).getSource() as VectorSource;
+    console.log('probability: ', probability * 100000);
+    // zensusLayerSource.getFeatureById(gebietId).set('huff', probability);
   }
 }
