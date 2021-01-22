@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BaseMapService} from '../../base-map/base-map.service';
 import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
@@ -11,8 +11,6 @@ import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
 import {HttpClient} from '@angular/common/http';
 import GeoJSON from 'ol/format/GeoJSON';
-import {getDistance} from 'ol/sphere';
-import Polygon from 'ol/geom/Polygon';
 import MultiPolygon from 'ol/geom/MultiPolygon';
 import LineString from 'ol/geom/LineString';
 import {Coordinate} from 'ol/coordinate';
@@ -36,6 +34,7 @@ export type ZensusProperties = {
   einwohner: number,
   distanceToFiliale: number,
   coordinates: Coordinate,
+  probabillity?: number,
   kaufkraft?: number
 };
 
@@ -44,11 +43,11 @@ export type ZensusProperties = {
 })
 export class EzbService {
 
-  private static ATT_ENHANCE_FACTOR = 0;
-  private static DIST_DECAY = 1.5;
+  private ATT_ENHANCE_FACTOR = this.calculateAttractivenessEnhancementFactor();
+  private DIST_DECAY = this.calculateDistanceDecayFactor();
 
   private storeMap: Map<number, FilialeInfo> = new Map<number, FilialeInfo>();
-  private zensusMap: Map<number, ZensusProperties> = new Map<number, ZensusProperties>();
+  private zensusMap: ZensusProperties[] = [];
 
   protected readonly geoJSONFormat = new GeoJSON({
     dataProjection: 'EPSG:4326',
@@ -138,15 +137,12 @@ export class EzbService {
           });
     });
     ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer).getSource() as VectorSource).getFeatures().forEach(feature => {
-      this.zensusMap.set(
-          feature.get('FID'),
-          {
-            id: feature.get('FID'),
-            einwohner: Math.random() * 1000,
-            distanceToFiliale: 0,
-            coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2)
-          }
-      );
+      this.zensusMap.push({
+        id: feature.get('FID'),
+        einwohner: Math.random() * 1000,
+        distanceToFiliale: 0,
+        coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2)
+      });
     });
   }
 
@@ -156,13 +152,17 @@ export class EzbService {
     let netzProbability = 0;
     let filialProbability;
     this.zensusMap.forEach(gebiet => {
-      filialProbability = filiale.attractiveness / this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates);
+      filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
       this.storeMap.forEach(store => {
         // exclude selected store from filialNetz?
-        netzProbability += store.attractiveness / this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates);
+        netzProbability += Math.pow(store.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates), this.DIST_DECAY);
       });
-      this.drawMap( gebiet.id, filialProbability / netzProbability);
+      gebiet.probabillity = Math.min((filialProbability / netzProbability) * 1000, 100);
+      // this.drawMap( gebiet.id, filialProbability / netzProbability);
+      this.colorGebiet(gebiet);
     });
+    this.zensusMap.sort(this.sortZensusMap);
+    console.log(this.zensusMap);
   }
 
   setDistancesForFiliale(filialId: number): void {
@@ -173,7 +173,7 @@ export class EzbService {
         .getFeatureById(filialId);
 
     source.getFeatures().forEach(feature => {
-      const gebiet = this.zensusMap.get(feature.get('FID'));
+      const gebiet = this.zensusMap.find(gebiet => gebiet.id === feature.get('FID'));
       gebiet.distanceToFiliale = this.calculateDistancesForFiliale((filiale.getGeometry() as Point).getCoordinates(), gebiet.coordinates);
     });
   }
@@ -182,18 +182,6 @@ export class EzbService {
     const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
     const filiale = ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource).getFeatureById(filialId);
     const source = zensusLayer.getSource() as VectorSource;
-    source.getFeatures().forEach(feature => {
-      this.colorGebiet(filiale, feature);
-    });
-  }
-
-  private calculateAttractivenessForFiliale(filialeProperties: FilialeProperties): number {
-    // calculate attratciveness based on parkplaetze & verkaufsflaeche
-    return 1;
-  }
-
-  private calculateDistancesForFiliale(filialeCoords: Coordinate, zensusCoords: Coordinate): number {
-    return Math.round(new LineString([filialeCoords, zensusCoords]).getLength());
   }
 
   private getDistanceForFiliale(filiale: Feature, gebiet): number {
@@ -203,53 +191,67 @@ export class EzbService {
     return Math.round(new LineString([filialCoordinates, gebietCoordinates]).getLength());
   }
 
-  private colorGebiet(filiale: Feature, gebiet: Feature): void {
-    const filialCoordinates = (filiale.getGeometry() as Point).getCoordinates();
-    const gebietCoordinates = (gebiet.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2);
-    // const distance = getDistance(filialCoordinates, gebietCoordinates);
-    const distance = Math.round(new LineString([filialCoordinates, gebietCoordinates]).getLength());
-
-    if (distance > 50000) {
-      gebiet.set('indicator', 11);
+  private colorGebiet(gebiet: ZensusProperties): void {
+    const feature = ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer)
+      .getSource() as VectorSource)
+      .getFeatures().find(feature => feature.get('FID') === gebiet.id);
+    // console.log(gebiet.probalillity);
+    if (gebiet.probabillity > 6000) {
+      feature.set('indicator', 0);
     }
-    else if (distance < 50000 && distance > 40000) {
-      gebiet.set('indicator', 10);
+    else if (gebiet.probabillity < 6000 && gebiet.probabillity > 5000) {
+      feature.set('indicator', 1);
     }
-    else if (distance < 40000 && distance > 30000) {
-      gebiet.set('indicator', 9);
+    else if (gebiet.probabillity < 5000 && gebiet.probabillity > 4000) {
+      feature.set('indicator', 2);
     }
-    else if (distance < 30000 && distance > 20000) {
-      gebiet.set('indicator', 8);
+    else if (gebiet.probabillity < 4000 && gebiet.probabillity > 3000) {
+      feature.set('indicator', 3);
     }
-    else if (distance < 20000 && distance > 10000) {
-      gebiet.set('indicator', 7);
+    else if (gebiet.probabillity < 3000 && gebiet.probabillity > 2000) {
+      feature.set('indicator', 4);
     }
-    else if (distance < 10000 && distance > 5000) {
-      gebiet.set('indicator', 6);
+    else if (gebiet.probabillity < 2000 && gebiet.probabillity > 1000) {
+      feature.set('indicator', 5);
     }
-    else if (distance < 5000 && distance > 4000) {
-      gebiet.set('indicator', 5);
+    else if (gebiet.probabillity < 1000 && gebiet.probabillity > 500) {
+      feature.set('indicator', 6);
     }
-    else if (distance < 4000 && distance > 3000) {
-      gebiet.set('indicator', 4);
-    }
-    else if (distance < 3000 && distance > 2000) {
-      gebiet.set('indicator', 3);
-    }
-    else if (distance < 2000 && distance > 1000) {
-      gebiet.set('indicator', 2);
-    }
-    else if (distance < 1000 && distance > 700) {
-      gebiet.set('indicator', 1);
+    else if (gebiet.probabillity < 500 && gebiet.probabillity > 100) {
+      feature.set('indicator', 4);
     }
     else {
-      gebiet.set('indicator', 0);
+      feature.set('indicator', 5);
     }
   }
 
-  private drawMap(gebietId: number, probability: number): void {
-    const zensusLayerSource = (this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer).getSource() as VectorSource;
-    console.log('probability: ', probability * 100000);
-    // zensusLayerSource.getFeatureById(gebietId).set('huff', probability);
+  private sortZensusMap(a: ZensusProperties, b: ZensusProperties): number {
+    if (a.probabillity < b.probabillity) {
+      return -1;
+    }
+    if (a.probabillity > b.probabillity) {
+      return 1;
+    }
+    return 0;
+  }
+
+  private calculateAttractivenessForFiliale(filialeProperties: FilialeProperties): number {
+    // calculate attractiveness based on parkplaetze & verkaufsflaeche
+    // Je mehr parkplaetze und Verkaufsflaeche desto attraktiver
+    return (filialeProperties.parkplaetze * filialeProperties.verkaufsflaeche) / 2;
+  }
+
+  private calculateDistancesForFiliale(filialeCoords: Coordinate, zensusCoords: Coordinate): number {
+    return Math.round(new LineString([filialeCoords, zensusCoords]).getLength());
+  }
+
+  private calculateAttractivenessEnhancementFactor(): number {
+    // Je attraktiver eine Filiale ist desto wahrscheinlicher ist der Besuch
+    return 1;
+  }
+
+  private calculateDistanceDecayFactor(): number {
+    // Je weiter die Filiale von einem Kunden entfernt ist, desto unwahrscheinlicher ist der Besuch
+    return 1.5;
   }
 }
