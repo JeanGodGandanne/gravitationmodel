@@ -56,7 +56,7 @@ export default abstract class FeatureLayer {
      * @param tileGrid decides which loading strategy will be applied, bounding box or tile
      * @param options source options
      */
-    protected createVectorSource(url: string, tileGrid?: TileGrid, options?: VectorSourceOptions): VectorSource {
+    protected createVectorSource(url?: string, tileGrid?: TileGrid, options?: VectorSourceOptions): VectorSource {
         const defaultOptions: VectorSourceOptions = {
             format: FeatureLayer.geoJSONFormat,
             strategy: tileGrid ? tile(tileGrid) : bbox

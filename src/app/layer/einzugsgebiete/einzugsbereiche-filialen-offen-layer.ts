@@ -23,7 +23,7 @@ export default class EinzugsbereicheFilialenOffenLayer extends FeatureLayer {
       zIndex: 3
     });
 
-    const source = this.createVectorSource(''); // do not load smaller tiles to prevent many requests, assuming there is no more detail
+    const source = this.createVectorSource(); // do not load smaller tiles to prevent many requests, assuming there is no more detail
     layer.setSource(source);
 
     layer.setStyle(this.ezbFeatureLayerStyle.getStyleFunction());

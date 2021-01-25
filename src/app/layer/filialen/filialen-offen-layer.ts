@@ -26,7 +26,7 @@ export default class FilialenOffenLayer extends FeatureLayer {
     // will load more data (of multiple tiles) at once and reduce requests, e.g. 2028 = at zoom level 10 the data from level 7
     const grid = this.createTileGrid(2048,
         10);  // up to zoom level 10 to prevent many requests below
-    const source = this.createVectorSource('../assets/map.json', grid);
+    const source = this.createVectorSource();
     layer.setSource(source);
 
     layer.setVisible(true);

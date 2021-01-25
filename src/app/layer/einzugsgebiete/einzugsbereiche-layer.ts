@@ -26,7 +26,7 @@ export default class EinzugsbereicheLayer extends FeatureLayer {
 
     const grid = this.createTileGrid(2048,
         10);
-    const source = this.createVectorSource('../assets/Verkehrsbezirke.json', grid); // do not load smaller tiles to prevent many requests, assuming there is no more detail
+    const source = this.createVectorSource(); // do not load smaller tiles to prevent many requests, assuming there is no more detail
     layer.setSource(source);
 
     layer.setVisible(true);

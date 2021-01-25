@@ -24,10 +24,12 @@ export class LayerManagerComponent {
   }
 
   setLayerVisibility(event: any, layerIdentifier: LayerIdentifier): void {
-    if (event.target.checked) {
+    if (event.checked) {
     //  show layer
+      this.baseMapService.getLayers().getArray().find(layer => layer.get('name') === layerIdentifier).setVisible(true);
     } else {
     //  hide layer
+      this.baseMapService.getLayers().getArray().find(layer => layer.get('name') === layerIdentifier).setVisible(false);
     }
   }
 

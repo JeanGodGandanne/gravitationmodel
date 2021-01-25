@@ -1,9 +1,51 @@
-<div>
-    Filialnummer: {{objectWindowsService.currentlySelectedFiliale}}
-    <button mat-icon-button color="primary" (click)="calculateGravitationModelForFiliale()">
+<ng-container *ngIf="objectWindowService.currentlySelectedFeature.type === featureTypeEnum.FILIALE else gebiet">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Filiale {{objectWindowService.currentlySelectedFeature.properties.id}}
+      </mat-card-title>
+      <button class="close-button" mat-icon-button color="primary" (click)="closeObjectWindow()">
         <mat-icon>
-            miscellaneous_services
+          close
+        </mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>Parkplätze: {{objectWindowService.currentlySelectedFeature.properties.parkplaetze | number}}</mat-list-item>
+        <mat-list-item>Verkaufsfläche: {{objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number}} m²</mat-list-item>
+      </mat-list>
+    </mat-card-content>
+    <mat-card-actions>
+      <button class="calc-button" mat-icon-button color="primary" (click)="calculateGravitationModelForFiliale()">
+        <mat-icon>
+          miscellaneous_services
         </mat-icon>
         Berechne Model
-    </button>
-</div>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>
+<ng-template #gebiet>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        Zensusgebiet {{objectWindowService.currentlySelectedFeature.properties.id}}
+      </mat-card-title>
+      <button class="close-button" mat-icon-button color="primary" (click)="closeObjectWindow()">
+        <mat-icon>
+          close
+        </mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>Einwohner: {{objectWindowService.currentlySelectedFeature.properties.einwohner | number}}</mat-list-item>
+        <mat-list-item>Kaufkraft: {{objectWindowService.currentlySelectedFeature.properties.kaufkraft | number}} €</mat-list-item>
+        <mat-list-item>Ausgaben Lebensmittel: {{objectWindowService.currentlySelectedFeature.properties.spendituteGroc | number}} €</mat-list-item>
+        <mat-list-item>Wahrscheinlichkeitsfaktor: {{objectWindowService.currentlySelectedFeature.properties.probability}}</mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+

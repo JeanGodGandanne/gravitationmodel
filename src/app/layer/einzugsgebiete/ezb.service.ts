@@ -14,18 +14,26 @@ import GeoJSON from 'ol/format/GeoJSON';
 import MultiPolygon from 'ol/geom/MultiPolygon';
 import LineString from 'ol/geom/LineString';
 import {Coordinate} from 'ol/coordinate';
+import {Polygon} from "ol/geom";
+import * as ol_sphere from 'ol/sphere';
+import {max} from "rxjs/operators";
 
-export type FilialeInfo = {
-  id: number,
-  attractiveness: number,
-  distanceToZensus: number,
-  coordinates: Coordinate
-};
+export enum FeatureTypeEnum {
+  FILIALE = 'Filiale',
+  ZENSUSGEBIET = 'Zensusgebiet'
+}
+
+export type FeatureProperties = {
+  type: FeatureTypeEnum,
+  properties: FilialeProperties | ZensusProperties
+}
 
 export type FilialeProperties = {
   id: number,
   parkplaetze: number,
   verkaufsflaeche: number,
+  attractiveness: number,
+  distanceToZensus: number,
   coordinates: Coordinate
 };
 
@@ -34,20 +42,45 @@ export type ZensusProperties = {
   einwohner: number,
   distanceToFiliale: number,
   coordinates: Coordinate,
-  probabillity?: number,
-  kaufkraft?: number
+  probability?: number,
+  kaufkraft?: number,
+  spendituteGroc?: number
 };
 
 @Injectable({
   providedIn: 'root'
 })
 export class EzbService {
+  get zensusMap(): FeatureProperties[] {
+    return this._zensusMap.map(gebiet => {
+      return {
+        type: FeatureTypeEnum.ZENSUSGEBIET,
+        properties: gebiet}
+    })
+  }
+  get storeMap(): FeatureProperties[] {
+    return this._storeMap.map(filiale => {
+      return {
+        type: FeatureTypeEnum.FILIALE,
+        properties: filiale
+      }
+    });
+  }
+
+  private _storeMap: FilialeProperties[] = [];
+  private _zensusMap: ZensusProperties[] = [];
+
+  // durschnittliche Kaufkraft pro Einwohner Berlin in € pro monat 21687 € / 12 (average Kaufkraft)
+  private AK = 1807.25;
+
+  // durschnittlicher Faktor Einwohner/m^2 (average Einwohner Gebietegröße Faktor)
+  private AEGF = 0.0045;
+
+  // durschnittliche Ausgaben für Lebensmittel in € pro Monat(average spenditute groceries)
+  private ASG = 356;
 
   private ATT_ENHANCE_FACTOR = this.calculateAttractivenessEnhancementFactor();
   private DIST_DECAY = this.calculateDistanceDecayFactor();
-
-  private storeMap: Map<number, FilialeInfo> = new Map<number, FilialeInfo>();
-  private zensusMap: ZensusProperties[] = [];
 
   protected readonly geoJSONFormat = new GeoJSON({
     dataProjection: 'EPSG:4326',
@@ -66,7 +99,20 @@ export class EzbService {
     const filialeLayer = this.baseMapService.getLayer('filialen_layer') as VectorImageLayer;
     this.http.get('../assets/map.json').subscribe(value => {
       const readFeatures = this.geoJSONFormat.readFeatures(value);
-      readFeatures.forEach(feature => feature.setId(feature.get('id')));
+      readFeatures.forEach(feature => {
+        feature.setId(feature.get('id'));
+        feature.set('type', FeatureTypeEnum.FILIALE);
+        this._storeMap.push(
+          {
+            id: feature.get('id'),
+            attractiveness: this.calculateAttractivenessForFiliale(feature.getProperties() as FilialeProperties),
+            distanceToZensus: 0,
+            parkplaetze: feature.get('parkplaetze'),
+            verkaufsflaeche: feature.get('verkaufsflaeche'),
+            coordinates: (feature.getGeometry() as Point).getCoordinates()
+          } as FilialeProperties,
+        );
+      });
       (filialeLayer.getSource() as VectorSource).addFeatures(readFeatures);
     });
   }
@@ -74,162 +120,93 @@ export class EzbService {
   drawZensusGebiete(): void {
     const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
     this.http.get('../assets/Verkehrsbezirke.json').subscribe(value => {
-      (zensusLayer.getSource() as VectorSource).addFeatures(this.geoJSONFormat.readFeatures(value));
-    });
-  }
-
-  drawEZB(): void {
-    const ezbLayer = this.baseMapService.getLayer('einzugsbereich') as VectorLayer;
-    const ezbStyle = new Style({
-      stroke: new Stroke({
-        color: 'black',
-        lineDash: [0.1, 7],
-        width: 2,
-      }),
-      fill: new Fill({
-        color: 'rgba(253, 229, 147, 0.3)',
-      })
-    });
-    const featArr = [
-      [1499465.1838703027, 6884453.826560967],
-      [1500955.7059218632, 6888466.770545938],
-      [1500420.6467238672, 6897218.810284598],
-      [1502293.353916854, 6903104.461462557],
-      [1502293.353916854, 6881778.530570985],
-      [1505618.364647259, 6896645.532572453],
-      [1502943.068657278, 6893282.3033279115],
-      [1504815.7758502648, 6886938.029980234],
-      [1509937.0567453718, 6889651.544484363],
-      [1481731.7933081416, 6893052.992243053],
-      [1489795.899792228, 6893473.395898619],
-      [1497707.1322197434, 6894046.673610756],
-      [1493847.062291342, 6895078.573492609],
-      [1484827.4929536914, 6896378.002973455],
-      [1488420.0332830946, 6898518.2397654345],
-      [1488267.1592265244, 6902913.368891838],
-      [1493503.0956640588, 6899015.080449302],
-      [1498203.972903597, 6900046.980331143],
-      [1490063.4293912258, 6880670.1936608525],
-      [1491057.1107589332, 6886899.811466093],
-      [1495949.0805691842, 6880517.319604281],
-      [1495070.0547439049, 6885256.415357961],
-      [1483336.9709021302, 6885027.104273109],
-      [1488228.9407123816, 6888504.989060076]
-    ];
-
-    featArr.forEach( coords => {
-      const feature = new Feature();
-      feature.setGeometry(new Circle(coords, 5000));
-      feature.setStyle(ezbStyle);
-      ezbLayer.getSource().addFeature(feature);
-    });
-  }
-
-  instantiateMaps(): void {
-    ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource).getFeatures().forEach(feature => {
-      this.storeMap.set(
-          feature.get('id'),
-          {
-            id: feature.get('id'),
-            attractiveness: this.calculateAttractivenessForFiliale(feature.getProperties() as FilialeProperties),
-            distanceToZensus: 0,
-            coordinates: (feature.getGeometry() as Point).getCoordinates()
-          });
-    });
-    ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer).getSource() as VectorSource).getFeatures().forEach(feature => {
-      this.zensusMap.push({
-        id: feature.get('FID'),
-        einwohner: Math.random() * 1000,
-        distanceToFiliale: 0,
-        coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2)
+      const source = zensusLayer.getSource() as VectorSource;
+      const features = this.geoJSONFormat.readFeatures(value);
+      features.forEach(feature => {
+        feature.setId(feature.get('FID'));
+        feature.set('type', FeatureTypeEnum.ZENSUSGEBIET);
+        const einwohner = Math.round(ol_sphere.getArea(feature.getGeometry() as Polygon) * this.AEGF);
+        this._zensusMap.push({
+          id: feature.get('FID'),
+          einwohner: einwohner,
+          distanceToFiliale: 0,
+          coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getFirstCoordinate(),
+          kaufkraft: einwohner * this.AK,
+          spendituteGroc: einwohner * this.ASG
+        });
       });
+      source.addFeatures(features);
     });
   }
 
   calculateHuffModel(filialId: number): void {
-    this.instantiateMaps();
-    const filiale = this.storeMap.get(filialId);
-    let netzProbability = 0;
-    let filialProbability;
-    this.zensusMap.forEach(gebiet => {
-      filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
-      this.storeMap.forEach(store => {
-        // exclude selected store from filialNetz?
+    const filiale = this._storeMap.find(filiale => filiale.id === filialId);
+    let maxProbability = 0;
+    this._zensusMap.forEach(gebiet => {
+      let netzProbability = 0;
+      const filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
+      this._storeMap.forEach(store => {
         netzProbability += Math.pow(store.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates), this.DIST_DECAY);
       });
-      gebiet.probabillity = Math.min((filialProbability / netzProbability) * 1000, 100);
-      // this.drawMap( gebiet.id, filialProbability / netzProbability);
-      this.colorGebiet(gebiet);
+      gebiet.probability = (filialProbability / netzProbability) * 1000;
+      maxProbability = Math.max(gebiet.probability, maxProbability);
+      this.colorGebiet(gebiet, maxProbability);
     });
-    this.zensusMap.sort(this.sortZensusMap);
-    console.log(this.zensusMap);
+    this._zensusMap.sort(this.sortZensusMap);
   }
 
-  setDistancesForFiliale(filialId: number): void {
-    const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
-    const source = zensusLayer.getSource() as VectorSource;
-    const filiale = ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer)
-        .getSource() as VectorSource)
-        .getFeatureById(filialId);
-
-    source.getFeatures().forEach(feature => {
-      const gebiet = this.zensusMap.find(gebiet => gebiet.id === feature.get('FID'));
-      gebiet.distanceToFiliale = this.calculateDistancesForFiliale((filiale.getGeometry() as Point).getCoordinates(), gebiet.coordinates);
-    });
-  }
-
-  drawGravitationModel(filialId: number): void {
-    const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
-    const filiale = ((this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource).getFeatureById(filialId);
-    const source = zensusLayer.getSource() as VectorSource;
-  }
-
-  private getDistanceForFiliale(filiale: Feature, gebiet): number {
-    const filialCoordinates = (filiale.getGeometry() as Point).getCoordinates();
-    const gebietCoordinates = (gebiet.getGeometry() as MultiPolygon).getInteriorPoints().getCoordinates()[0].slice(0, 2);
-    // const distance = getDistance(filialCoordinates, gebietCoordinates);
-    return Math.round(new LineString([filialCoordinates, gebietCoordinates]).getLength());
-  }
-
-  private colorGebiet(gebiet: ZensusProperties): void {
+  private colorGebiet(gebiet: ZensusProperties, maxProbability: number): void {
     const feature = ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer)
       .getSource() as VectorSource)
       .getFeatures().find(feature => feature.get('FID') === gebiet.id);
-    // console.log(gebiet.probalillity);
-    if (gebiet.probabillity > 6000) {
-      feature.set('indicator', 0);
+
+    const firstDeccil = this.calculateGravitationalDecil(maxProbability, 1);
+    const secondDecil = this.calculateGravitationalDecil(maxProbability, 2);
+    const thirdDecil = this.calculateGravitationalDecil(maxProbability, 3);
+    const fourthDecil = this.calculateGravitationalDecil(maxProbability, 4);
+    const fifthDecil = this.calculateGravitationalDecil(maxProbability, 5);
+    const sixthDecil = this.calculateGravitationalDecil(maxProbability, 6);
+    const seventhDecil = this.calculateGravitationalDecil(maxProbability, 7);
+    const eightsDecil = this.calculateGravitationalDecil(maxProbability, 8);
+    const ninthDecil = this.calculateGravitationalDecil(maxProbability, 9);
+
+    if (gebiet.probability > firstDeccil) {
+      feature.set('indicator', 9);
     }
-    else if (gebiet.probabillity < 6000 && gebiet.probabillity > 5000) {
-      feature.set('indicator', 1);
+    else if (gebiet.probability < firstDeccil && gebiet.probability > secondDecil) {
+      feature.set('indicator', 8);
     }
-    else if (gebiet.probabillity < 5000 && gebiet.probabillity > 4000) {
-      feature.set('indicator', 2);
+    else if (gebiet.probability < secondDecil && gebiet.probability > thirdDecil) {
+      feature.set('indicator', 7);
     }
-    else if (gebiet.probabillity < 4000 && gebiet.probabillity > 3000) {
-      feature.set('indicator', 3);
-    }
-    else if (gebiet.probabillity < 3000 && gebiet.probabillity > 2000) {
-      feature.set('indicator', 4);
-    }
-    else if (gebiet.probabillity < 2000 && gebiet.probabillity > 1000) {
-      feature.set('indicator', 5);
-    }
-    else if (gebiet.probabillity < 1000 && gebiet.probabillity > 500) {
+    else if (gebiet.probability < thirdDecil && gebiet.probability > fourthDecil) {
       feature.set('indicator', 6);
     }
-    else if (gebiet.probabillity < 500 && gebiet.probabillity > 100) {
+    else if (gebiet.probability < fourthDecil && gebiet.probability > fifthDecil) {
+      feature.set('indicator', 5);
+    }
+    else if (gebiet.probability < fifthDecil && gebiet.probability > sixthDecil) {
       feature.set('indicator', 4);
     }
+    else if (gebiet.probability < sixthDecil && gebiet.probability > seventhDecil) {
+      feature.set('indicator', 3);
+    }
+    else if (gebiet.probability < seventhDecil && gebiet.probability > eightsDecil) {
+      feature.set('indicator', 2);
+    }
+    else if (gebiet.probability < eightsDecil && gebiet.probability > ninthDecil) {
+      feature.set('indicator', 1);
+    }
     else {
-      feature.set('indicator', 5);
+      feature.set('indicator', 0);
     }
   }
 
   private sortZensusMap(a: ZensusProperties, b: ZensusProperties): number {
-    if (a.probabillity < b.probabillity) {
+    if (a.probability < b.probability) {
       return -1;
     }
-    if (a.probabillity > b.probabillity) {
+    if (a.probability > b.probability) {
       return 1;
     }
     return 0;
@@ -242,16 +219,27 @@ export class EzbService {
   }
 
   private calculateDistancesForFiliale(filialeCoords: Coordinate, zensusCoords: Coordinate): number {
-    return Math.round(new LineString([filialeCoords, zensusCoords]).getLength());
+    const length = ol_sphere.getLength(new LineString([filialeCoords, zensusCoords]), {projection: 'EPSG:3857'});
+    return length;
   }
 
   private calculateAttractivenessEnhancementFactor(): number {
     // Je attraktiver eine Filiale ist desto wahrscheinlicher ist der Besuch
-    return 1;
+    return 1.5;
   }
 
   private calculateDistanceDecayFactor(): number {
     // Je weiter die Filiale von einem Kunden entfernt ist, desto unwahrscheinlicher ist der Besuch
-    return 1.5;
+    return -1.5;
+  }
+
+  /**
+   * calculate the gravitational decay (10% of maximal probability for each gravitational layer) to color gebiete
+   * @param total
+   * @param decil
+   * @private
+   */
+  private calculateGravitationalDecil(total: number, decil: number): number {
+    return total - decil*(total * 0.1);
   }
 }

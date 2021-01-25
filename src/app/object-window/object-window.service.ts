@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {FeatureProperties} from "../layer/einzugsgebiete/ezb.service";
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ export class ObjectWindowService {
 
   isObjectWindowVisible = false;
 
-  currentlySelectedFiliale: number | string;
+  currentlySelectedFeature: FeatureProperties;
 
 }
 

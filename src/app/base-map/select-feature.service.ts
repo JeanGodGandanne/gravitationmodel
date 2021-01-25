@@ -6,6 +6,7 @@ import {StyleLike} from 'ol/style/Style';
 import {Collection} from 'ol';
 import {Geometry} from 'ol/geom';
 import {ObjectWindowService, ObjectWindowState} from '../object-window/object-window.service';
+import {EzbService, FeatureProperties, FeatureTypeEnum} from "../layer/einzugsgebiete/ezb.service";
 
 @Injectable()
 export class SelectFeatureService{
@@ -15,7 +16,8 @@ export class SelectFeatureService{
     return this._layerInteractionSelect;
   }
 
-  constructor(private readonly objectWindowService: ObjectWindowService) {
+  constructor(private readonly objectWindowService: ObjectWindowService,
+              private ezbService: EzbService) {
   }
 
   public createLayerInteractionSelect(layers: Layer[], style: StyleLike): void {
@@ -31,9 +33,7 @@ export class SelectFeatureService{
     layerInteractionSelect.on(
       'select',
       (e: SelectEvent) => {
-        if (this.isBackgroundClick(e)) { // background click
-          this.reselectFeature(e);
-        } else{ // is allowed to select feature
+        if (!this.isBackgroundClick(e)) {
           this.selectFeature(e);
         }
       }
@@ -44,25 +44,17 @@ export class SelectFeatureService{
     return e.selected.length === 0 && !!e.deselected.length;
   }
 
-  private reselectFeature(e: SelectEvent): void {
-    e.deselected.forEach(feature =>
-      this._layerInteractionSelect.getFeatures().push(feature)
-    );
-  }
-
-  private deselectFeaturesOnMap(): void {
-    // remove select prop from all features and clear layerInteractionSelect
-    this.removeSelectedPropFromDeselectedFeatures(this._layerInteractionSelect.getFeatures());
-    this.clearAllLayers();
-  }
-
   private selectFeature(e: SelectEvent): void {
-    this.objectWindowService.currentlySelectedFiliale = e.selected[0].getId();
+    if (e.deselected.length > 0) {
+      this.objectWindowService.currentlySelectedFeature = null;
+    }
+    const type = e.selected[0].get('type');
+    this.objectWindowService.currentlySelectedFeature = type === FeatureTypeEnum.ZENSUSGEBIET ?
+      this.ezbService.zensusMap.find(gebiet => gebiet.properties.id === e.selected[0].getId()) :
+      this.ezbService.storeMap.find(store => store.properties.id === e.selected[0].getId());
 
-    this.objectWindowService.isObjectWindowVisible = !this.objectWindowService.isObjectWindowVisible;
-    this.objectWindowService.objectWindowCurrentState === ObjectWindowState.OPEN ?
-        this.objectWindowService.objectWindowCurrentState = ObjectWindowState.CLOSED :
-        this.objectWindowService.objectWindowCurrentState = ObjectWindowState.OPEN;
+    this.objectWindowService.isObjectWindowVisible = true;
+    this.objectWindowService.objectWindowCurrentState = ObjectWindowState.OPEN;
 
     // clear prop selected from deselected features
     this.removeSelectedPropFromDeselectedFeatures(e.deselected);
@@ -70,9 +62,5 @@ export class SelectFeatureService{
 
   private removeSelectedPropFromDeselectedFeatures(features: Feature[] | Collection<Feature<Geometry>>): void {
     features.forEach(item => item.setProperties({selected: null}));
-  }
-
-  private clearAllLayers(): void {
-    this._layerInteractionSelect.getFeatures().clear();
   }
 }

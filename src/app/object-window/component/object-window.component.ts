@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ObjectWindowService} from '../object-window.service';
-import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
+import {ObjectWindowService, ObjectWindowState} from '../object-window.service';
+import {EzbService, FeatureTypeEnum} from '../../layer/einzugsgebiete/ezb.service';
 
 @Component({
   selector: 'app-object-window',
@@ -8,14 +8,25 @@ import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
   styleUrls: ['./object-window.component.scss']
 })
 export class ObjectWindowComponent implements OnInit {
-  constructor(public readonly objectWindowsService: ObjectWindowService,
-              private readonly ezbService: EzbService) { }
+  constructor(public readonly objectWindowService: ObjectWindowService,
+              private readonly ezbService: EzbService) {
+  }
+
+  public featureTypeEnum = FeatureTypeEnum;
+
 
   ngOnInit(): void {
   }
 
   calculateGravitationModelForFiliale(): void {
-    // this.ezbService.drawGravitationModel(this.objectWindowsService.currentlySelectedFiliale as number);
-    this.ezbService.calculateHuffModel(this.objectWindowsService.currentlySelectedFiliale as number);
+    this.ezbService.calculateHuffModel(this.objectWindowService.currentlySelectedFeature.properties.id as number);
+  }
+
+  closeObjectWindow(): void {
+    this.objectWindowService.currentlySelectedFeature = null;
+    this.objectWindowService.isObjectWindowVisible = !this.objectWindowService.isObjectWindowVisible;
+    this.objectWindowService.objectWindowCurrentState === ObjectWindowState.OPEN ?
+      this.objectWindowService.objectWindowCurrentState = ObjectWindowState.CLOSED :
+      this.objectWindowService.objectWindowCurrentState = ObjectWindowState.OPEN;
   }
 }

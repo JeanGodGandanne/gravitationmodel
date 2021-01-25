@@ -36,7 +36,8 @@ export default class EinzugsbereicheFeatureStyle {
     '#00c8ec',
     '#00b4ff',
     '#009bff',
-    '#5f7afb'];
+    '#5f7afb'
+  ];
 
   constructor(private fillColor: string) {
 
