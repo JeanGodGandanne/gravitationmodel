@@ -12,8 +12,24 @@
     </mat-card-header>
     <mat-card-content>
       <mat-list>
-        <mat-list-item>Parkplätze: {{objectWindowService.currentlySelectedFeature.properties.parkplaetze | number}}</mat-list-item>
-        <mat-list-item>Verkaufsfläche: {{objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number}} m²</mat-list-item>
+        <mat-list-item>Parkplätze:
+<!--          {{objectWindowService.currentlySelectedFeature.properties.parkplaetze | number}}-->
+          <mat-form-field class="object-form-field">
+            <input matInput type="text"
+                   [ngModel]="objectWindowService.currentlySelectedFeature.properties.parkplaetze | number"
+                   (ngModelChange)="objectWindowService.currentlySelectedFeature.properties.parkplaetze = $event"
+            >
+          </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>Verkaufsfläche:
+          <mat-form-field class="object-form-field">
+            <input matInput type="text"
+                   [ngModel]="objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number"
+                   (ngModelChange)="objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche = $event"
+            >
+          </mat-form-field>
+<!--          {{objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number}} -->
+          m²</mat-list-item>
       </mat-list>
     </mat-card-content>
     <mat-card-actions>

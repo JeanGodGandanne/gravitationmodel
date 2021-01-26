@@ -47,8 +47,10 @@ export class SelectFeatureService{
   private selectFeature(e: SelectEvent): void {
     if (e.deselected.length > 0) {
       this.objectWindowService.currentlySelectedFeature = null;
+      e.deselected[0].set('selected', false);
     }
     const type = e.selected[0].get('type');
+    e.selected[0].set('selected', true);
     this.objectWindowService.currentlySelectedFeature = type === FeatureTypeEnum.ZENSUSGEBIET ?
       this.ezbService.zensusMap.find(gebiet => gebiet.properties.id === e.selected[0].getId()) :
       this.ezbService.storeMap.find(store => store.properties.id === e.selected[0].getId());

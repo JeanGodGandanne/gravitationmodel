@@ -9,6 +9,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import EinzugsbereicheLayer from '../../layer/einzugsgebiete/einzugsbereiche-layer';
 import HeatmapLayer from '../../layer/einzugsgebiete/heatmap';
+import {ObjectWindowService} from '../../object-window/object-window.service';
 
 @Component({
   selector: 'app-base-map',

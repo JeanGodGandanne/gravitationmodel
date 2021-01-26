@@ -1,22 +1,16 @@
 import {Injectable} from '@angular/core';
 import {BaseMapService} from '../../base-map/base-map.service';
-import VectorLayer from 'ol/layer/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';
-import Feature from 'ol/Feature';
-import Circle from 'ol/geom/Circle';
 import Point from 'ol/geom/Point';
-import Style from 'ol/style/Style';
-import Stroke from 'ol/style/Stroke';
-import Fill from 'ol/style/Fill';
 import {HttpClient} from '@angular/common/http';
 import GeoJSON from 'ol/format/GeoJSON';
 import MultiPolygon from 'ol/geom/MultiPolygon';
 import LineString from 'ol/geom/LineString';
 import {Coordinate} from 'ol/coordinate';
-import {Polygon} from "ol/geom";
+import {Polygon} from 'ol/geom';
 import * as ol_sphere from 'ol/sphere';
-import {max} from "rxjs/operators";
+import Feature from 'ol/Feature';
 
 export enum FeatureTypeEnum {
   FILIALE = 'Filiale',
@@ -26,7 +20,7 @@ export enum FeatureTypeEnum {
 export type FeatureProperties = {
   type: FeatureTypeEnum,
   properties: FilialeProperties | ZensusProperties
-}
+};
 
 export type FilialeProperties = {
   id: number,
@@ -55,15 +49,15 @@ export class EzbService {
     return this._zensusMap.map(gebiet => {
       return {
         type: FeatureTypeEnum.ZENSUSGEBIET,
-        properties: gebiet}
-    })
+        properties: gebiet};
+    });
   }
   get storeMap(): FeatureProperties[] {
     return this._storeMap.map(filiale => {
       return {
         type: FeatureTypeEnum.FILIALE,
         properties: filiale
-      }
+      };
     });
   }
 
@@ -89,11 +83,8 @@ export class EzbService {
 
   constructor(private readonly baseMapService: BaseMapService,
               private readonly http: HttpClient) {
+  //  TODO listen on ezb.currentselectedFeature observable and change it in storeMap
   }
-
-  // addFiliale(): void {
-  //
-  // }
 
   drawFilialen(): void {
     const filialeLayer = this.baseMapService.getLayer('filialen_layer') as VectorImageLayer;
@@ -105,7 +96,7 @@ export class EzbService {
         this._storeMap.push(
           {
             id: feature.get('id'),
-            attractiveness: this.calculateAttractivenessForFiliale(feature.getProperties() as FilialeProperties),
+            attractiveness: this.calculateAttractivenessForFiliale(feature.get('parkplaetze'), feature.get('verkaufsflaeche')),
             distanceToZensus: 0,
             parkplaetze: feature.get('parkplaetze'),
             verkaufsflaeche: feature.get('verkaufsflaeche'),
@@ -115,6 +106,24 @@ export class EzbService {
       });
       (filialeLayer.getSource() as VectorSource).addFeatures(readFeatures);
     });
+  }
+
+  addFiliale(feature: Feature): void {
+    // Todo generate id
+    const id = 100;
+    feature.setId(id);
+    feature.set('type', FeatureTypeEnum.FILIALE);
+    const filialeLayerSource = (this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource;
+    filialeLayerSource.addFeature(feature);
+    const newFilialeProperties: FilialeProperties = {
+      id,
+      parkplaetze: 0,
+      verkaufsflaeche: 0,
+      attractiveness: 0,
+      distanceToZensus: 0,
+      coordinates: (feature.getGeometry() as Point).getCoordinates()
+    };
+    this._storeMap.push(newFilialeProperties);
   }
 
   drawZensusGebiete(): void {
@@ -128,7 +137,7 @@ export class EzbService {
         const einwohner = Math.round(ol_sphere.getArea(feature.getGeometry() as Polygon) * this.AEGF);
         this._zensusMap.push({
           id: feature.get('FID'),
-          einwohner: einwohner,
+          einwohner,
           distanceToFiliale: 0,
           coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getFirstCoordinate(),
           kaufkraft: einwohner * this.AK,
@@ -140,7 +149,7 @@ export class EzbService {
   }
 
   calculateHuffModel(filialId: number): void {
-    const filiale = this._storeMap.find(filiale => filiale.id === filialId);
+    const filiale = this._storeMap.find(store => store.id === filialId);
     let maxProbability = 0;
     this._zensusMap.forEach(gebiet => {
       let netzProbability = 0;
@@ -158,7 +167,7 @@ export class EzbService {
   private colorGebiet(gebiet: ZensusProperties, maxProbability: number): void {
     const feature = ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer)
       .getSource() as VectorSource)
-      .getFeatures().find(feature => feature.get('FID') === gebiet.id);
+      .getFeatures().find(zgebiet => zgebiet.get('FID') === gebiet.id);
 
     const firstDeccil = this.calculateGravitationalDecil(maxProbability, 1);
     const secondDecil = this.calculateGravitationalDecil(maxProbability, 2);
@@ -212,15 +221,14 @@ export class EzbService {
     return 0;
   }
 
-  private calculateAttractivenessForFiliale(filialeProperties: FilialeProperties): number {
+  private calculateAttractivenessForFiliale(parkplaetze: number, verkaufsflaeche: number): number {
     // calculate attractiveness based on parkplaetze & verkaufsflaeche
     // Je mehr parkplaetze und Verkaufsflaeche desto attraktiver
-    return (filialeProperties.parkplaetze * filialeProperties.verkaufsflaeche) / 2;
+    return ((parkplaetze + verkaufsflaeche) / 2) / 10;
   }
 
   private calculateDistancesForFiliale(filialeCoords: Coordinate, zensusCoords: Coordinate): number {
-    const length = ol_sphere.getLength(new LineString([filialeCoords, zensusCoords]), {projection: 'EPSG:3857'});
-    return length;
+    return ol_sphere.getLength(new LineString([filialeCoords, zensusCoords]), {projection: 'EPSG:3857'});
   }
 
   private calculateAttractivenessEnhancementFactor(): number {
@@ -240,6 +248,6 @@ export class EzbService {
    * @private
    */
   private calculateGravitationalDecil(total: number, decil: number): number {
-    return total - decil*(total * 0.1);
+    return total - decil * (total * 0.1);
   }
 }

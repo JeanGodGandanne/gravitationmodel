@@ -57,6 +57,9 @@ export default class EinzugsbereicheFeatureStyle {
   getStyleFunction(): (feature: Feature, resolution: number) => Style[] {
     return (feature: Feature): Style[] => {
       const indicator = feature.get('indicator');
+      // if (feature.get('selected') === true) {
+      //   this.ezbLineStyle.getStroke().setColor('black');
+      // }
       if (indicator) {
         this.ezbLineStyle.getFill().setColor(this.colorGradient[indicator]);
       }

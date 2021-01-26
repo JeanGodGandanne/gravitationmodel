@@ -7,6 +7,7 @@ import {BaseMapService} from '../../base-map/base-map.service';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';
 import Point from 'ol/geom/Point';
+import {AddFilialeService} from '../services/add-filiale.service';
 
 @Component({
     selector: 'app-standard-toolset',
@@ -23,7 +24,7 @@ export class StandardToolsetComponent {
     StandardToolsetEnum.LAYER_MANAGER,
   ];
 
-  constructor(private elementRef: ElementRef, private baseMapService: BaseMapService) {
+  constructor(private elementRef: ElementRef, private baseMapService: BaseMapService, private addFilialeService: AddFilialeService) {
   }
 
   /**
@@ -73,11 +74,6 @@ export class StandardToolsetComponent {
   }
 
   getFeatures(): void {
-    const layer = this.baseMapService.getLayer('filialen_layer') as VectorImageLayer;
-    const source = (layer.getSource() as VectorSource).getFeatures();
-    source.splice(25, source.length - 1);
-    source.forEach(s => {
-      console.log((s.getGeometry() as Point).getCoordinates());
-    });
+    this.addFilialeService.activateAddFiliale();
   }
 }

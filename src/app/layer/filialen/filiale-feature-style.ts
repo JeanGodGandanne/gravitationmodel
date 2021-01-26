@@ -6,6 +6,7 @@ import Stroke from 'ol/style/Stroke';
 import Feature from 'ol/Feature';
 import Icon from 'ol/style/Icon';
 import {IconFileFormat} from '../shared/icon-file-format';
+import {ObjectWindowService} from '../../object-window/object-window.service';
 
 /**
  * Style generator for Filialen
@@ -69,10 +70,10 @@ export default class FilialeFeatureStyle {
     getStyleFunction(): (feature: Feature, resolution: number) => Style {
 
         return (feature: Feature, resolution: number): Style => {
-            if (feature.getProperties().selected) {
+            if (feature.get('selected') === true) {
                 if (resolution <= 250) {
-                    const filialId = feature.getProperties().objektNummer;
-                    this.filialeSelectedStyleSvg.getText().setText(filialId);
+                    const filialId = feature.getId();
+                    this.filialeSelectedStyleSvg.getText().setText(filialId.toString());
                     this.filialeSelectedStyleSvg.setZIndex(this.zIndex++); // necessary for grouping text label and icon together
                     return this.filialeSelectedStyleSvg;
                 }
@@ -83,8 +84,8 @@ export default class FilialeFeatureStyle {
             } else {
                 // pin icon as svg
                 if (resolution <= 250) {
-                    const filialId = feature.getProperties().objektNummer;
-                    this.filialeStyleSvg.getText().setText(filialId);
+                    const filialId = feature.getId();
+                    this.filialeStyleSvg.getText().setText(filialId.toString());
                     this.filialeStyleSvg.setZIndex(this.zIndex++); // necessary for grouping text label and icon together
                     return this.filialeStyleSvg;
                 }

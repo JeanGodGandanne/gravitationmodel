@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule} from '@angular/common';
 import {ObjectWindowService, ObjectWindowState} from '../object-window.service';
 import {EzbService, FeatureTypeEnum} from '../../layer/einzugsgebiete/ezb.service';
 

@@ -110,6 +110,15 @@ export class BaseMapService {
   }
 
   /**
+   * Removes a layer from the base map.
+   *
+   * @param layer - Layer to be removed from the base map
+   */
+  public removeLayer(layer: Layer): void {
+    this._baseMap.removeLayer(layer);
+  }
+
+  /**
    * Retrieves all layers in base map.
    */
   public getLayers(): Collection<BaseLayer> {

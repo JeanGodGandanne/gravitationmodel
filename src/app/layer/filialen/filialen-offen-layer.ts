@@ -3,13 +3,14 @@ import {HttpClient} from '@angular/common/http';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import FilialeFeatureStyle from './filiale-feature-style';
 import {EzbService} from '../einzugsgebiete/ezb.service';
+import {ObjectWindowService} from '../../object-window/object-window.service';
 
 /**
  * Layer implementation for Filiale Offen based on OL VectorImageLayer
  */
 export default class FilialenOffenLayer extends FeatureLayer {
 
-  private readonly featureStyle: FilialeFeatureStyle = new FilialeFeatureStyle('ffd131', 'FFFFFF');
+  private readonly featureStyle: FilialeFeatureStyle = new FilialeFeatureStyle('673ab7', 'FFFFFF');
 
   constructor(http: HttpClient) {
     super(http);
