@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {FeatureProperties} from '../layer/einzugsgebiete/ezb.service';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,11 @@ export class ObjectWindowService {
   isObjectWindowVisible = false;
 
   // TODO change to observable to emit changes in object window
-  currentlySelectedFeature: FeatureProperties;
+  currentlySelectedFeature: BehaviorSubject<FeatureProperties> = new BehaviorSubject<FeatureProperties>(null);
+
+  public changeCurrentlySelectedFeature(featureProperties: FeatureProperties): void {
+    this.currentlySelectedFeature.next(featureProperties);
+  }
 
 }
 

@@ -109,8 +109,7 @@ export class EzbService {
   }
 
   addFiliale(feature: Feature): void {
-    // Todo generate id
-    const id = 100;
+    const id = this.getNextID();
     feature.setId(id);
     feature.set('type', FeatureTypeEnum.FILIALE);
     const filialeLayerSource = (this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource;
@@ -249,5 +248,9 @@ export class EzbService {
    */
   private calculateGravitationalDecil(total: number, decil: number): number {
     return total - decil * (total * 0.1);
+  }
+
+  private getNextID(): number {
+    return this._storeMap.length + 1;
   }
 }
