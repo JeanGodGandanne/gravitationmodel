@@ -2,30 +2,812 @@
 "type":"FeatureCollection",
 "features":
 [
-{"type":"Feature","properties":{"id": 1, "parkplaetze": 65, "verkaufsflaeche": 3000},"geometry":{"type":"Point","coordinates":[13.370704650878906,52.540867042871824]}},
-{"type":"Feature","properties":{"id": 2, "parkplaetze": 200, "verkaufsflaeche": 2350},"geometry":{"type":"Point","coordinates":[13.454132080078125,52.51642978796417]}},
-{"type":"Feature","properties":{"id": 3, "parkplaetze": 210, "verkaufsflaeche": 1890},"geometry":{"type":"Point","coordinates":[13.495330810546875,52.56591677100683]}},
-{"type":"Feature","properties":{"id": 4, "parkplaetze": 198, "verkaufsflaeche": 2110},"geometry":{"type":"Point","coordinates":[13.563995361328125,52.49239701180824]}},
-{"type":"Feature","properties":{"id": 5, "parkplaetze": 120, "verkaufsflaeche": 1850},"geometry":{"type":"Point","coordinates":[13.525199890136717,52.53063429179508]}},
-{"type":"Feature","properties":{"id": 6, "parkplaetze": 960, "verkaufsflaeche": 2480},"geometry":{"type":"Point","coordinates":[13.495330810546875,52.449314140869696]}},
-{"type":"Feature","properties":{"id": 7, "parkplaetze": 106, "verkaufsflaeche": 1845},"geometry":{"type":"Point","coordinates":[13.385467529296875,52.443245689730304]}},
-{"type":"Feature","properties":{"id": 8, "parkplaetze": 0, "verkaufsflaeche": 2102},"geometry":{"type":"Point","coordinates":[13.325042724609375,52.46709616449352]}},
-{"type":"Feature","properties":{"id": 9, "parkplaetze": 237, "verkaufsflaeche": 1785},"geometry":{"type":"Point","coordinates":[13.310623168945312,52.51099744023003]}},
-{"type":"Feature","properties":{ "id": 10, "parkplaetze": 196, "verkaufsflaeche": 1566},"geometry":{"type":"Point","coordinates":[13.368988037109375,52.48612543090344]}},
-{"type":"Feature","properties":{"id": 11, "parkplaetze": 103, "verkaufsflaeche": 2691},"geometry":{"type":"Point","coordinates":[13.383064270019531,52.513295823153165]}},
-{"type":"Feature","properties":{"id": 12, "parkplaetze": 127, "verkaufsflaeche": 1727},"geometry":{"type":"Point","coordinates":[13.416366577148438,52.54358145411929]}},
-{"type":"Feature","properties":{"id": 13, "parkplaetze": 190, "verkaufsflaeche": 1835},"geometry":{"type":"Point","coordinates":[13.430442810058594,52.46835109482059]}},
-{"type":"Feature","properties":{"id": 14, "parkplaetze": 168, "verkaufsflaeche": 1704},"geometry":{"type":"Point","coordinates":[13.414306640625,52.49866769844086]}},
-{"type":"Feature","properties":{"id": 15, "parkplaetze": 139, "verkaufsflaeche": 2205},"geometry":{"type":"Point","coordinates":[13.483314514160154,52.48591636280465]}},
-{"type":"Feature","properties":{"id": 16, "parkplaetze": 584, "verkaufsflaeche": 1706},"geometry":{"type":"Point","coordinates":[13.419456481933594,52.52207036136366]}},
-{"type":"Feature","properties":{"id": 17, "parkplaetze": 167, "verkaufsflaeche": 1700},"geometry":{"type":"Point","coordinates":[13.501167297363281,52.51225111854443]}},
-{"type":"Feature","properties":{"id": 18, "parkplaetze": 153, "verkaufsflaeche": 1812},"geometry":{"type":"Point","coordinates":[13.517990112304688,52.477552824001755]}},
-{"type":"Feature","properties":{"id": 19, "parkplaetze": 206, "verkaufsflaeche": 2377},"geometry":{"type":"Point","coordinates":[13.438339233398436,52.44240859637802]}},
-{"type":"Feature","properties":{"id": 20, "parkplaetze": 495, "verkaufsflaeche": 1722},"geometry":{"type":"Point","coordinates":[13.302040100097654,52.49866769844086]}},
-{"type":"Feature","properties":{"id": 21, "parkplaetze": 90, "verkaufsflaeche": 1709},"geometry":{"type":"Point","coordinates":[13.338432312011719,52.52917227553519]}},
-{"type":"Feature","properties":{"id": 22, "parkplaetze": 157, "verkaufsflaeche": 1690},"geometry":{"type":"Point","coordinates":[13.369331359863281,52.564873317831044]}},
-{"type":"Feature","properties":{"id": 23, "parkplaetze": 147, "verkaufsflaeche": 1685},"geometry":{"type":"Point","coordinates":[13.458595275878906,52.549218541178455]}},
-{"type":"Feature","properties":{"id": 24, "parkplaetze": 155, "verkaufsflaeche": 1568},"geometry":{"type":"Point","coordinates":[13.394393920898438,52.477343715159854]}},
-{"type":"Feature","properties":{"id": 25, "parkplaetze": 116, "verkaufsflaeche": 1948},"geometry":{"type":"Point","coordinates":[13.469924926757812,52.4639586821403]}},
-{"type":"Feature","properties":{"id": 26, "parkplaetze": 215, "verkaufsflaeche": 2186},"geometry":{"type":"Point","coordinates":[13.478507995605469,52.53376701989025]}},
-{"type":"Feature","properties":{"id": 27, "parkplaetze": 848, "verkaufsflaeche": 1584},"geometry":{"type":"Point","coordinates":[13.342208862304688,52.50201169900509]}}]}
+{"type":"Feature","properties":{"id": 1, "parkplaetze": 95, "verkaufsflaeche": 969},"geometry":{"type":"Point","coordinates":[13.370704650878906,52.540867042871824]}},
+{"type":"Feature","properties":{"id": 2, "parkplaetze": 44, "verkaufsflaeche": 909},"geometry":{"type":"Point","coordinates":[13.454132080078125,52.51642978796417]}},
+{"type":"Feature","properties":{"id": 3, "parkplaetze": 43, "verkaufsflaeche": 1031},"geometry":{"type":"Point","coordinates":[13.495330810546875,52.56591677100683]}},
+{"type":"Feature","properties":{"id": 4, "parkplaetze": 60, "verkaufsflaeche": 951},"geometry":{"type":"Point","coordinates":[13.563995361328125,52.49239701180824]}},
+{"type":"Feature","properties":{"id": 5, "parkplaetze": 73, "verkaufsflaeche": 816},"geometry":{"type":"Point","coordinates":[13.525199890136717,52.53063429179508]}},
+{"type":"Feature","properties":{"id": 6, "parkplaetze": 32, "verkaufsflaeche": 871},"geometry":{"type":"Point","coordinates":[13.495330810546875,52.449314140869696]}},
+{"type":"Feature","properties":{"id": 7, "parkplaetze": 37, "verkaufsflaeche": 817},"geometry":{"type":"Point","coordinates":[13.385467529296875,52.443245689730304]}},
+{"type":"Feature","properties":{"id": 8, "parkplaetze": 98, "verkaufsflaeche": 988},"geometry":{"type":"Point","coordinates":[13.325042724609375,52.46709616449352]}},
+{"type":"Feature","properties":{"id": 9, "parkplaetze": 91, "verkaufsflaeche": 950},"geometry":{"type":"Point","coordinates":[13.310623168945312,52.51099744023003]}},
+{"type":"Feature","properties":{ "id": 10, "parkplaetze": 84, "verkaufsflaeche": 956},"geometry":{"type":"Point","coordinates":[13.368988037109375,52.48612543090344]}},
+{"type":"Feature","properties":{"id": 11, "parkplaetze": 62, "verkaufsflaeche": 1047},"geometry":{"type":"Point","coordinates":[13.383064270019531,52.513295823153165]}},
+{"type":"Feature","properties":{"id": 12, "parkplaetze": 99, "verkaufsflaeche": 1001},"geometry":{"type":"Point","coordinates":[13.416366577148438,52.54358145411929]}},
+{"type":"Feature","properties":{"id": 13, "parkplaetze": 46, "verkaufsflaeche": 1075},"geometry":{"type":"Point","coordinates":[13.430442810058594,52.46835109482059]}},
+{"type":"Feature","properties":{"id": 14, "parkplaetze": 74, "verkaufsflaeche": 1015},"geometry":{"type":"Point","coordinates":[13.414306640625,52.49866769844086]}},
+{"type":"Feature","properties":{"id": 15, "parkplaetze": 69, "verkaufsflaeche": 960},"geometry":{"type":"Point","coordinates":[13.483314514160154,52.48591636280465]}},
+{"type":"Feature","properties":{"id": 16, "parkplaetze": 90, "verkaufsflaeche": 1023},"geometry":{"type":"Point","coordinates":[13.419456481933594,52.52207036136366]}},
+{"type":"Feature","properties":{"id": 17, "parkplaetze": 83, "verkaufsflaeche": 984},"geometry":{"type":"Point","coordinates":[13.501167297363281,52.51225111854443]}},
+{"type":"Feature","properties":{"id": 18, "parkplaetze": 69, "verkaufsflaeche": 1055},"geometry":{"type":"Point","coordinates":[13.517990112304688,52.477552824001755]}},
+{"type":"Feature","properties":{"id": 19, "parkplaetze": 83, "verkaufsflaeche": 933},"geometry":{"type":"Point","coordinates":[13.438339233398436,52.44240859637802]}},
+{"type":"Feature","properties":{"id": 20, "parkplaetze": 29, "verkaufsflaeche": 955},"geometry":{"type":"Point","coordinates":[13.302040100097654,52.49866769844086]}},
+{"type":"Feature","properties":{"id": 21, "parkplaetze": 76, "verkaufsflaeche": 1023},"geometry":{"type":"Point","coordinates":[13.338432312011719,52.52917227553519]}},
+{"type":"Feature","properties":{"id": 22, "parkplaetze": 61, "verkaufsflaeche": 914},"geometry":{"type":"Point","coordinates":[13.369331359863281,52.564873317831044]}},
+{"type":"Feature","properties":{"id": 23, "parkplaetze": 67, "verkaufsflaeche": 801},"geometry":{"type":"Point","coordinates":[13.458595275878906,52.549218541178455]}},
+{"type":"Feature","properties":{"id": 24, "parkplaetze": 41, "verkaufsflaeche": 964},"geometry":{"type":"Point","coordinates":[13.394393920898438,52.477343715159854]}},
+{"type":"Feature","properties":{"id": 25, "parkplaetze": 88, "verkaufsflaeche": 1079},"geometry":{"type":"Point","coordinates":[13.469924926757812,52.4639586821403]}},
+{"type":"Feature","properties":{"id": 26, "parkplaetze": 56, "verkaufsflaeche": 1010},"geometry":{"type":"Point","coordinates":[13.478507995605469,52.53376701989025]}},
+{"type":"Feature","properties":{"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},"geometry":{"type":"Point","coordinates":[13.342208862304688,52.50201169900509]}},
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.333282470703125,
+        52.555898595759395
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.303070068359375,
+        52.54587813253921
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.333969116210938,
+        52.579688026538726
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.291397094726562,
+        52.57175965005525
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.30787658691406,
+        52.60054532499603
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.26324462890625,
+        52.59804297332564
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.275604248046873,
+        52.623476888560916
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.295516967773438,
+        52.65139547872391
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.352508544921875,
+        52.61805778461654
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.36830139160156,
+        52.60054532499603
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.395767211914062,
+        52.561742809358755
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.382720947265625,
+        52.59053506065283
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.399200439453125,
+        52.621392697207625
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.421173095703125,
+        52.585111879151945
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.430099487304688,
+        52.61180413870482
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.432159423828125,
+        52.56758624445477
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.454818725585938,
+        52.60221348003281
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.463745117187498,
+        52.58386028042404
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.462371826171875,
+        52.57217696877135
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.480911254882812,
+        52.60596659659655
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.44451904296875,
+        52.634313083880016
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.478851318359375,
+        52.64472997207245
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.500137329101562,
+        52.63556324144265
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.489837646484375,
+        52.59303784115741
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.52691650390625,
+        52.580522509085554
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.504257202148438,
+        52.550888650159386
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.534469604492188,
+        52.56257763346352
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.545455932617188,
+        52.549218541178455
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.55987548828125,
+        52.53543771682821
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.572235107421875,
+        52.56883830783746
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.542709350585936,
+        52.51413156895822
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.57635498046875,
+        52.51705655410405
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.603134155273436,
+        52.53961418106945
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.611373901367188,
+        52.5199813445422
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.590774536132812,
+        52.50953477032727
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.605880737304688,
+        52.49699560277579
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.588027954101562,
+        52.482780222078226
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.612747192382812,
+        52.48152570318333
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.520050048828125,
+        52.500339730516934
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.550949096679688,
+        52.48152570318333
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.552322387695312,
+        52.46103016351592
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.5955810546875,
+        52.453498792506736
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.646392822265625,
+        52.452661893987695
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.71917724609375,
+        52.44596613327885
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.705444335937498,
+        52.41414736782131
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.66973876953125,
+        52.39487748111347
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.59832763671875,
+        52.42838491816822
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.614807128906248,
+        52.41163438166172
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.612060546875,
+        52.38901106223458
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.568115234375,
+        52.40995897800503
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.533782958984375,
+        52.44178076592579
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.4967041015625,
+        52.40912125231122
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.40606689453125,
+        52.42168546718757
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.38409423828125,
+        52.399067302933304
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.33465576171875,
+        52.42503531994297
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.271484375,
+        52.42671015087138
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.283843994140625,
+        52.46688700596046
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.205566406249998,
+        52.42587274336118
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.150634765625,
+        52.41330972167801
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.1121826171875,
+        52.42252295423907
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.13690185546875,
+        52.46939684276205
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.173980712890625,
+        52.49114276717071
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.161621093749998,
+        52.58135697574736
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.235778808593748,
+        52.58219142652432
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.14239501953125,
+        52.540449426243796
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.176727294921875,
+        52.56132539134846
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.179473876953125,
+        52.53543771682821
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.226165771484375,
+        52.487797939920966
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.256378173828125,
+        52.51371369804256
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.26324462890625,
+        52.553811187940674
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {"id": 27, "parkplaetze": 61, "verkaufsflaeche": 916},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        13.20831298828125,
+        52.5270835964481
+      ]
+    }
+  }
+]}

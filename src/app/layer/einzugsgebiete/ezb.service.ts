@@ -27,18 +27,22 @@ export type FilialeProperties = {
   parkplaetze: number,
   verkaufsflaeche: number,
   attractiveness: number,
-  distanceToZensus: number,
   coordinates: Coordinate
+  marketShare?: number,
+  marketSharePercentage?: number,
+  distanceToZensus?: number,
 };
 
 export type ZensusProperties = {
   id: number,
   einwohner: number,
-  distanceToFiliale: number,
   coordinates: Coordinate,
   probability?: number,
   kaufkraft?: number,
-  spendituteGroc?: number
+  spendituteGroc?: number,
+  marketShareLocale?: number
+  marketShareLocalePercentage?: number,
+  indicator?: number
 };
 
 @Injectable({
@@ -64,13 +68,13 @@ export class EzbService {
   private _storeMap: FilialeProperties[] = [];
   private _zensusMap: ZensusProperties[] = [];
 
-  // durschnittliche Kaufkraft pro Einwohner Berlin in € pro monat 21687 € / 12 (average Kaufkraft)
+  // durschnittliche Kaufkraft pro Einwohner Berlin in € pro monat = 21687 € / 12 (average Kaufkraft)
   private AK = 1807.25;
 
   // durschnittlicher Faktor Einwohner/m^2 (average Einwohner Gebietegröße Faktor)
   private AEGF = 0.0045;
 
-  // durschnittliche Ausgaben für Lebensmittel in € pro Monat(average spenditute groceries)
+  // durschnittliche Ausgaben für Lebensmittel in € pro Monat (average spenditute groceries)
   private ASG = 356;
 
   private ATT_ENHANCE_FACTOR = this.calculateAttractivenessEnhancementFactor();
@@ -83,7 +87,7 @@ export class EzbService {
 
   constructor(private readonly baseMapService: BaseMapService,
               private readonly http: HttpClient) {
-  //  TODO listen on ezb.currentselectedFeature observable and change it in storeMap
+    //  TODO listen on ezb.currentselectedFeature observable and change it in storeMap
   }
 
   drawFilialen(): void {
@@ -97,7 +101,6 @@ export class EzbService {
           {
             id: feature.get('id'),
             attractiveness: this.calculateAttractivenessForFiliale(feature.get('parkplaetze'), feature.get('verkaufsflaeche')),
-            distanceToZensus: 0,
             parkplaetze: feature.get('parkplaetze'),
             verkaufsflaeche: feature.get('verkaufsflaeche'),
             coordinates: (feature.getGeometry() as Point).getCoordinates()
@@ -119,7 +122,6 @@ export class EzbService {
       parkplaetze: 0,
       verkaufsflaeche: 0,
       attractiveness: 0,
-      distanceToZensus: 0,
       coordinates: (feature.getGeometry() as Point).getCoordinates()
     };
     this._storeMap.push(newFilialeProperties);
@@ -137,10 +139,9 @@ export class EzbService {
         this._zensusMap.push({
           id: feature.get('FID'),
           einwohner,
-          distanceToFiliale: 0,
           coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getFirstCoordinate(),
           kaufkraft: einwohner * this.AK,
-          spendituteGroc: einwohner * this.ASG
+          spendituteGroc: einwohner * this.ASG,
         });
       });
       source.addFeatures(features);
@@ -150,63 +151,78 @@ export class EzbService {
   calculateHuffModel(filialId: number): void {
     const filiale = this._storeMap.find(store => store.id === filialId);
     let maxProbability = 0;
+
     this._zensusMap.forEach(gebiet => {
       let netzProbability = 0;
-      const filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
+      let filialProbability = 0;
+      filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
       this._storeMap.forEach(store => {
         netzProbability += Math.pow(store.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates), this.DIST_DECAY);
       });
-      gebiet.probability = (filialProbability / netzProbability) * 1000;
-      maxProbability = Math.max(gebiet.probability, maxProbability);
+      gebiet.probability = filialProbability / netzProbability;
+      maxProbability = Math.max((gebiet.probability * 100), maxProbability);
+      gebiet.marketShareLocale = gebiet.spendituteGroc * gebiet.probability;
+      gebiet.marketShareLocalePercentage = gebiet.marketShareLocale / gebiet.spendituteGroc;
       this.colorGebiet(gebiet, maxProbability);
     });
-    this._zensusMap.sort(this.sortZensusMap);
+    this.calculateMarketShare(filiale);
   }
 
   private colorGebiet(gebiet: ZensusProperties, maxProbability: number): void {
     const feature = ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer)
       .getSource() as VectorSource)
       .getFeatures().find(zgebiet => zgebiet.get('FID') === gebiet.id);
+    const wahrscheinlichkeitInProzent = gebiet.probability * 100;
 
-    const firstDeccil = this.calculateGravitationalDecil(maxProbability, 1);
-    const secondDecil = this.calculateGravitationalDecil(maxProbability, 2);
-    const thirdDecil = this.calculateGravitationalDecil(maxProbability, 3);
-    const fourthDecil = this.calculateGravitationalDecil(maxProbability, 4);
-    const fifthDecil = this.calculateGravitationalDecil(maxProbability, 5);
-    const sixthDecil = this.calculateGravitationalDecil(maxProbability, 6);
-    const seventhDecil = this.calculateGravitationalDecil(maxProbability, 7);
-    const eightsDecil = this.calculateGravitationalDecil(maxProbability, 8);
-    const ninthDecil = this.calculateGravitationalDecil(maxProbability, 9);
+    // const firstDecil = this.calculateGravitationalDecil(maxProbability, 1);
+    // const secondDecil = this.calculateGravitationalDecil(maxProbability, 2);
+    // const thirdDecil = this.calculateGravitationalDecil(maxProbability, 3);
+    // const fourthDecil = this.calculateGravitationalDecil(maxProbability, 4);
+    // const fifthDecil = this.calculateGravitationalDecil(maxProbability, 5);
+    // const sixthDecil = this.calculateGravitationalDecil(maxProbability, 6);
+    // const seventhDecil = this.calculateGravitationalDecil(maxProbability, 7);
+    // const eightsDecil = this.calculateGravitationalDecil(maxProbability, 8);
+    // const ninthDecil = this.calculateGravitationalDecil(maxProbability, 9);
 
-    if (gebiet.probability > firstDeccil) {
-      feature.set('indicator', 9);
-    }
-    else if (gebiet.probability < firstDeccil && gebiet.probability > secondDecil) {
-      feature.set('indicator', 8);
-    }
-    else if (gebiet.probability < secondDecil && gebiet.probability > thirdDecil) {
-      feature.set('indicator', 7);
-    }
-    else if (gebiet.probability < thirdDecil && gebiet.probability > fourthDecil) {
-      feature.set('indicator', 6);
-    }
-    else if (gebiet.probability < fourthDecil && gebiet.probability > fifthDecil) {
-      feature.set('indicator', 5);
-    }
-    else if (gebiet.probability < fifthDecil && gebiet.probability > sixthDecil) {
-      feature.set('indicator', 4);
-    }
-    else if (gebiet.probability < sixthDecil && gebiet.probability > seventhDecil) {
-      feature.set('indicator', 3);
-    }
-    else if (gebiet.probability < seventhDecil && gebiet.probability > eightsDecil) {
-      feature.set('indicator', 2);
-    }
-    else if (gebiet.probability < eightsDecil && gebiet.probability > ninthDecil) {
+    if (wahrscheinlichkeitInProzent > 80) {
+      gebiet.indicator = 1;
       feature.set('indicator', 1);
     }
+    else if (wahrscheinlichkeitInProzent < 80 && wahrscheinlichkeitInProzent > 70) {
+      gebiet.indicator = 2;
+      feature.set('indicator', 2);
+    }
+    else if (wahrscheinlichkeitInProzent < 70 && wahrscheinlichkeitInProzent > 60) {
+      gebiet.indicator = 3;
+      feature.set('indicator', 3);
+    }
+    else if (wahrscheinlichkeitInProzent < 60 && wahrscheinlichkeitInProzent > 50) {
+      gebiet.indicator = 4;
+      feature.set('indicator', 4);
+    }
+    else if (wahrscheinlichkeitInProzent < 50 && wahrscheinlichkeitInProzent > 40) {
+      gebiet.indicator = 5;
+      feature.set('indicator', 5);
+    }
+    else if (wahrscheinlichkeitInProzent < 40 && wahrscheinlichkeitInProzent > 30) {
+      gebiet.indicator = 6;
+      feature.set('indicator', 6);
+    }
+    else if (wahrscheinlichkeitInProzent < 30 && wahrscheinlichkeitInProzent > 20) {
+      gebiet.indicator = 7;
+      feature.set('indicator', 7);
+    }
+    else if (wahrscheinlichkeitInProzent < 20 && wahrscheinlichkeitInProzent > 10) {
+      gebiet.indicator = 8;
+      feature.set('indicator', 8);
+    }
+    // else if (wahrscheinlichkeitInProzent < 50 && wahrscheinlichkeitInProzent > 40) {
+    //   gebiet.indicator = 9;
+    //   feature.set('indicator', 9);
+    // }
     else {
-      feature.set('indicator', 0);
+      gebiet.indicator = 10;
+      feature.set('indicator', 10);
     }
   }
 
@@ -220,10 +236,22 @@ export class EzbService {
     return 0;
   }
 
+  private calculateMarketShare(filiale: FilialeProperties): void {
+    let marketShare = 0;
+    let totalMarketExpenditure = 0;
+    let total = 0;
+    this._zensusMap.forEach((gebiet: ZensusProperties) => {
+      marketShare += gebiet.marketShareLocale;
+      totalMarketExpenditure += gebiet.spendituteGroc;
+    });
+    filiale.marketShare = marketShare;
+    filiale.marketSharePercentage = marketShare / totalMarketExpenditure;
+  }
+
   private calculateAttractivenessForFiliale(parkplaetze: number, verkaufsflaeche: number): number {
     // calculate attractiveness based on parkplaetze & verkaufsflaeche
     // Je mehr parkplaetze und Verkaufsflaeche desto attraktiver
-    return ((parkplaetze + verkaufsflaeche) / 2) / 10;
+    return parkplaetze + verkaufsflaeche;
   }
 
   private calculateDistancesForFiliale(filialeCoords: Coordinate, zensusCoords: Coordinate): number {
@@ -237,7 +265,7 @@ export class EzbService {
 
   private calculateDistanceDecayFactor(): number {
     // Je weiter die Filiale von einem Kunden entfernt ist, desto unwahrscheinlicher ist der Besuch
-    return -1.5;
+    return 1.5;
   }
 
   /**
@@ -247,7 +275,7 @@ export class EzbService {
    * @private
    */
   private calculateGravitationalDecil(total: number, decil: number): number {
-    return total - decil * (total * 0.1);
+    return total + decil * (total * 0.1);
   }
 
   private getNextID(): number {

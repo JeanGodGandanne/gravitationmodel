@@ -1,8 +1,13 @@
 import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
-import Feature from 'ol/Feature';
+import Feature, {FeatureLike} from 'ol/Feature';
 import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
+
+export interface ColorInterface {
+  gravitationalRing: number,
+  value: string
+}
 
 /**
  * Style generator for Filial-Einzugsgebiete
@@ -24,19 +29,20 @@ export default class EinzugsbereicheFeatureStyle {
     offsetX: 14
   });
 
-  protected readonly colorGradient = [
-    '#fc9191',
-    '#f8a17b',
-    '#e8b470',
-    '#d0c675',
-    '#b2d68a',
-    '#8ad99d',
-    '#5ad9b7',
-    '#00d7d4',
-    '#00c8ec',
-    '#00b4ff',
-    '#009bff',
-    '#5f7afb'
+  protected readonly colorGradient: ColorInterface[] = [
+    { gravitationalRing: 1, value: 'rgb(255,100,100)'},
+    { gravitationalRing: 2, value: 'rgb(252,145,145)'},
+    { gravitationalRing: 3, value: 'rgb(248,161,123)'},
+    { gravitationalRing: 4, value: 'rgb(232,180,112)'},
+    { gravitationalRing: 5, value: 'rgb(208,198,117)'},
+    { gravitationalRing: 6, value: 'rgb(178,214,138)'},
+    { gravitationalRing: 7, value: 'rgb(138,217,157)'},
+    { gravitationalRing: 8, value: 'rgb(90,217,183)'},
+    { gravitationalRing: 9, value: 'rgb(0,215,212)'},
+    { gravitationalRing: 10, value: 'rgb(0,200,236)'},
+    { gravitationalRing: 11, value: 'rgb(0,180,255)'},
+    { gravitationalRing: 12, value: 'rgb(0,155,255)'},
+    { gravitationalRing: 13, value: 'rgb(95,122,251)'}
   ];
 
   constructor(private fillColor: string) {
@@ -54,16 +60,18 @@ export default class EinzugsbereicheFeatureStyle {
   /**
    * Returns OL style function for specific styles of Einzugsbereiche depending on feature and resolution
    */
-  getStyleFunction(): (feature: Feature, resolution: number) => Style[] {
-    return (feature: Feature): Style[] => {
+  getStyleFunction(): (feature: FeatureLike) => Style {
+    return (feature: FeatureLike): Style => {
       const indicator = feature.get('indicator');
       // if (feature.get('selected') === true) {
       //   this.ezbLineStyle.getStroke().setColor('black');
       // }
-      if (indicator) {
-        this.ezbLineStyle.getFill().setColor(this.colorGradient[indicator]);
+      if (!indicator) {
+        return this.ezbLineStyle;
       }
-      return [this.ezbLineStyle];
+      const color = this.colorGradient.find(color => color.gravitationalRing === indicator).value;
+      this.ezbLineStyle.getFill().setColor(color);
+      return this.ezbLineStyle;
     };
   }
 }

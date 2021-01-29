@@ -29,7 +29,7 @@ export class ObjectWindowComponent implements OnInit {
   }
 
   closeObjectWindow(): void {
-    this.objectWindowService.currentlySelectedFeature = null;
+    this.objectWindowService.changeCurrentlySelectedFeature(null);
     this.objectWindowService.isObjectWindowVisible = !this.objectWindowService.isObjectWindowVisible;
     this.objectWindowService.objectWindowCurrentState === ObjectWindowState.OPEN ?
       this.objectWindowService.objectWindowCurrentState = ObjectWindowState.CLOSED :

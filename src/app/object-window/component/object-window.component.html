@@ -31,6 +31,8 @@
             </mat-form-field>
             <!--          {{objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number}} -->
             m²</mat-list-item>
+          <mat-list-item>Marktanteil in Euro: {{currentlySelectedFeature.properties.marketShare | number}} €</mat-list-item>
+          <mat-list-item>Marktanteil in Prozent: {{currentlySelectedFeature.properties.marketSharePercentage | percent}}</mat-list-item>
         </mat-list>
       </mat-card-content>
       <mat-card-actions>
@@ -61,7 +63,11 @@
           <mat-list-item>Einwohner: {{currentlySelectedFeature.properties.einwohner | number}}</mat-list-item>
           <mat-list-item>Kaufkraft: {{currentlySelectedFeature.properties.kaufkraft | number}} €</mat-list-item>
           <mat-list-item>Ausgaben Lebensmittel: {{currentlySelectedFeature.properties.spendituteGroc | number}} €</mat-list-item>
+<!--          Todo Delete is same as marktanteil in prozent -->
           <mat-list-item>Wahrscheinlichkeitsfaktor: {{currentlySelectedFeature.properties.probability}}</mat-list-item>
+          <mat-list-item>Marktanteil der Filiale im Gebiet in Euro: {{currentlySelectedFeature.properties.marketShareLocale | number}} €</mat-list-item>
+          <mat-list-item>Marktanteil der Filiale im Gebiet in Prozent: {{currentlySelectedFeature.properties.marketShareLocalePercentage | percent}}</mat-list-item>
+          <mat-list-item>Indicator: {{currentlySelectedFeature.properties.indicator}}</mat-list-item>
         </mat-list>
       </mat-card-content>
     </mat-card>
