@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {FeatureProperties} from '../layer/einzugsgebiete/ezb.service';
+import {FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/ezb.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 
 @Injectable({
@@ -10,10 +10,9 @@ export class ObjectWindowService {
 
   isObjectWindowVisible = false;
 
-  // TODO change to observable to emit changes in object window
-  currentlySelectedFeature: BehaviorSubject<FeatureProperties> = new BehaviorSubject<FeatureProperties>(null);
+  currentlySelectedFeature: BehaviorSubject<FilialeProperties | ZensusProperties> = new BehaviorSubject<FilialeProperties | ZensusProperties>(null);
 
-  public changeCurrentlySelectedFeature(featureProperties: FeatureProperties): void {
+  public changeCurrentlySelectedFeature(featureProperties: FilialeProperties | ZensusProperties): void {
     this.currentlySelectedFeature.next(featureProperties);
   }
 

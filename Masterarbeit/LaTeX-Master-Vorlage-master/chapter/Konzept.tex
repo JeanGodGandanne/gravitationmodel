@@ -2,8 +2,42 @@
 Die Algorithmen und Prozesse einer Filialplanung spiegeln sehr gut einen allgemeinen Anwendungsfall moderner GIS. 
 Neben einer einfachen Hintergrundkarte sind die Mitarbeiter auf Zeichenwerkzeuge, Geo-Daten-Anzeige, thematische Karten und Kennzahlen Berechnungen angewiesen, um akkurate und fundierte Prognosen und Planungen treffen zu können.
 Viele theoretische Konzepte und Prozesse passieren hierbei im Hintergrund und sind nicht direkt ersichtlich.
-In den folgenden Kapiteln werden die wichtigsten Beschrieben mit dem Fokus auf den Algorithmus der hinter dem Gravitations-Model von Huff steht.
+
+
+In den folgenden Kapiteln werden Prozesse der Standortanalyse beschrieben und der Fokus auf das Gravitations-Model von Huff als Algorithmus zur Bestimmung des Marktanteils gelegt.
+Ebenso wird die daraus entstehende Architektur des Prototyps vorgestellt.
 \section{Algorithmen und Prozesse}
+Die Filialplanung ist ein Prozess, der sich aus mehreren Teilprozessen zusammensetzt. 
+Einer dieser Teilprozesse ist die Standortanalyse bezogen auf Filialen.
+Die Wahl eines Standortes ist keinesfalls immer eindeutig und anhand des potenziellen Umsatzes der neuen Filiale zu erkennen.
+So kann es zum Beispiel durchaus sinnvoll sein eine Filiale trotz möglicher Kannibalisierung anderer eigener Filialen dennoch zu eröffnen, weil dies gleichzeitig zu Umsatzeinbußen bei Konkurrenzfilialen führt. 
+Der eigene Marktanteil und Gesamtumsatz ist der entscheidende Faktor bei der Filialplanung.
+Durch die Anwendung ausgewählter Algorithmen gilt es also folgende Leitfrage zu beantworten:
+
+Wo befindet sich der ideale Standort, um eine neue Filiale zu eröffnen?
+
+Um diese Frage fundiert beantworten zu können, ergeben sich mehrere vorliegende Fragen:
+
+Wo kann ich überhaupt eine neue Filiale eröffnen?
+
+Was ist mit meinen Konkurrenten, was ist mit Kannibalisierung meiner eigenen Filialen?
+
+Wie kann ich folglich also sicherstellen, dass sich mein Gesamtumsatz durch die Neueröffnung steigert?\\
+
+Die Suche nach dem idealen Standort beginnt zunächst bei der Eingrenzung möglicher Standorte.
+Im modernen Stadtbild ist die Anzahl freier Standorte begrenzt.
+Meist bestimmt das Angebot die Möglichkeiten.
+
+Existiert nun eine Liste möglicher Standorte, muss für jeden Standort der Einfluss auf das bestehende Filialnetz erfasst werden.
+Das bestehende Netz kann nur eigene Filialen beinhalten, um die Kannibalisierung meines eigenen Netzes durch eine Neueröffnung zu analysieren, oder Konkurrenzfilialen und Lager einschliessen, um den Einfluss auf den Gesamtmarkt zu berechnen.
+
+Wichtige Parameter für die Berechnung des Marktanteils der Filialen im Netz sind Attraktivität, Nähe zu Zielgruppen und die Entfernung zu anderen Filialen.
+
+Über das Huff Model kann die Marktanteil-Auswirkung aller Standorte berechnet werden.
+Im Folgenden wird das Model und zugehörige Komponenten im Detail vorgestellt.
+
+
+
 Um eine realistische Abbildung der Welt auf eine Karte zu bringen benötigt es eine Umrechnung eines Ovales, quasi der Erdkugel, auf eine Rechteck, im Fall eines Web-Gis des Bildschirms. 
 \subsection{Gravitations-Modelle}
 Das \textit{Huff-Modell} (engl. Huff Gravitation Model) ist ein mathematisches Modell zur Abgrenzung und Segmentierung von Marktgebieten \cite{Roy2004}.
@@ -62,7 +96,16 @@ Nachdem nun zunächst die Potenzialberechnung für eine einzelne Filiale anhand 
 Als Ergebnis wird hierbei eine Wahrscheinlichkeitsberechnung für sämtliche Filialen des Netzes erwartet, sodass jedem Feld des summierten Gesamt-Einzugsgebietes einen Wahrscheinlichkeitswert zugeordnet werden kann, der beeinflusst von sämtlichen anderen Filialen des Netzes, für jede Filiale des Netzes unterschiedlich sein kann und dementsprechend eingefärbt werden kann.
 Das Endergebnis zeigt somit die beschriebene farbliche Gravitationskarte.
 
-Für die komplexere Berechnung mit mehr Faktoren wird das MCI-Modell von Nakanishi und Cooper verwendet, welches die Weiterentwicklung der einfachen Huff-Modells darstellt \cite{mciModell}.
+Für eine komplexere Berechnung mit mehr Faktoren kann das MCI-Modell von Nakanishi und Cooper verwendet werden, welches die Weiterentwicklung der einfachen Huff-Modells darstellt \cite{mciModell}.
 
-Das \textit{MCI-Modell} ...
 \section{Architektur}
+Die Architektur der Anwendung ergibt sich hauptsächlich aus den fachlichen Anforderungen und technischen Voraussetzungen. 
+
+Das UML-Diagramm x zeigt die Komponenten der Anwendung im Zusammenspiel.\\
+
+TODO diagramm einfügen
+
+\\
+
+Technologie Übersicht
+ TODO tach stack einfügen

@@ -6,12 +6,12 @@ import {StyleLike} from 'ol/style/Style';
 import {Collection} from 'ol';
 import {Geometry} from 'ol/geom';
 import {ObjectWindowService, ObjectWindowState} from '../object-window/object-window.service';
-import {EzbService, FeatureProperties, FeatureTypeEnum, FilialeProperties} from '../layer/einzugsgebiete/ezb.service';
+import {EzbService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/ezb.service';
 
 @Injectable()
 export class SelectFeatureService{
 
-  currentlySelectedFeature: FeatureProperties;
+  currentlySelectedFeature: FilialeProperties | ZensusProperties;
 
   private _layerInteractionSelect: Select;
   get layerInteractionSelect(): Select {
@@ -56,8 +56,8 @@ export class SelectFeatureService{
     e.selected[0].set('selected', true);
 
     const selectedFeature = type === FeatureTypeEnum.ZENSUSGEBIET ?
-        this.ezbService.zensusMap.find(gebiet => gebiet.properties.id === e.selected[0].getId()) :
-        this.ezbService.storeMap.find(store => store.properties.id === e.selected[0].getId());
+        this.ezbService.zensusMap.find(gebiet => gebiet.id === e.selected[0].getId()) :
+        this.ezbService.storeMap.find(store => store.id === e.selected[0].getId());
 
     this.objectWindowService.changeCurrentlySelectedFeature(selectedFeature);
 

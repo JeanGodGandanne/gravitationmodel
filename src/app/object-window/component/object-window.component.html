@@ -3,7 +3,7 @@
     <mat-card>
       <mat-card-header>
         <mat-card-title>
-          Filiale {{currentlySelectedFeature.properties.id}}
+          Filiale {{currentlySelectedFeature.id}}
         </mat-card-title>
         <button class="close-button" mat-icon-button color="primary" (click)="closeObjectWindow()">
           <mat-icon>
@@ -16,27 +16,29 @@
           <mat-list-item>Parkplätze:
             <!--          {{objectWindowService.currentlySelectedFeature.properties.parkplaetze | number}}-->
             <mat-form-field class="object-form-field">
-              <input matInput type="text"
-                     [ngModel]="currentlySelectedFeature.properties.parkplaetze | number"
-                     (ngModelChange)="currentlySelectedFeature.properties.parkplaetze = $event"
+              <input matInput type="number" required
+                     [ngModel]="currentlySelectedFeature.parkplaetze | number"
+                     (ngModelChange)="currentlySelectedFeature.parkplaetze = $event; updateFeature(currentlySelectedFeature)"
               >
             </mat-form-field>
           </mat-list-item>
           <mat-list-item>Verkaufsfläche:
             <mat-form-field class="object-form-field">
-              <input matInput type="text"
-                     [ngModel]="currentlySelectedFeature.properties.verkaufsflaeche | number"
-                     (ngModelChange)="currentlySelectedFeature.properties.verkaufsflaeche = $event"
+              <input matInput type="number" required
+                     [ngModel]="currentlySelectedFeature.verkaufsflaeche | number"
+                     (ngModelChange)="currentlySelectedFeature.verkaufsflaeche = $event; updateFeature(currentlySelectedFeature)"
               >
             </mat-form-field>
             <!--          {{objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number}} -->
             m²</mat-list-item>
-          <mat-list-item>Marktanteil in Euro: {{currentlySelectedFeature.properties.marketShare | number}} €</mat-list-item>
-          <mat-list-item>Marktanteil in Prozent: {{currentlySelectedFeature.properties.marketSharePercentage | percent}}</mat-list-item>
+          <mat-list-item>Marktanteil in Euro: {{currentlySelectedFeature.marketShare | number}} €</mat-list-item>
+          <mat-list-item>Marktanteil in Prozent: {{currentlySelectedFeature.marketSharePercentage | percent}}</mat-list-item>
         </mat-list>
       </mat-card-content>
       <mat-card-actions>
-        <button class="calc-button" mat-icon-button color="primary" (click)="calculateGravitationModelForFiliale()">
+        <button class="calc-button" mat-icon-button color="primary"
+                [disabled]="!(currentlySelectedFeature.parkplaetze > 0) && !(currentlySelectedFeature.verkaufsflaeche > 0)"
+                (click)="calculateGravitationModelForFiliale(currentlySelectedFeature.id)">
           <mat-icon>
             miscellaneous_services
           </mat-icon>
@@ -50,7 +52,7 @@
     <mat-card>
       <mat-card-header>
         <mat-card-title>
-          Zensusgebiet {{currentlySelectedFeature.properties.id}}
+          Zensusgebiet {{currentlySelectedFeature.id}}
         </mat-card-title>
         <button class="close-button" mat-icon-button color="primary" (click)="closeObjectWindow()">
           <mat-icon>
@@ -60,14 +62,14 @@
       </mat-card-header>
       <mat-card-content>
         <mat-list>
-          <mat-list-item>Einwohner: {{currentlySelectedFeature.properties.einwohner | number}}</mat-list-item>
-          <mat-list-item>Kaufkraft: {{currentlySelectedFeature.properties.kaufkraft | number}} €</mat-list-item>
-          <mat-list-item>Ausgaben Lebensmittel: {{currentlySelectedFeature.properties.spendituteGroc | number}} €</mat-list-item>
+          <mat-list-item>Einwohner: {{currentlySelectedFeature.einwohner | number}}</mat-list-item>
+          <mat-list-item>Kaufkraft: {{currentlySelectedFeature.kaufkraft | number}} €</mat-list-item>
+          <mat-list-item>Ausgaben Lebensmittel: {{currentlySelectedFeature.spendituteGroc | number}} €</mat-list-item>
 <!--          Todo Delete is same as marktanteil in prozent -->
-          <mat-list-item>Wahrscheinlichkeitsfaktor: {{currentlySelectedFeature.properties.probability}}</mat-list-item>
-          <mat-list-item>Marktanteil der Filiale im Gebiet in Euro: {{currentlySelectedFeature.properties.marketShareLocale | number}} €</mat-list-item>
-          <mat-list-item>Marktanteil der Filiale im Gebiet in Prozent: {{currentlySelectedFeature.properties.marketShareLocalePercentage | percent}}</mat-list-item>
-          <mat-list-item>Indicator: {{currentlySelectedFeature.properties.indicator}}</mat-list-item>
+          <mat-list-item>Wahrscheinlichkeitsfaktor: {{currentlySelectedFeature.probability}}</mat-list-item>
+          <mat-list-item>Marktanteil der Filiale im Gebiet in Euro: {{currentlySelectedFeature.marketShareLocale | number}} €</mat-list-item>
+          <mat-list-item>Marktanteil der Filiale im Gebiet in Prozent: {{currentlySelectedFeature.marketShareLocalePercentage | percent}}</mat-list-item>
+          <mat-list-item>Indicator: {{currentlySelectedFeature.indicator}}</mat-list-item>
         </mat-list>
       </mat-card-content>
     </mat-card>

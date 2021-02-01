@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule} from '@angular/common';
 import {ObjectWindowService, ObjectWindowState} from '../object-window.service';
-import {EzbService, FeatureProperties, FeatureTypeEnum} from '../../layer/einzugsgebiete/ezb.service';
+import {EzbService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../../layer/einzugsgebiete/ezb.service';
 
 @Component({
   selector: 'app-object-window',
@@ -11,11 +11,9 @@ import {EzbService, FeatureProperties, FeatureTypeEnum} from '../../layer/einzug
 })
 export class ObjectWindowComponent implements OnInit {
 
-  currentlySelectedFeature: FeatureProperties;
 
   constructor(public readonly objectWindowService: ObjectWindowService,
               private readonly ezbService: EzbService) {
-    objectWindowService.currentlySelectedFeature.subscribe(props => this.currentlySelectedFeature = props);
   }
 
   public featureTypeEnum = FeatureTypeEnum;
@@ -24,8 +22,8 @@ export class ObjectWindowComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  calculateGravitationModelForFiliale(): void {
-    this.ezbService.calculateHuffModel(this.currentlySelectedFeature.properties.id as number);
+  calculateGravitationModelForFiliale(id: number): void {
+    this.ezbService.calculateHuffModel(id);
   }
 
   closeObjectWindow(): void {
@@ -34,5 +32,9 @@ export class ObjectWindowComponent implements OnInit {
     this.objectWindowService.objectWindowCurrentState === ObjectWindowState.OPEN ?
       this.objectWindowService.objectWindowCurrentState = ObjectWindowState.CLOSED :
       this.objectWindowService.objectWindowCurrentState = ObjectWindowState.OPEN;
+  }
+
+  updateFeature(feature: FilialeProperties | ZensusProperties): void {
+    this.objectWindowService.changeCurrentlySelectedFeature(feature);
   }
 }

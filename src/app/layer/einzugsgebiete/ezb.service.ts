@@ -11,19 +11,17 @@ import {Coordinate} from 'ol/coordinate';
 import {Polygon} from 'ol/geom';
 import * as ol_sphere from 'ol/sphere';
 import Feature from 'ol/Feature';
+import {ObjectWindowService} from '../../object-window/object-window.service';
+import {findAttributeOnElementWithAttrs} from '@angular/cdk/schematics';
 
 export enum FeatureTypeEnum {
   FILIALE = 'Filiale',
   ZENSUSGEBIET = 'Zensusgebiet'
 }
 
-export type FeatureProperties = {
-  type: FeatureTypeEnum,
-  properties: FilialeProperties | ZensusProperties
-};
-
 export type FilialeProperties = {
   id: number,
+  type: FeatureTypeEnum,
   parkplaetze: number,
   verkaufsflaeche: number,
   attractiveness: number,
@@ -35,6 +33,7 @@ export type FilialeProperties = {
 
 export type ZensusProperties = {
   id: number,
+  type: FeatureTypeEnum,
   einwohner: number,
   coordinates: Coordinate,
   probability?: number,
@@ -49,20 +48,11 @@ export type ZensusProperties = {
   providedIn: 'root'
 })
 export class EzbService {
-  get zensusMap(): FeatureProperties[] {
-    return this._zensusMap.map(gebiet => {
-      return {
-        type: FeatureTypeEnum.ZENSUSGEBIET,
-        properties: gebiet};
-    });
+  get zensusMap(): ZensusProperties[] {
+    return this._zensusMap;
   }
-  get storeMap(): FeatureProperties[] {
-    return this._storeMap.map(filiale => {
-      return {
-        type: FeatureTypeEnum.FILIALE,
-        properties: filiale
-      };
-    });
+  get storeMap(): FilialeProperties[] {
+    return this._storeMap;
   }
 
   private _storeMap: FilialeProperties[] = [];
@@ -86,8 +76,21 @@ export class EzbService {
   });
 
   constructor(private readonly baseMapService: BaseMapService,
-              private readonly http: HttpClient) {
-    //  TODO listen on ezb.currentselectedFeature observable and change it in storeMap
+              private readonly http: HttpClient,
+              private readonly objectWindowService: ObjectWindowService) {
+    objectWindowService.currentlySelectedFeature.subscribe((feature: FilialeProperties) => {
+      if (feature) {
+        if (feature.type === FeatureTypeEnum.FILIALE) {
+          this.storeMap.map(store => {
+            if (store.id === feature.id) {
+              feature.attractiveness = this.calculateAttractivenessForFiliale(feature.parkplaetze, feature.verkaufsflaeche);
+              store = feature;
+            }
+            return store;
+          });
+        }
+      }
+    });
   }
 
   drawFilialen(): void {
@@ -100,6 +103,7 @@ export class EzbService {
         this._storeMap.push(
           {
             id: feature.get('id'),
+            type: FeatureTypeEnum.FILIALE,
             attractiveness: this.calculateAttractivenessForFiliale(feature.get('parkplaetze'), feature.get('verkaufsflaeche')),
             parkplaetze: feature.get('parkplaetze'),
             verkaufsflaeche: feature.get('verkaufsflaeche'),
@@ -119,11 +123,13 @@ export class EzbService {
     filialeLayerSource.addFeature(feature);
     const newFilialeProperties: FilialeProperties = {
       id,
+      type: FeatureTypeEnum.FILIALE,
       parkplaetze: 0,
       verkaufsflaeche: 0,
       attractiveness: 0,
       coordinates: (feature.getGeometry() as Point).getCoordinates()
     };
+    this.objectWindowService.changeCurrentlySelectedFeature(newFilialeProperties);
     this._storeMap.push(newFilialeProperties);
   }
 
@@ -138,6 +144,7 @@ export class EzbService {
         const einwohner = Math.round(ol_sphere.getArea(feature.getGeometry() as Polygon) * this.AEGF);
         this._zensusMap.push({
           id: feature.get('FID'),
+          type: FeatureTypeEnum.ZENSUSGEBIET,
           einwohner,
           coordinates: (feature.getGeometry() as MultiPolygon).getInteriorPoints().getFirstCoordinate(),
           kaufkraft: einwohner * this.AK,
@@ -154,7 +161,7 @@ export class EzbService {
 
     this._zensusMap.forEach(gebiet => {
       let netzProbability = 0;
-      let filialProbability = 0;
+      let filialProbability: number;
       filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
       this._storeMap.forEach(store => {
         netzProbability += Math.pow(store.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates), this.DIST_DECAY);
@@ -239,7 +246,6 @@ export class EzbService {
   private calculateMarketShare(filiale: FilialeProperties): void {
     let marketShare = 0;
     let totalMarketExpenditure = 0;
-    let total = 0;
     this._zensusMap.forEach((gebiet: ZensusProperties) => {
       marketShare += gebiet.marketShareLocale;
       totalMarketExpenditure += gebiet.spendituteGroc;
