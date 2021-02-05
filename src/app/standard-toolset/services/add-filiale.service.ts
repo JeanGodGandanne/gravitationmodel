@@ -6,7 +6,7 @@ import GeometryType from 'ol/geom/GeometryType';
 import VectorLayer from 'ol/layer/Vector';
 import {POI_INTERACTION_STYLE} from '../../layer/filialen/add-filiale.style';
 import AddFilialeLayer from '../../layer/filialen/add-filiale-layer';
-import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
+import {FeatureService} from '../../layer/einzugsgebiete/feature.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class AddFilialeService {
   private drawInteraction: Draw;
   private filiale: Feature;
 
-  constructor(private baseMapService: BaseMapService, private ezbService: EzbService) {
+  constructor(private baseMapService: BaseMapService, private ezbService: FeatureService) {
     this.filialeLayer = new AddFilialeLayer().layer;
   }
 

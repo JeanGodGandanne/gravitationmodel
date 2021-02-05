@@ -6,7 +6,7 @@ import {bbox, tile} from 'ol/loadingstrategy';
 import TileGrid from 'ol/tilegrid/TileGrid';
 import VectorSource, {Options as VectorSourceOptions} from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
-import {EzbService} from '../einzugsgebiete/ezb.service';
+import {FeatureService} from '../einzugsgebiete/feature.service';
 
 /**
  * Abstract base layer implementation for all feature layer

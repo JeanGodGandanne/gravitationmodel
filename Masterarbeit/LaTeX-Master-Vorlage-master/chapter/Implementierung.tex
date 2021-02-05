@@ -1,3 +1,47 @@
 \chapter{Implementierung}
+Das Kapitel Implementierung erfasst die technische Dokumentation des erarbeiteten Prototyps.
+Im Detail werden in den folgenden Seiten die technische Umsetzung des in Kapitel \ref{concept} entworfenen Konzepts beschrieben. 
+Beschriebene Funktionalitäten werden mit Bildausschnitten unterstützt.
+
 \section{Architektur-Umsetzung}
 \section{Prototyp}
+Die Anwendung wurde als Angular Projekt mittels der Angular CLI erstellt. 
+Über den CLI Befehl 
+
+\begin{lstlisting}[language=bash]
+$ ng new gravitationsmodel
+\end{lstlisting}
+
+generiert die CLI ein kompilierbares und ausführbares Angular Projekt mit essentiellen Abhängigkeiten und Strukturen.
+Angular verwendet standardmäßig NPM als package manager.
+Eine \emph{package.json}, welche sämtliche Abhängigkeiten dokumentiert, wird bereits mit erstellt.
+Um das Setup abzuschließen müssen weitere Abhängigkeiten in Form von \emph{npm packages} installiert werden.
+Über den Befehl 
+
+\begin{lstlisting}[language=bash]
+$ ng add ol
+\end{lstlisting}
+
+fügt die CLI automatisch das Paket von OpenLayers hinzu und für die korrekte Typisierung in TypeScript das notwendige \emph{types} Paket für OpenLayers hinzu.
+
+Nachdem die technischen Voraussetzungen geschaffen sind kann mit der Implementierung begonnen werden.
+Auch hierbei bietet die CLI Unterstützung in Form von \emph{Scaffolding} Befehlen.
+
+\begin{lstlisting}[language=bash]
+$ ng generate <schematic> [name]
+\end{lstlisting}
+
+generiert Komponenten, Services, Models, Klassen und weitere Code-Gerüste durch den passenden Präfix-Parameter und Namen.
+Angular Komponenten bestehen immer aus einer TypeScript Klasse (\emph{.component.ts}), einem Template (\emph{.component.html}) sowie Dateien für Styling (\emph{.css} oder \emph{.scss}) und Test (\emph{.component.spec.ts}).
+
+\begin{lstlisting}[language=bash]
+$ ng generate component objektfenster
+\end{lstlisting}
+
+erstellt \emph{objektfenster.component.ts}, \emph{objektfenster.component.html} sowie \emph{objektfenster.scss} und \emph{objektfenster.component.spec.ts} Dateien.
+
+Mit Hilfe der CLI lassen sich so die Code-Gerüste schnell erstellen und die CLI übernimmt sogar die in Angular nötige \emph{Dependency Injection} indem neue Komponenten direkt in der entsprechenden \emph{.module.ts} deklariert werden.
+
+Nachdem die Komponenten erstellt wurden muss zunächst ein OpenLayers Map-Objekt erstellt und in den DOM eingehängt werden.
+Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
+

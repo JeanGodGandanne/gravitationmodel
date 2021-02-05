@@ -6,7 +6,7 @@ import {StyleLike} from 'ol/style/Style';
 import {Collection} from 'ol';
 import {Geometry} from 'ol/geom';
 import {ObjectWindowService, ObjectWindowState} from '../object-window/object-window.service';
-import {EzbService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/ezb.service';
+import {FeatureService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/feature.service';
 
 @Injectable()
 export class SelectFeatureService{
@@ -19,7 +19,7 @@ export class SelectFeatureService{
   }
 
   constructor(private readonly objectWindowService: ObjectWindowService,
-              private ezbService: EzbService) {
+              private ezbService: FeatureService) {
     this.objectWindowService.currentlySelectedFeature.subscribe(props => this.currentlySelectedFeature = props);
   }
 

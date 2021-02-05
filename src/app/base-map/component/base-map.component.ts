@@ -4,7 +4,7 @@ import FilialenOffenLayer from '../../layer/filialen/filialen-offen-layer';
 import {HttpClient} from '@angular/common/http';
 import EinzugsbereicheFilialenOffenLayer from '../../layer/einzugsgebiete/einzugsbereiche-filialen-offen-layer';
 import {SelectFeatureService} from '../select-feature.service';
-import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
+import {FeatureService} from '../../layer/einzugsgebiete/feature.service';
 import VectorSource from 'ol/source/Vector';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import EinzugsbereicheLayer from '../../layer/einzugsgebiete/einzugsbereiche-layer';
@@ -25,7 +25,7 @@ export class BaseMapComponent implements AfterViewInit {
   constructor(private readonly baseMapService: BaseMapService,
               private readonly selectFeatureService: SelectFeatureService,
               private readonly http: HttpClient,
-              private readonly ezbService: EzbService) {
+              private readonly ezbService: FeatureService) {
   }
 
   ngAfterViewInit(): void {

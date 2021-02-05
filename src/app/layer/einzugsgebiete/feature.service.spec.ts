@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EzbService } from './ezb.service';
+import { FeatureService } from './feature.service';
 
 describe('EzbService', () => {
-  let service: EzbService;
+  let service: FeatureService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EzbService);
+    service = TestBed.inject(FeatureService);
   });
 
   it('should be created', () => {

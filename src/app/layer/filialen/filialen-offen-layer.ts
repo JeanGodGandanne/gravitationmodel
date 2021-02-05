@@ -2,7 +2,7 @@ import FeatureLayer from '../shared/feature-layer';
 import {HttpClient} from '@angular/common/http';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import FilialeFeatureStyle from './filiale-feature-style';
-import {EzbService} from '../einzugsgebiete/ezb.service';
+import {FeatureService} from '../einzugsgebiete/feature.service';
 import {ObjectWindowService} from '../../object-window/object-window.service';
 
 /**

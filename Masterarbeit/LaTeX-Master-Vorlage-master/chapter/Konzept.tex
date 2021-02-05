@@ -1,4 +1,5 @@
 \chapter{Konzept}
+\label{ch:concept}
 Die Algorithmen und Prozesse einer Filialplanung spiegeln sehr gut einen allgemeinen Anwendungsfall moderner GIS. 
 Neben einer einfachen Hintergrundkarte sind die Mitarbeiter auf Zeichenwerkzeuge, Geo-Daten-Anzeige, thematische Karten und Kennzahlen Berechnungen angewiesen, um akkurate und fundierte Prognosen und Planungen treffen zu können.
 Viele theoretische Konzepte und Prozesse passieren hierbei im Hintergrund und sind nicht direkt ersichtlich.
@@ -97,15 +98,61 @@ Als Ergebnis wird hierbei eine Wahrscheinlichkeitsberechnung für sämtliche Fil
 Das Endergebnis zeigt somit die beschriebene farbliche Gravitationskarte.
 
 Für eine komplexere Berechnung mit mehr Faktoren kann das MCI-Modell von Nakanishi und Cooper verwendet werden, welches die Weiterentwicklung der einfachen Huff-Modells darstellt \cite{mciModell}.
+\newpage
 
 \section{Architektur}
 Die Architektur der Anwendung ergibt sich hauptsächlich aus den fachlichen Anforderungen und technischen Voraussetzungen. 
 
-Das UML-Diagramm x zeigt die Komponenten der Anwendung im Zusammenspiel.\\
+Das Diagramm \ref{img:components_diagram} zeigt die Komponenten der Anwendung im Zusammenspiel in einer eigenen Darstellung.
 
-TODO diagramm einfügen
+\begin{figure}[H]
+	\makebox[\textwidth][c]{
+	\includegraphics[width=1.0\textwidth]{resources/images/architecture}}
+	\caption{komponentendiagramm der Anwendung in eigener Darstellung}
+	\label{img:components_diagram}
+\end{figure}
 
-\\
+Die Anwendung baut im wesentlichen auf vier Komponentengruppen auf:
 
-Technologie Übersicht
- TODO tach stack einfügen
+\begin{itemize}
+\item Angular Komponenten
+\item Angular Services
+\item OpenLayers Karte und Layer
+\item Geo-Daten
+\end{itemize}
+
+OpenLayers als GIS-Software bildet hierbei den Kern in Form der Karte.
+Die Karte bietet an sich bereits einen großen Teil der GIS-Werkzeuge, die für die Anwendung benötigt werden.
+Die Karte stellt die Layer und deren Sourcen in der richtigen Projektion dar und bietet die Selektierungs-Interaktion der einzelnen Features.
+Sie sorgt also dafür, dass die ovale Weltkarte auf den flachen Bildschirm projiziert wird und der Klick auf eine Pixel-Koordinate des Bildschirmes umgerechnet eine geografische Koordinate widerspiegelt.
+Die Karte wird in der Anwendung im BaseMap-Service mit Parametern erstellt und in der OpenLayersMap-Komponente in den DOM injiziert. 
+
+Der Karte werden drei Layer hinzugefügt:
+
+\begin{itemize}
+\item Hintergrund-Layer
+\item Filial-Layer
+\item Zensusgebiete-Layer
+\end{itemize}
+
+Fachlich betrachtet kann der Hintergrund-Layer auch als Hintergrundkarte bezeichnet werden, technisch ist er jedoch ebenso ein Layer wie die Filialen und Gebiete. 
+Die Layer werden im BaseMap-Service erstellt und der Karte in der OpenLayersMap-Komponente hinzugefügt.
+Zu den Layern gehören entsprechende Sources, über die Features in den Layer und somit dargestellt werden können.
+
+Der Hintergrund-Layer ist ein Kachel-Layer (Englisch: Tile-Layer).
+Der Layer wird durch ein Gitter (Englisch: Grid) in einzelne Kacheln eingeteilt, die alle einzeln mit Bildern befüllt werden.
+Dies ist ein Optimierungsschritt, der den Datentransfer reduziert sowie die Renderingzeit und -performance verbessert.
+Die Kachelbilder werden über Http-Requests an die OpenStreetMap-API geladen.
+
+Die beiden Feature-Layer der Filialen und Gebiete sind Vektor-Layer (Englisch: Vector-Layer).
+Die jeweiligen Sources der Layer lesen die Features über lokale GeoJSON-Dateien im Feature-Service ein und befüllen den Layer im BaseMap-Service mit den Sourcen.
+
+Nun sind die Features über ihre Layer auf der Karte zu sehen und können über eine Selektions-Interaktion in der Karte ausgewählt werden.
+Über den SelectFeature-Service wird daraufhin das Objektfenster aktiviert, welches Informationen über das Feature enthält und die Berechnung des Huff Models für die selektierte Filiale starten kann.
+Die Daten des Features werden über den Objektfenster-Service in das Objektfenster injiziert.
+
+Über die Tool-Komponente kann eine neue Filiale auf die Karte gesetzt werden und die Layer gesteuert werden.
+
+Sobald eine neue Filiale auf der Karte gesetzt ist wird über den Neue-Filiale-Service ein weiteres Feature in die Filiale-LayerSource geladen und über das Objektfenster kann nun die Berechnung des Huff Models gestartet werden.
+
+Über das LayerManager-Tool kann im LayerManager-Service die Sichtbarkeit und Reihenfolge der Layer gesteuert werden.

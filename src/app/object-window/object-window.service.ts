@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/ezb.service';
+import {FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/feature.service';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 
 @Injectable({

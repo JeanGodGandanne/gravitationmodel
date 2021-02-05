@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener } from '@angular/core';
 import { StandardToolsetEnum } from '../model/standard-toolset.enum';
 import { By } from '@angular/platform-browser';
 import {expand} from '../../animations';
-import {EzbService} from '../../layer/einzugsgebiete/ezb.service';
+import {FeatureService} from '../../layer/einzugsgebiete/feature.service';
 import {BaseMapService} from '../../base-map/base-map.service';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import VectorSource from 'ol/source/Vector';

@@ -47,7 +47,7 @@ export type ZensusProperties = {
 @Injectable({
   providedIn: 'root'
 })
-export class EzbService {
+export class FeatureService {
   get zensusMap(): ZensusProperties[] {
     return this._zensusMap;
   }

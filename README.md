@@ -1,5 +1,17 @@
 # Masterarbeit
 
+For technical instructions read chapters below.
+This prototype displays the usage of the Huff model in store planning or location analysis processes.
+In order start the project run `ng serve` or `npm start` or see *Development Server*.
+Once the page is loaded you should see a map focused on Berlin with census areas and stores.
+You can click every feature on the map which should open an object window with additional information for the feature.
+If the feature is a store you can start calculating the Huff model for the selected store which then should colour the census areas accordingly.
+In the lower left corner you should see two buttons.
+On pushing the add button you should start the add-new-store-interaction in which you should be able to set a new store in the map inside Berlin.
+On pushing he layer button you should see the layer manager in which you can change visbillity and z-index of all layers.
+
+--------
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.7.
 
 ## Development server

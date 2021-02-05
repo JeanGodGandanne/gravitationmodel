@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule} from '@angular/common';
 import {ObjectWindowService, ObjectWindowState} from '../object-window.service';
-import {EzbService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../../layer/einzugsgebiete/ezb.service';
+import {FeatureService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../../layer/einzugsgebiete/feature.service';
 
 @Component({
   selector: 'app-object-window',
@@ -13,7 +13,7 @@ export class ObjectWindowComponent implements OnInit {
 
 
   constructor(public readonly objectWindowService: ObjectWindowService,
-              private readonly ezbService: EzbService) {
+              private readonly ezbService: FeatureService) {
   }
 
   public featureTypeEnum = FeatureTypeEnum;

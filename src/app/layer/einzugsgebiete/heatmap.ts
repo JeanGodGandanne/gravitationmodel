@@ -2,7 +2,7 @@ import FeatureLayer from '../shared/feature-layer';
 import EinzugsbereicheFeatureStyle from './einzugsbereiche-feature-style';
 import {HttpClient} from '@angular/common/http';
 import VectorLayer from 'ol/layer/Vector';
-import {EzbService} from './ezb.service';
+import {FeatureService} from './feature.service';
 import Heatmap from 'ol/layer/Heatmap';
 
 /**
