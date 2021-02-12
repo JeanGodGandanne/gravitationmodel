@@ -89,10 +89,10 @@ export class BaseMapService {
    * This setup consists of an initial coordinate and zoomlevel.
    */
   private createView(coordinate: Coordinate, defaultZoomLevel: number): View {
-    return new View({
-      center: coordinate,
-      zoom: defaultZoomLevel
-    });
+      return new View({
+        center: coordinate,
+        zoom: defaultZoomLevel
+      });
   }
 
   /**

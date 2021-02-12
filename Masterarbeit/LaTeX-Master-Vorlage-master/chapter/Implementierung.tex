@@ -1,9 +1,8 @@
 \chapter{Implementierung}
 Das Kapitel Implementierung erfasst die technische Dokumentation des erarbeiteten Prototyps.
-Im Detail werden in den folgenden Seiten die technische Umsetzung des in Kapitel \ref{concept} entworfenen Konzepts beschrieben. 
+Im Detail werden in den folgenden Seiten die technische Umsetzung des in Kapitel \ref{ch:concept} entworfenen Konzepts beschrieben. 
 Beschriebene Funktionalitäten werden mit Bildausschnitten unterstützt.
 
-\section{Architektur-Umsetzung}
 \section{Prototyp}
 Die Anwendung wurde als Angular Projekt mittels der Angular CLI erstellt. 
 Über den CLI Befehl 
@@ -40,8 +39,41 @@ $ ng generate component objektfenster
 
 erstellt \emph{objektfenster.component.ts}, \emph{objektfenster.component.html} sowie \emph{objektfenster.scss} und \emph{objektfenster.component.spec.ts} Dateien.
 
-Mit Hilfe der CLI lassen sich so die Code-Gerüste schnell erstellen und die CLI übernimmt sogar die in Angular nötige \emph{Dependency Injection} indem neue Komponenten direkt in der entsprechenden \emph{.module.ts} deklariert werden.
+Mit Hilfe der CLI lassen sich so die Code-Gerüste schnell erstellen und die CLI übernimmt sogar die in Angular nötige \emph{Dependency Injection} indem neue Komponenten direkt in der entsprechenden \emph{.module.ts} deklariert werden \footcite{angular_cli}.
 
-Nachdem die Komponenten erstellt wurden muss zunächst ein OpenLayers Map-Objekt erstellt und in den DOM eingehängt werden.
+Nachdem die Komponenten erstellt wurden kann nun mit der Implementierung der fachlichen Funktionen begonnen werden.
+Der Kern der Anwendung ist eine Karte mit der interagiert wird.
+Um diese darzustellen, muss zunächst ein OpenLayers Map-Objekt erstellt und in den DOM eingehängt werden \footcite{openlayers_map}.
 Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
+Über das bereits installierte OpenLayers Paket wird das Map-Objekt importiert und initialisiert.
 
+\begin{lstlisting}[language=JavaScript]
+	import Map from 'ol/Map';
+	import {fromLonLat} from 'ol/proj';
+	import {View} from 'ol';
+
+	const targetId = 'map';
+	const longitude = 13.451338;
+	const latitude = 52.503707;
+	const zoomLevel = 11;
+	
+	const coordinate = fromLonLat([longitude, latitude]);
+	
+	const view = new View({
+		center: coordinate,
+		zoom: zoomLevel
+	});
+	
+	new Map({
+		target: targetId,
+		layers: [],
+		controls: [],
+		view,
+	});
+
+
+\end{lstlisting}
+
+Die Karte wird mit der notwendigen Id des HTML-Elements, in welchem die Karte angezeigt werden soll, und einem View initialisiert.
+Das View-Objekt besteht aus einer Center-Koordinate und der initialen Zoomstufe und stellt den Begrenzungsrahmen (engl. Bounding Box) der Karte dar.
+Zu beachten ist ebenfalls hierbei die Transformation der Koordinaten von EPSG:4326 in das in OpenLayers standardmäßig genutzte EPSG:3857 über die Funktion \emph{fromLonLat}

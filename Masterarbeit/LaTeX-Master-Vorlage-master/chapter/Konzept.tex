@@ -5,7 +5,7 @@ Neben einer einfachen Hintergrundkarte sind die Mitarbeiter auf Zeichenwerkzeuge
 Viele theoretische Konzepte und Prozesse passieren hierbei im Hintergrund und sind nicht direkt ersichtlich.
 
 
-In den folgenden Kapiteln werden Prozesse der Standortanalyse beschrieben und der Fokus auf das Gravitations-Model von Huff als Algorithmus zur Bestimmung des Marktanteils gelegt.
+In den folgenden Kapiteln werden Prozesse der Standortanalyse beschrieben und der Fokus auf das Gravitationsmodell von Huff als Algorithmus zur Bestimmung des Marktanteils gelegt.
 Ebenso wird die daraus entstehende Architektur des Prototyps vorgestellt.
 \section{Algorithmen und Prozesse}
 Die Filialplanung ist ein Prozess, der sich aus mehreren Teilprozessen zusammensetzt. 
@@ -34,20 +34,21 @@ Das bestehende Netz kann nur eigene Filialen beinhalten, um die Kannibalisierung
 
 Wichtige Parameter für die Berechnung des Marktanteils der Filialen im Netz sind Attraktivität, Nähe zu Zielgruppen und die Entfernung zu anderen Filialen.
 
-Über das Huff Model kann die Marktanteil-Auswirkung aller Standorte berechnet werden.
-Im Folgenden wird das Model und zugehörige Komponenten im Detail vorgestellt.
+Über das Huff-Modell kann die Marktanteil-Auswirkung aller Standorte berechnet werden.
+Im Folgenden wird das Modell und zugehörige Komponenten im Detail vorgestellt.
 
 
 
 Um eine realistische Abbildung der Welt auf eine Karte zu bringen benötigt es eine Umrechnung eines Ovales, quasi der Erdkugel, auf eine Rechteck, im Fall eines Web-Gis des Bildschirms. 
-\subsection{Gravitations-Modelle}
+\subsection{Gravitationsmodell}
 Das \textit{Huff-Modell} (engl. Huff Gravitation Model) ist ein mathematisches Modell zur Abgrenzung und Segmentierung von Marktgebieten \cite{Roy2004}.
 Das Modell bestimmt die Wahrscheinlichkeit, mit der Kunden einen Standort (Filiale, Einkaufszentrum) in Abhängigkeit von Distanz und Attraktivität aufsuchen. 
 Die Formel wird im allgemeinen wie folgt dargestellt:
 
 \begin{figure}
 	\centering
-	\includegraphics[]{resources/images/huff_model}
+	\includegraphics[]{resources/images/huff_model.jpg}
+	\caption{Formel des Huff-Modells}
 	\label{img:huff_formula}
 \end{figure}
 
@@ -107,8 +108,8 @@ Das Diagramm \ref{img:components_diagram} zeigt die Komponenten der Anwendung im
 
 \begin{figure}[H]
 	\makebox[\textwidth][c]{
-	\includegraphics[width=1.0\textwidth]{resources/images/architecture}}
-	\caption{komponentendiagramm der Anwendung in eigener Darstellung}
+	\includegraphics[width=1.0\textwidth]{resources/images/architecture.png}}
+	\caption{Komponentendiagramm der Anwendung in eigener Darstellung}
 	\label{img:components_diagram}
 \end{figure}
 
@@ -148,11 +149,11 @@ Die beiden Feature-Layer der Filialen und Gebiete sind Vektor-Layer (Englisch: V
 Die jeweiligen Sources der Layer lesen die Features über lokale GeoJSON-Dateien im Feature-Service ein und befüllen den Layer im BaseMap-Service mit den Sourcen.
 
 Nun sind die Features über ihre Layer auf der Karte zu sehen und können über eine Selektions-Interaktion in der Karte ausgewählt werden.
-Über den SelectFeature-Service wird daraufhin das Objektfenster aktiviert, welches Informationen über das Feature enthält und die Berechnung des Huff Models für die selektierte Filiale starten kann.
+Über den SelectFeature-Service wird daraufhin das Objektfenster aktiviert, welches Informationen über das Feature enthält und die Berechnung des Huff-Modells für die selektierte Filiale starten kann.
 Die Daten des Features werden über den Objektfenster-Service in das Objektfenster injiziert.
 
 Über die Tool-Komponente kann eine neue Filiale auf die Karte gesetzt werden und die Layer gesteuert werden.
 
-Sobald eine neue Filiale auf der Karte gesetzt ist wird über den Neue-Filiale-Service ein weiteres Feature in die Filiale-LayerSource geladen und über das Objektfenster kann nun die Berechnung des Huff Models gestartet werden.
+Sobald eine neue Filiale auf der Karte gesetzt ist wird über den Neue-Filiale-Service ein weiteres Feature in die Filiale-LayerSource geladen und über das Objektfenster kann nun die Berechnung des Huff-Modells gestartet werden.
 
 Über das LayerManager-Tool kann im LayerManager-Service die Sichtbarkeit und Reihenfolge der Layer gesteuert werden.
