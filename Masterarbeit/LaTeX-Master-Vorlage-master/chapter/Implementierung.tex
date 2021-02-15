@@ -1,4 +1,5 @@
 \chapter{Implementierung}
+\label{ch:implementierung}
 Das Kapitel Implementierung erfasst die technische Dokumentation des erarbeiteten Prototyps.
 Im Detail werden in den folgenden Seiten die technische Umsetzung des in Kapitel \ref{ch:concept} entworfenen Konzepts beschrieben. 
 Beschriebene Funktionalitäten werden mit Bildausschnitten unterstützt.
@@ -48,9 +49,6 @@ Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
 Über das bereits installierte OpenLayers Paket wird das Map-Objekt importiert und initialisiert.
 
 \begin{lstlisting}[language=JavaScript]
-	import Map from 'ol/Map';
-	import {fromLonLat} from 'ol/proj';
-	import {View} from 'ol';
 
 	const targetId = 'map';
 	const longitude = 13.451338;
@@ -64,10 +62,9 @@ Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
 		zoom: zoomLevel
 	});
 	
-	new Map({
+	const map = new Map({
 		target: targetId,
 		layers: [],
-		controls: [],
 		view,
 	});
 
@@ -76,4 +73,171 @@ Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
 
 Die Karte wird mit der notwendigen Id des HTML-Elements, in welchem die Karte angezeigt werden soll, und einem View initialisiert.
 Das View-Objekt besteht aus einer Center-Koordinate und der initialen Zoomstufe und stellt den Begrenzungsrahmen (engl. Bounding Box) der Karte dar.
-Zu beachten ist ebenfalls hierbei die Transformation der Koordinaten von EPSG:4326 in das in OpenLayers standardmäßig genutzte EPSG:3857 über die Funktion \emph{fromLonLat}
+Zu beachten ist ebenfalls hierbei die Transformation der Koordinaten von EPSG:4326 in das in OpenLayers standardmäßig genutzte EPSG:3857 über die Funktion \emph{fromLonLat}.
+Die Karte wird ebenfalls mit Standard-Interactions und Standard-Controls initialisiert jedoch sind noch keine Layer hinzugefügt.
+Somit ist jetzt auch noch nichts auf der Karte zu sehen und lediglich bereits erwähnte Controls und Interactions sind sichtbar und bedienbar.
+Hierzu zählen:
+
+\begin{itemize}[Controls]
+	\item Zoom
+	\item Rotate (Unsichtbar bei Rotation 0)
+	\item Attribution
+\end{itemize}
+
+\begin{itemize}[Interactions]
+	\item Drag rotate
+	\item Drag pan
+	\item Drag zoom
+	\item Double click zoom
+	\item Mouse wheel zoom
+	\item Pinch rotate (Touchscreen)
+	\item Pinch zoom (Touchscreen)
+	\item Keyboard pan
+	\item Keyboard zoom
+\end{itemize}
+
+Als nächstes wird der Hintergrundkarten-Layer hinzugefügt.
+Hierzu wird ein neuer Tilelayer initialisiert, eine neue Layer-Quelle (engl. Source) hinzugefügt und der Layer der Karte hinzugefügt.
+
+\begin{lstlisting}[language=JavaScript]
+	
+	const backgroundLayer = new TileLayer();
+	backgroundLayer.setSource(new OSM());
+	backgroundLayer.set('name', 'background');
+	
+	map.addLayer(backgroundLayer);	
+	
+\end{lstlisting}
+
+Der Hintergrundkarten-Layer ist ein Kachel (engl. Tile) Layer, da dies die Datenabfrage an den Kartendienstleister, in diesem Fall OpenStreetMaps, reduziert und eine optimale Render-Performance erzeugt.
+Ein Tile-Layer teilt den Kartenausschnitt in ein Gitter (engl. Grid) aus vielen kleinen Kacheln ein.
+Jeder dieser Kacheln setzt ihren eigenen Http-Request an den in der Source angegeben Provider mit den Kachel-Koordinaten und Zoom-Stufe als Parameter ab und bekommt einen Kartenausschnitt in PNG-Format zurück.
+Die einzelnen Bilder werden dann im Cache des Browsers gespeichert und sorgen somit für verminderten Datentransfer sowie schnelles Laden bei erneutem Aufruf.
+OpenLayers bietet für OpenStreetMap sowie Bing Maps eigene Source-Objekte, welche für Bing nur noch einen API-Key benötigt.
+Um den Layer später einmal einfach identifizieren zu können, wird dem Layer noch eine Name-Eigenschaft zugewiesen.
+
+Nach der Hintergrundkarte müssen nun noch Layer für die Filialen sowie die Zensusgebiete implementiert werden.
+In der OpenLayersMap-Komponente werden dazu zwei neue Layer mit passenden Source-Objekten angelegt.
+
+\begin{lstlisting}[language=JavaScript]
+
+	const filialLayer = new VectorImageLayer({
+		visible: true,
+		zIndex: 2
+	});	
+	filialLayer.set('name', 'filialenLayer');
+	filialLayer.setSource = new VectorSource({
+		format: this.geoJSONFormat,
+		strategy: bbox	
+	});
+
+	const gebieteLayer = new VectorImageLayer({
+		visible: true,
+		zIndex: 1
+	});
+	gebieteLayer.set('name', 'zensusgebieteLayer');
+	gebieteLayer.setSource = new VectorSource({
+		format: this.geoJSONFormat,
+		strategy: bbox	
+	});
+
+	map.addLayer(filialLayer);
+	map.addLayer(gebieteLayer);
+\end{lstlisting}
+
+Bei der Initialisierung der Layer muss die Z-Ebene der Filialen höher sein, da sie später in der Anwendung über den Gebieten liegen sollen und nicht von diesen überlagert werden sollen.
+Bei VectorSources kann zwischen den Ladestrategien Tile und Bounding Box entschieden werden.
+Sie bestimmt wann neue Features auf der Karte geladen und angezeigt werden sollen.
+Bei der Tile-Strategie wird wie bei der Hintergrundkarte der Kartenausschnitt in ein Kachelgitter unterteilt und bei der Bounding Box Strategie wird der gesamte Kartenausschnitt (engl. Bounding Box) gewählt. 
+Bei besonders vielen Daten sollte auf die Tile-Strategie zurückgegriffen werden aber im Prototypen reicht die Bounding Box Strategie vollkommen aus.
+
+OpenLayers definiert standardmäßig für jeden Vector Layer einen Stil, der die einzelnen Features je nach Geometrietyp auf der Karte darstellt. 
+Soll dieser Stil geändert werden, muss auf dem Layer ein neuer Stil definiert werden.
+Dies kann über ein statisches Style-Objekt erfolgen oder über eine dynamische Style-Funktion.
+
+\begin{lstlisting}[language=JavaScript]
+	
+	const filialStyle = new Style({
+		image: new Icon({
+			color: '673ab7'
+		}),
+		text: new Text({
+			fill: new Fill({
+				color: 'FFFFFF'
+			})	
+		})
+	});
+	
+	const filialStyleFunction = (feature, resolution) => {
+		if (feature.get('selected') === true) {
+			filialStyle.getImage()
+			.setSource('assets/geometries/icons/PIN_selected.svg');
+		} else {
+			filialStyle.getImage()
+			.setSource('assets/geometries/icons/PIN.svg');
+		}
+		filialStyle.getText().setText(feature.getId().toString());
+		return filialStyle;
+	}
+	
+	filialLayer.setStyle(filialStyleFunction);
+
+	
+\end{lstlisting}
+
+Nun werden realistische Geo- sowie Marktdaten benötigt. 
+Die Filialen sind einfache Koordinaten im Raum Berlin.
+Ein Testdatensatz mit 97 Koordinaten wurde über geojson.io \footnote{\href{geojson.io}{geojson.io}} angelegt.
+Die Koordinatenliste wird bereits in GeoJSON angelegt und die Einträge müssen lediglich um eine Id, Anzahl der Parkplätze sowie die Verkaufsfläche der Filiale ergänzt werden.\\
+Ein Testdatensatz mit 1220 Zensusgebieten des Geoportals Berlin \footcite{geoportal_berlin} wurde über das ArcGIS Hub \footcite{arcgis_verkehrszellen} heruntergeladen.
+Die Gebiete werden ebenfalls bereits in GeoJSON exportiert.
+Da es sich jedoch um zu viele Einträge für eine manuelle Ergänzung der Marktdaten handelt, werden Marktdaten für die einzelnen Gebiete beim einlesen der Datei ergänzt.
+
+Die Datensätze werden über das Feature Format GeoJSON in OpenLayers eingelesen und in eine FeatureCollection (bei einzelnen Daten in ein Feature) umgewandelt, welche der jeweiligen Layer Source hinzugefügt wird.
+
+\begin{lstlisting}[language=JavaScript]
+
+		this.http.get('../assets/filialen.json').subscribe(value => {
+			const readFeatures = this.geoJSONFormat.readFeatures(value);
+			readFeatures.forEach(feature => {
+				feature.setId(feature.get('id'));
+				feature.set('type', FeatureTypeEnum.FILIALE);
+			});
+			filialLayerSource.addFeatures(readFeatures);
+		});
+
+		this.http.get('../assets/zensusgebiete.json').subscribe(value => {
+			const readFeatures = geoJSONFormat.readFeatures(value);
+			readFeatures.forEach(feature => {
+				feature.setId(feature.get('id'));
+				feature.set('type', FeatureTypeEnum.ZENSUSGEBIET);
+			});
+			gebieteLayerSource.addFeatures(readFeatures);
+		});
+		
+	}		
+	
+\end{lstlisting}
+
+Es handelt sich bei den Filial- sowie Gebietsdaten um fiktionale Daten, jedoch sollten diese einen repräsentativen Charakter haben und möglichst nah an realistischen Marktdaten gewählt werden.
+Als Referenz der Parkplätze und Verkaufsfläche dienen Werte der Statistik "Entwicklung der durchschnittlichen Verkaufsfläche der Lebensmittel-Discountmärkte Lidl in Deutschland in den Jahren 2009 bis 2019 (in Quadratmetern)" von handelsdaten.de \footcite{handelsdaten_lidl} sowie die Anlage zu Nummer 51.11 der Verwaltungsvorschrift zu Landesbauordnung Nordrhein-Westfalen \footcite{bauo_5111}.
+Aus den Quellen lässt sich eine durchschnittliche Verkaufsfläche von 898 Quadratmetern sowie 1 Parkplatz pro 10 Quadratmetern Verkaufsfläche erschließen.
+Um den Filialen verschiedene Verkaufsflächen und Parkplätze zuzuordnen wurden Zufallszahlen im Bereich 798 bis 998 für die Verkaufsfläche gewählt sowie die sich daraus ergebende Anzahl der Parkplätze.\\
+Bei den Marktdaten der Gebiete handelt es sich um Angaben zu Anzahl der Einwohner, durchschnittliche Kaufkraft und durchschnittliche Ausgaben für Lebensmittel pro Gebiet.
+Als Referenz für die Marktdaten dienen Werte der Statistik "Kaufkraft je Einwohner nach Bundesländern im Jahr 2021" von statista.de \footcite{statista_gfk} sowie Werte der Statistik "Konsumausgaben privater Haushalte in Deutschland" vom Statistischen Bundesamt \footcite{destatis_konsumausgaben}.
+Aus den Quellen lässt sich eine durchschnittliche Kaufkraft pro Einwohner pro Monat (kurz DKpEpM) von 1.819 € für Berlin sowie durchschnittliche Ausgaben für Nahrungsmittel pro Monat pro Haushalt (kurz DAfNpMpH) von 356 € für Deutschland erschließen. 
+Aus Gründen der Einfachheit ergeben sich daraus die Kennzahlen pro Gebiet wie folgt:
+
+\begin{equation}
+	Kaufkraft pro Gebiet = Einwohner * DKpEpM
+\end{equation}
+
+\begin{equation}
+	Ausgaben Lebensmittel pro Gebiet = Einwohner * DAfNpMpH
+\end{equation}
+
+Da leider keine genauen Angaben der Einwohner pro Zensusgebiet verfügbar sind, wurde die Anzahl der Einwohner anhand der Größe des Gebiets mal dem Faktor 0.0045, welcher empirisch bestimmt wurde, berechnet:
+
+\begin{equation}
+	Einwohner pro Gebiet = Gr"o"se Gebiet * 0.0045
+\end{equation}

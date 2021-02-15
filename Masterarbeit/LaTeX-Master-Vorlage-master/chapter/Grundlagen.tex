@@ -121,8 +121,7 @@ Zu den bekanntesten GIS zählen Produkte von ESRI, Autodesk, Pitney Bowes oder C
 
 \subsection{Koordinatensysteme und Projektion}
 In der Geophysik wird die Erde nicht als Kugel sondern Ellipsoid bezeichnet \footcite{jung_figur_1956}.
-Wenn man jedoch eine Karte elektronisch auf einem Bildschirm betrachtet, dann sieht man ein Rechteck.
-Keine Anzeichen der Krümmung eines Globus.
+Wenn man jedoch eine Karte elektronisch auf einem Bildschirm betrachtet, dann sieht man ein Rechteck und keine Anzeichen der Krümmung eines Globus.
 Die Problematik der Projektion der Erde auf eine flache Darstellung hat über den Lauf der Jahre mehrere Lösungen produziert, die jedoch alle mit Koordinatensystemen und Projektionsrechnungen zu tun haben, und bietet Stoff für ein eigenes Wissenschaftsfeld.
 Aufgrund dessen versuchen die nächsten Zeilen, die Problematik und Anwendung im Prototyp kurz zu beschreiben.
 
@@ -138,7 +137,9 @@ Die Abbildung \ref{img:epsg.io} zeigt die Koordinaten eines Punktes in Berlin in
 	\label{img:epsg.io}
 \end{figure}
 
-
+Im wesentlichen werden im Prototypen die oben beschriebenen Projektionen verwendet.
+Die Geodaten der Filialen sowie der Zensusgebiete sind in EPSG 4326 erfasst und müssen dementsprechend vor der Darstellung transformiert werden.
+Entsprechende Funktionen sind im Kapitel \ref{ch:implementierung} Implementierung beschrieben.
 
 \section{Genutzte Technologie}
 Für die prototypische Ausarbeitung des Modells wurde auf modernste Technologien und Frameworks zugegriffen. So wird als Karten-Framework /gls(ol) in der Version 6.4.3 verwendet sowie /gls(angular) in der Version 10.

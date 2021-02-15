@@ -32,7 +32,7 @@ export default class FilialenOffenLayer extends FeatureLayer {
 
     layer.setVisible(true);
     layer.setStyle(this.featureStyle.getStyleFunction());
-    layer.set('name', 'filialen_layer');
+    layer.set('name', 'filialenLayer');
     this._layer = layer;
   }
 }

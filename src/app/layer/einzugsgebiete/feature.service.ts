@@ -12,7 +12,6 @@ import {Polygon} from 'ol/geom';
 import * as ol_sphere from 'ol/sphere';
 import Feature from 'ol/Feature';
 import {ObjectWindowService} from '../../object-window/object-window.service';
-import {findAttributeOnElementWithAttrs} from '@angular/cdk/schematics';
 
 export enum FeatureTypeEnum {
   FILIALE = 'Filiale',
@@ -58,8 +57,8 @@ export class FeatureService {
   private _storeMap: FilialeProperties[] = [];
   private _zensusMap: ZensusProperties[] = [];
 
-  // durschnittliche Kaufkraft pro Einwohner Berlin in € pro monat = 21687 € / 12 (average Kaufkraft)
-  private AK = 1807.25;
+  // durschnittliche Kaufkraft pro Einwohner Berlin in € pro monat = 21829 € / 12 (average Kaufkraft)
+  private AK = Math.round(21829 / 12);
 
   // durschnittlicher Faktor Einwohner/m^2 (average Einwohner Gebietegröße Faktor)
   private AEGF = 0.0045;
@@ -94,7 +93,7 @@ export class FeatureService {
   }
 
   drawFilialen(): void {
-    const filialeLayer = this.baseMapService.getLayer('filialen_layer') as VectorImageLayer;
+    const filialeLayer = this.baseMapService.getLayer('filialenLayer') as VectorImageLayer;
     this.http.get('../assets/map.json').subscribe(value => {
       const readFeatures = this.geoJSONFormat.readFeatures(value);
       readFeatures.forEach(feature => {
@@ -119,7 +118,7 @@ export class FeatureService {
     const id = this.getNextID();
     feature.setId(id);
     feature.set('type', FeatureTypeEnum.FILIALE);
-    const filialeLayerSource = (this.baseMapService.getLayer('filialen_layer') as VectorImageLayer).getSource() as VectorSource;
+    const filialeLayerSource = (this.baseMapService.getLayer('filialenLayer') as VectorImageLayer).getSource() as VectorSource;
     filialeLayerSource.addFeature(feature);
     const newFilialeProperties: FilialeProperties = {
       id,

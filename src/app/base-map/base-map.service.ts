@@ -71,7 +71,6 @@ export class BaseMapService {
     return new Map({
       target: targetId,
       layers: [],
-      controls: [],
       view,
     });
   }

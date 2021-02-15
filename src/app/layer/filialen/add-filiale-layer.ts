@@ -20,7 +20,7 @@ export default class AddFilialeLayer {
 
         layer.setSource(new VectorSource());
         layer.setStyle(POI_MARKER_STYLE);
-        layer.set('name', 'add_filialen_layer');
+        layer.set('name', 'addFilialenLayer');
 
         this._layer = layer;
     }
