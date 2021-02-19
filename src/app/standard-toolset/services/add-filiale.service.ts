@@ -12,30 +12,32 @@ import {FeatureService} from '../../layer/einzugsgebiete/feature.service';
   providedIn: 'root'
 })
 export class AddFilialeService {
-  private filialeLayer: VectorLayer;
+  private tempFilialeLayer: VectorLayer;
   private drawInteraction: Draw;
   private filiale: Feature;
 
-  constructor(private baseMapService: BaseMapService, private ezbService: FeatureService) {
-    this.filialeLayer = new AddFilialeLayer().layer;
+  constructor(
+      private baseMapService: BaseMapService,
+      private featureService: FeatureService) {
+    this.tempFilialeLayer = new AddFilialeLayer().layer;
   }
 
   public activateAddFiliale(): void {
-    this.baseMapService.addLayer(this.filialeLayer);
+    this.baseMapService.addLayer(this.tempFilialeLayer);
     this.baseMapService.changeSelectInteractionActiveState(false);
     this.addDrawInteraction();
   }
 
   public deactivateAddFiliale(): void {
     this.baseMapService.removeInteraction(this.drawInteraction);
-    this.baseMapService.removeLayer(this.filialeLayer);
+    this.baseMapService.removeLayer(this.tempFilialeLayer);
     this.baseMapService.changeSelectInteractionActiveState(true);
   }
 
   private addDrawInteraction(): void {
     this.drawInteraction = new Draw({
       type: GeometryType.POINT,
-      source: this.filialeLayer.getSource(),
+      source: this.tempFilialeLayer.getSource(),
       style: POI_INTERACTION_STYLE
     });
 
@@ -45,7 +47,7 @@ export class AddFilialeService {
       // new feature needs an new ID or OL Fails with https://openlayers.org/en/v6.3.1/doc/errors/#30
       feature.setId(new Date().getTime());
       this.filiale = feature;
-      this.ezbService.addFiliale(this.filiale);
+      this.featureService.addFiliale(this.filiale);
       this.deactivateAddFiliale();
     });
     this.baseMapService.addInteraction(this.drawInteraction);

@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
 import {ObjectWindowService, ObjectWindowState} from '../object-window.service';
 import {FeatureService, FeatureTypeEnum, FilialeProperties, ZensusProperties} from '../../layer/einzugsgebiete/feature.service';
 
@@ -13,7 +11,7 @@ export class ObjectWindowComponent implements OnInit {
 
 
   constructor(public readonly objectWindowService: ObjectWindowService,
-              private readonly ezbService: FeatureService) {
+              private readonly featureService: FeatureService) {
   }
 
   public featureTypeEnum = FeatureTypeEnum;
@@ -23,7 +21,7 @@ export class ObjectWindowComponent implements OnInit {
   }
 
   calculateGravitationModelForFiliale(id: number): void {
-    this.ezbService.calculateHuffModel(id);
+    this.featureService.calculateHuffModel(id);
   }
 
   closeObjectWindow(): void {

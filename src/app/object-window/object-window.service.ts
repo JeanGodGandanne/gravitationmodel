@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FilialeProperties, ZensusProperties} from '../layer/einzugsgebiete/feature.service';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +10,10 @@ export class ObjectWindowService {
 
   isObjectWindowVisible = false;
 
-  currentlySelectedFeature: BehaviorSubject<FilialeProperties | ZensusProperties> = new BehaviorSubject<FilialeProperties | ZensusProperties>(null);
+  currentlySelectedFeature$: BehaviorSubject<FilialeProperties | ZensusProperties> = new BehaviorSubject<FilialeProperties | ZensusProperties>(null);
 
   public changeCurrentlySelectedFeature(featureProperties: FilialeProperties | ZensusProperties): void {
-    this.currentlySelectedFeature.next(featureProperties);
+    this.currentlySelectedFeature$.next(featureProperties);
   }
 
 }

@@ -20,7 +20,7 @@ export class SelectFeatureService{
 
   constructor(private readonly objectWindowService: ObjectWindowService,
               private ezbService: FeatureService) {
-    this.objectWindowService.currentlySelectedFeature.subscribe(props => this.currentlySelectedFeature = props);
+    this.objectWindowService.currentlySelectedFeature$.subscribe(props => this.currentlySelectedFeature = props);
   }
 
   public createLayerInteractionSelect(layers: Layer[], style: StyleLike): void {

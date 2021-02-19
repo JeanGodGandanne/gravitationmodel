@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import VectorLayer from 'ol/layer/Vector';
 import {FeatureService} from './feature.service';
 import VectorImageLayer from 'ol/layer/VectorImage';
+import {LayerIdentifier} from '../model/layer-identifier';
 
 /**
  * Layer implementation for Filiale Offen Einzugsbereiche based on OL VectorTileLayer
@@ -31,7 +32,7 @@ export default class EinzugsbereicheLayer extends FeatureLayer {
 
     layer.setVisible(true);
     layer.setStyle(this.ezbFeatureLayerStyle.getStyleFunction());
-    layer.set('name', 'zensusgebieteLayer');
+    layer.set('name', LayerIdentifier.GEBIETE);
     this._layer = layer;
   }
 }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="(objectWindowService.currentlySelectedFeature | async) as currentlySelectedFeature">
+<ng-container *ngIf="(objectWindowService.currentlySelectedFeature$ | async) as currentlySelectedFeature">
   <ng-container *ngIf="currentlySelectedFeature.type === featureTypeEnum.FILIALE else gebiet">
     <mat-card>
       <mat-card-header>
@@ -14,7 +14,7 @@
       <mat-card-content>
         <mat-list>
           <mat-list-item>Parkplätze:
-            <!--          {{objectWindowService.currentlySelectedFeature.properties.parkplaetze | number}}-->
+            <!--          {{objectWindowService.currentlySelectedFeature$.properties.parkplaetze | number}}-->
             <mat-form-field class="object-form-field">
               <input matInput type="number" required
                      [ngModel]="currentlySelectedFeature.parkplaetze | number"
@@ -29,7 +29,7 @@
                      (ngModelChange)="currentlySelectedFeature.verkaufsflaeche = $event; updateFeature(currentlySelectedFeature)"
               >
             </mat-form-field>
-            <!--          {{objectWindowService.currentlySelectedFeature.properties.verkaufsflaeche | number}} -->
+            <!--          {{objectWindowService.currentlySelectedFeature$.properties.verkaufsflaeche | number}} -->
             m²</mat-list-item>
           <mat-list-item>Marktanteil in Euro: {{currentlySelectedFeature.marketShare | number}} €</mat-list-item>
           <mat-list-item>Marktanteil in Prozent: {{currentlySelectedFeature.marketSharePercentage | percent}}</mat-list-item>

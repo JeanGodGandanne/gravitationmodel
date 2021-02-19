@@ -73,7 +73,7 @@ export class StandardToolsetComponent {
     }
   }
 
-  getFeatures(): void {
+  addFiliale(): void {
     this.addFilialeService.activateAddFiliale();
   }
 }

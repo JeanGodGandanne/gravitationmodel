@@ -12,6 +12,7 @@ import {Polygon} from 'ol/geom';
 import * as ol_sphere from 'ol/sphere';
 import Feature from 'ol/Feature';
 import {ObjectWindowService} from '../../object-window/object-window.service';
+import {LayerIdentifier} from '../model/layer-identifier';
 
 export enum FeatureTypeEnum {
   FILIALE = 'Filiale',
@@ -77,7 +78,7 @@ export class FeatureService {
   constructor(private readonly baseMapService: BaseMapService,
               private readonly http: HttpClient,
               private readonly objectWindowService: ObjectWindowService) {
-    objectWindowService.currentlySelectedFeature.subscribe((feature: FilialeProperties) => {
+    objectWindowService.currentlySelectedFeature$.subscribe((feature: FilialeProperties) => {
       if (feature) {
         if (feature.type === FeatureTypeEnum.FILIALE) {
           this.storeMap.map(store => {
@@ -93,7 +94,7 @@ export class FeatureService {
   }
 
   drawFilialen(): void {
-    const filialeLayer = this.baseMapService.getLayer('filialenLayer') as VectorImageLayer;
+    const filialeLayer = this.baseMapService.getLayer(LayerIdentifier.FILIALEN) as VectorImageLayer;
     this.http.get('../assets/map.json').subscribe(value => {
       const readFeatures = this.geoJSONFormat.readFeatures(value);
       readFeatures.forEach(feature => {
@@ -118,7 +119,7 @@ export class FeatureService {
     const id = this.getNextID();
     feature.setId(id);
     feature.set('type', FeatureTypeEnum.FILIALE);
-    const filialeLayerSource = (this.baseMapService.getLayer('filialenLayer') as VectorImageLayer).getSource() as VectorSource;
+    const filialeLayerSource = (this.baseMapService.getLayer(LayerIdentifier.FILIALEN) as VectorImageLayer).getSource() as VectorSource;
     filialeLayerSource.addFeature(feature);
     const newFilialeProperties: FilialeProperties = {
       id,
@@ -133,7 +134,7 @@ export class FeatureService {
   }
 
   drawZensusGebiete(): void {
-    const zensusLayer = this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer;
+    const zensusLayer = this.baseMapService.getLayer(LayerIdentifier.GEBIETE) as VectorImageLayer;
     this.http.get('../assets/Verkehrsbezirke.json').subscribe(value => {
       const source = zensusLayer.getSource() as VectorSource;
       const features = this.geoJSONFormat.readFeatures(value);
@@ -175,7 +176,7 @@ export class FeatureService {
   }
 
   private colorGebiet(gebiet: ZensusProperties, maxProbability: number): void {
-    const feature = ((this.baseMapService.getLayer('zensusgebieteLayer') as VectorImageLayer)
+    const feature = ((this.baseMapService.getLayer(LayerIdentifier.GEBIETE) as VectorImageLayer)
       .getSource() as VectorSource)
       .getFeatures().find(zgebiet => zgebiet.get('FID') === gebiet.id);
     const wahrscheinlichkeitInProzent = gebiet.probability * 100;

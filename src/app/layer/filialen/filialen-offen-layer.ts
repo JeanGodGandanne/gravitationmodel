@@ -4,6 +4,7 @@ import VectorImageLayer from 'ol/layer/VectorImage';
 import FilialeFeatureStyle from './filiale-feature-style';
 import {FeatureService} from '../einzugsgebiete/feature.service';
 import {ObjectWindowService} from '../../object-window/object-window.service';
+import {LayerIdentifier} from '../model/layer-identifier';
 
 /**
  * Layer implementation for Filiale Offen based on OL VectorImageLayer
@@ -32,7 +33,7 @@ export default class FilialenOffenLayer extends FeatureLayer {
 
     layer.setVisible(true);
     layer.setStyle(this.featureStyle.getStyleFunction());
-    layer.set('name', 'filialenLayer');
+    layer.set('name', LayerIdentifier.FILIALEN);
     this._layer = layer;
   }
 }

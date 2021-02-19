@@ -12,6 +12,7 @@ import Select from 'ol/interaction/Select';
 import Overlay from 'ol/Overlay';
 import {Extent} from 'ol/extent';
 import OSM from 'ol/source/OSM';
+import {LayerIdentifier} from '../layer/model/layer-identifier';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,7 @@ export class BaseMapService {
   private createHintergrundkartenLayer(): void {
     // Hintergrundkarte
     this.hintergrundkartenLayer = new TileLayer();
-    this.hintergrundkartenLayer.set('name', 'hintergrundkarte');
+    this.hintergrundkartenLayer.set('name', LayerIdentifier.HINTERGRUND);
     // this.hintergrundkartenLayer.setZIndex(1);
   }
 

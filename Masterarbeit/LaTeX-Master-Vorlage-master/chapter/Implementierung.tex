@@ -32,7 +32,7 @@ $ ng generate <schematic> [name]
 \end{lstlisting}
 
 generiert Komponenten, Services, Models, Klassen und weitere Code-Gerüste durch den passenden Präfix-Parameter und Namen.
-Angular Komponenten bestehen immer aus einer TypeScript Klasse (\emph{.component.ts}), einem Template (\emph{.component.html}) sowie Dateien für Styling (\emph{.css} oder \emph{.scss}) und Test (\emph{.component.spec.ts}).
+Angular Komponenten bestehen meist aus einer TypeScript-Klasse (\emph{.component.ts}), einem Template (\emph{.component.html}) sowie Dateien für Styling (\emph{.css} oder \emph{.scss}) und Tests (\emph{.component.spec.ts}).
 
 \begin{lstlisting}[language=bash]
 $ ng generate component objektfenster
@@ -42,7 +42,18 @@ erstellt \emph{objektfenster.component.ts}, \emph{objektfenster.component.html} 
 
 Mit Hilfe der CLI lassen sich so die Code-Gerüste schnell erstellen und die CLI übernimmt sogar die in Angular nötige \emph{Dependency Injection} indem neue Komponenten direkt in der entsprechenden \emph{.module.ts} deklariert werden \footcite{angular_cli}.
 
-Nachdem die Komponenten erstellt wurden kann nun mit der Implementierung der fachlichen Funktionen begonnen werden.
+Ebenfalls im Zuge der Projekterstellung über die CLI werden Konfigurationsdateien angelegt, die wichtige Einstellungen zum Kompilieren, Bau, Start und Hosten (engl. host) der Anwendung enthalten.
+
+Die Anwendung kann nun über 
+
+\begin{lstlisting}[language=bash]
+	$ ng serve
+\end{lstlisting}
+
+gestartet werden.
+Der Befehl kompiliert, baut und startet die Anwendung über einen lokalen Webserver.
+Über \emph{localhost:4200} kann die Anwendung im Browser aufgerufen werden.
+
 Der Kern der Anwendung ist eine Karte mit der interagiert wird.
 Um diese darzustellen, muss zunächst ein OpenLayers Map-Objekt erstellt und in den DOM eingehängt werden \footcite{openlayers_map}.
 Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
@@ -103,7 +114,7 @@ Hierzu wird ein neuer Tilelayer initialisiert, eine neue Layer-Quelle (engl. Sou
 	
 	const backgroundLayer = new TileLayer();
 	backgroundLayer.setSource(new OSM());
-	backgroundLayer.set('name', 'background');
+	backgroundLayer.set('name', 'Hintergrund');
 	
 	map.addLayer(backgroundLayer);	
 	
@@ -125,7 +136,7 @@ In der OpenLayersMap-Komponente werden dazu zwei neue Layer mit passenden Source
 		visible: true,
 		zIndex: 2
 	});	
-	filialLayer.set('name', 'filialenLayer');
+	filialLayer.set('name', 'Filialen');
 	filialLayer.setSource = new VectorSource({
 		format: this.geoJSONFormat,
 		strategy: bbox	
@@ -135,7 +146,7 @@ In der OpenLayersMap-Komponente werden dazu zwei neue Layer mit passenden Source
 		visible: true,
 		zIndex: 1
 	});
-	gebieteLayer.set('name', 'zensusgebieteLayer');
+	gebieteLayer.set('name', 'Gebiete');
 	gebieteLayer.setSource = new VectorSource({
 		format: this.geoJSONFormat,
 		strategy: bbox	
@@ -185,7 +196,7 @@ Dies kann über ein statisches Style-Objekt erfolgen oder über eine dynamische 
 	
 \end{lstlisting}
 
-Nun werden realistische Geo- sowie Marktdaten benötigt. 
+Nun werden realistische Geo- sowie Marktdaten benötigt.\\
 Die Filialen sind einfache Koordinaten im Raum Berlin.
 Ein Testdatensatz mit 97 Koordinaten wurde über geojson.io \footnote{\href{geojson.io}{geojson.io}} angelegt.
 Die Koordinatenliste wird bereits in GeoJSON angelegt und die Einträge müssen lediglich um eine Id, Anzahl der Parkplätze sowie die Verkaufsfläche der Filiale ergänzt werden.\\
@@ -241,3 +252,150 @@ Da leider keine genauen Angaben der Einwohner pro Zensusgebiet verfügbar sind, 
 \begin{equation}
 	Einwohner pro Gebiet = Gr"o"se Gebiet * 0.0045
 \end{equation}
+
+Nachdem nun Marktdaten und Geodaten erfolgreich simuliert wurden und in der Karte zu sehen sind, werden zunächst die UI-Elemente der Oberfläche implementiert.
+Damit schlussendlich die Berechnung nach dem Huff-Modell-Algorithmus erfolgen kann, muss die Nutzbarkeit (engl. usability) der Anwendung etabliert werden.
+Bisher existieren in der Anwendung lediglich eine Karte mit Standard-Interaktionen mit Layern für einen Kartenhintergrund, Filialen und Zensusgebiete.\\
+Implementiert werden folgende UI-Elemente (siehe auch Abbildung \ref{img:toolset}):
+
+\begin{itemize}
+	\item Werkzeug-Set
+	\begin{itemize}
+		\item Werkzeug: Neue Filiale anlegen
+		\item Werkzeug: Layermanager
+	\end{itemize}
+	\item Objektfenster für Filialen und Gebiete
+\end{itemize}
+
+\begin{figure}[H]
+	\makebox[\textwidth][c]{
+		\includegraphics[scale=0.5]{resources/images/toolset.png}}
+	\caption{Bildschirmausschnitt der UI-Elemente}
+	\label{img:toolset}
+\end{figure}
+
+Bei der Umsetzung der UI-Elemente wurde auf die Komponenten-Bibliothek \emph{Angular Material} für fertige UI Komponenten zugegriffen \footcite{team_angular_material}.
+Zu den benutzen Komponenten zählen Material Button \footcite{team_angular_material_button}, Icon \footcite{team_angular_material_icon}, Card \footcite{team_angular_material_card}, List \footcite{team_angular_material_list}, Input \footcite{team_angular_material_input} sowie Checkbox \footcite{team_angular_material_checkbox}.
+
+Um eine bessere Visualisierung einzelner Featurelayer zu ermöglichen, sollen die Layer einzeln aus- beziehungsweise eingeblendet werden können.
+Dies geschieht im Werkzeug Layermanager.
+Hierzu müssen also innerhalb des Werkzeuges alle Layer angezeigt werden und über eine Checkbox die Sichtbarkeit verändert werden können.\\
+Für die Konfiguration des Layermanagers werden zunächst über den BaseMap-Service alle Layer der Karte abgerufen.
+Aus den Layer-Objekten werden nun Name- und Sichtbarkeit -Eigenschaften in jeweils ein neues LayerManagerEntry-Objekt extrahiert.
+Im Layermanager können nun der Name und die Sichtbarkeit pro Layer dargestellt werden, wobei die Sichtbarkeit als Checkbox dargestellt wird.
+Mit der Interaktion einer Checkbox wird über den zugehörigen Namen der entsprechende Layer im BaseMap-Service identifiziert und das \emph{Visible} Attribut angepasst.
+Der Layermanager erscheint als Fenster nach Aktivierung des entsprechenden Knopfes (Icon: \emph{layer}, siehe Abbildung \ref{img:toolset}).
+
+\begin{lstlisting}[language=JavaScript]
+	
+type LayerManagerEntry = { layerIdentifier: LayerIdentifier, visibility: boolean };
+
+public layerManagerEntries: LayerManagerEntry[];
+
+this.layerManagerEntries = baseMapService.getLayers().getArray().map(layer => {
+	return {
+		layerIdentifier: layer.get('name'),
+		visibility: layer.getVisible()
+	} as LayerManagerEntry;
+});
+
+setLayerVisibility(event: any, layerIdentifier: LayerIdentifier): void {
+	if (event.checked) {
+		//  show layer
+		this.baseMapService.getLayers().getArray().find(layer => layer.get('name') === layerIdentifier).setVisible(true);
+	} else {
+		//  hide layer
+		this.baseMapService.getLayers().getArray().find(layer => layer.get('name') === layerIdentifier).setVisible(false);
+	}
+}
+\end{lstlisting}
+
+Vervollständigt wird das Werkzeug-Set durch die Interaktion eine neue Filiale auf der Karte zu setzen.
+OpenLayers bietet hierzu eine Draw-Interaktion, die es erlaubt einer Layersource ein neues Feature hinzuzufügen.
+
+\begin{lstlisting}[language=JavaScript]
+
+private addDrawInteraction(): void {
+	this.drawInteraction = new Draw({
+		type: GeometryType.POINT,
+		source: this.tempFilialeLayer.getSource(),
+		style: NEW_STORE_INTERACTION_STYLE
+	});
+	
+	this.drawInteraction.on('drawend', (drawEndEvent) => {
+		const feature = drawEndEvent.feature;
+		
+		// new feature needs an new ID or OL Fails with https://openlayers.org/en/v6.3.1/doc/errors/#30
+		feature.setId(new Date().getTime());
+		featureService.addFiliale(feature);
+		this.deactivateAddFiliale();
+	});
+	this.baseMapService.addInteraction(this.drawInteraction);
+}
+\end{lstlisting}
+
+In der Initialisierung der Interaktion wird festgelegt, dass nur Punkte erstellt werden können, sowie über einen \emph{NEW\_STORE\_INTERACTION\_STYLE} wird dem Punkt ein eigener Style zugewiesen (ersichtlich in Abbildung \ref{img:toolset}).
+Ebenso wird ein temporärer Layer für die neu gesetzte Filiale für die Dauer der Interaktion definiert.
+Da auf der neuen Filiale die Attribute Parkplätze und Verkaufsfläche, sowie die Attraktivität noch nicht gesetzt wurden, ist es einfacher für die Interaktionsdauer einen temporären Layer zu verwenden, der nach Interaktionsende das erstellte Feature an den Feature-Service übergibt, wo die fehlenden Attribute gesetzt werden und das Feature in den Filiallayer übertragen wird. 
+Sobald die Interaktion der Karte hinzugefügt wurde, muss lediglich bei Aktivierung der temporäre Layer der Karte hinzugefügt werden, damit die Interaktion sichtbar ist.
+Ebenso müssen andere Interaktionen, vor Allem die Feature-Selektierung der Filialen und Gebiete (Implementierung erfolgt im späteren Verlauf des Kapitels), deaktiviert werden, damit es hierbei nicht zu ungewollten, parallelen Interaktionsaufrufen kommt.
+Sobald eine neue Filiale gesetzt wurde, muss der Layer wieder entfernt, die Interaktion deaktiviert und andere Interaktionen reaktiviert werden.
+Aktiviert wird die Interaktion über den entsprechenden Knopf auf der Karte (Icon: \emph{add\_icon}, siehe Abbildung \ref{img:toolset}).
+
+Für die Platzierung im DOM werden beide Werkzeuge in einer Werkzeug-Set Komponente zusammengefasst, die ein einheitliches Styling erlaubt.
+
+Als nächstes muss das Objektfenster, welches bei Selektion eines Features geöffnet werden soll und wichtige Informationen über die Filiale oder das Gebiet enthält, implementiert und in den DOM gesetzt werden.\\
+Das Objektfenster ist ein Fenster welches sich wie schon der Layermanager über die Karte legt und Informationen über ein ausgewähltes Feature bietet. 
+Selektiert können sowohl Filialen als auch Zensusgebiete werden.
+Im Falle einer Filiale soll das Objektfenster auch die Berechnung des Huff-Modells für diese Filiale ermöglichen.\\
+Über einen Objektfenster-Service wird das momentan ausgewählte Feature in Form eines \emph{Obervables} \footcite{rxjs_observable} bereitgestellt und ist jederzeit abrufbar.
+In Angular erfolgt dieser Aufruf über eine gesetzte \emph{Subscription} \footcite{rxjs_subscription} auf ein Observable.
+In einer Angular Anwendung werden Komponenten über mehrere Lifecycle-Zyklen instanziiert, die eine besondere Datenübertragung innerhalb der Anwendung erfordern.
+So erfolgt ein initiales Rendering des Templates und der Daten und Änderungen werden über eine \emph{ChangeDetection} erkannt und neu gerendert.
+Um Fehler während des ChangeDetection-Lifecycles zu verhindern, erfolgt die Datenübertragung mit Obersvables \footcite{angular_lifecycle}.\\
+Im Fall des Objektfensters subscribed die Komponente sich auf das \emph{currentlySelectedFeature\$} des Objektfenster-Services.
+Dies bedeutet die Komponente erhält über ein Event direkt die neuesten Änderungen sobald sich das Observable ändert. 
+Es erfolgt also kein expliziter, synchroner Datenaufruf, sondern das Observable sendet asynchron Änderungen an alle Subscriber.
+Somit kann die Selektierung eines neuen Features problemlos an das Objektfenster weitergeleitet werden und die neuen Daten werden korrekt dargestellt. \\
+Das Objektfenster für Filialen zeigt die folgenden Informationen:
+
+\begin{itemize}
+	\item Id
+	\item Parkplätze
+	\item Verkaufsfläche in Quadratmetern
+	\item Marktanteil in Euro \footnote{\label{afterCalc}Nach Berechnung des Huff-Modells}
+	\item Marktanteil in Prozent \cref{afterCalc}
+\end{itemize}
+
+Für ein Gebiet werden folgende Informationen angezeigt:
+
+\begin{itemize}
+	\item Id
+	\item Einwohner
+	\item Kaufkraft in Euro (Durchschnitt pro Monat pro Person)
+	\item Ausgaben für Lebensmittel (Durchschnitt pro Monat pro Haushalt) 
+	\item Wahrscheinlichkeitsfaktor (für den Besuch einer Filiale) \cref{afterCalc}
+	\item Marktanteil der Filiale im Gebiet in Euro \cref{afterCalc}
+	\item Marktanteil der Filiale im Gebiet in Prozent \cref{afterCalc}
+\end{itemize}
+
+Die Informationen zu Parkplätzen und Verkaufsfläche werden über ein Input-Feld dargestellt (siehe Abbildung \ref{img:filiale}).
+Diese Parameter werden für die Attraktivitätsberechnung der Filiale verwendet und müssen für neue Filialen eingegeben werden.
+Bei bestehenden Filialen lässt sich somit aber auch die Berechnung des Huff-Modells für die gleiche Filiale mit verschiedenen Parametern ermöglichen.
+
+\begin{figure}[H]
+	\makebox[\textwidth][c]{
+		\includegraphics[scale=0.5]{resources/images/filiale_of.png}}
+	\caption{Bildschirmausschnitt des Objektfensters einer Filiale}
+	\label{img:filiale}
+\end{figure}
+
+Das Objektfenster öffnet sich automatisch nach dem Anlegen einer neuen Filiale.
+Hierbei werden die Parkplätze und Verkaufsfläche zunächst mit jeweils dem Wert Null angelegt und angezeigt.
+Bevor das Huff-Modell berechnet werden kann, müssen valide Werte in beide Felder eingetragen werden, da solange der Knopf deaktiviert ist.
+Die Aktivierung des Knopfes erfolgt über die einfache Validierung der Werte auf eine positive Zahl.\\
+Der Knopf zur Berechnung des Huff-Modells ruft eine Funktion im Feature-Service auf, die die Berechnung für die ausgewählte Filiale durchführen soll.
+Über den Schließ-Knopf (Icon: \emph{close}, siehe Abbildung \ref{img:filiale}) wird das Objektfenster geschlossen und der Wert des Observables \emph{currentlySelectedFeature\$} auf \emph{null} gesetzt.
+
+Mit der Implementierung des Objektfensters sind nun sämtliche Komponenten der Anwendung bereit, die für die Funktion der Berechnung des Huff-Modells und anschließenden farbliche Färbung der Zensusgebiete erforderlich sind.
+

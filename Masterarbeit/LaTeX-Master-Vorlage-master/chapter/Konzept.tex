@@ -79,15 +79,6 @@ Um die Huff-Formel korrekt kalibrieren zu können, genauer gesagt die Parameter 
 	\item Studie durchführen für die Frequenz in welcher Kunden Einrichtungen besuchen
 \end{itemize}
 
-Einwohner pro Gebiet berechnen = Größe mal Faktor 0,006
-
-Kaufkraft der gebiete = Einwohner mal durchschnittliche Kaufkraft Berlin (21,687€) Quelle https://de.statista.com/statistik/daten/studie/168591/umfrage/kaufkraft-nach-bundeslaendern/
-
-Ausgaben für Lebensmittel = Einwohner mal durchschnittliche Ausgaben für Lebensmittel (356 € Quelle https://www.destatis.de/DE/Themen/Gesellschaft-Umwelt/Einkommen-Konsum-Lebensbedingungen/Konsumausgaben-Lebenshaltungskosten/Tabellen/privater-konsum-d-lwr.html;jsessionid=848A137E8A70CBDB1F7FD40382B122EE.internet8721)
-
-durschnittlicher größe eines lidl = 900m² (https://www.handelsdaten.de/lebensmitteldiscounter/durchschnittliche-verkaufsflaeche-der-discountmaerkte-lidl-deutschland)
-
-
 Weiterführend muss bestimmt werden wie und ob sich das Potenzial über den Verlauf der Distanz des Einzugsbereiches verändert.
 Bleibt das Potenzial konstant, würde dies bedeuten die Kunden in den äußeren Bereichen des Gebiets kommen mit der gleichen Wahrscheinlichkeit in die Filiale wie die Kunden in den unmittelbar angrenzenden Bereichen.
 Aber gegenteilig wäre ein linear abnehmendes Potenzial wahrscheinlich ebenso nicht vollständig realitätsgetreu, da Kunden ab einer Distanz, die zu groß für den Fuß-Weg wäre, eher das Auto oder den öffentlichen Nahverkehr wählen und dann eventuell direkt zu einer attraktiveren Filiale weiter weg fahren würden. 
@@ -97,8 +88,6 @@ Aus Gründen der Vereinfachung und Demonstration wird für den Prototyp eine ein
 Nachdem nun zunächst die Potenzialberechnung für eine einzelne Filiale anhand der beschriebenen Parameter und Funktionen erfolgen konnte gilt es nun das Potenzial in einem bestehendem Filialnetz zu berechnen.
 Als Ergebnis wird hierbei eine Wahrscheinlichkeitsberechnung für sämtliche Filialen des Netzes erwartet, sodass jedem Feld des summierten Gesamt-Einzugsgebietes einen Wahrscheinlichkeitswert zugeordnet werden kann, der beeinflusst von sämtlichen anderen Filialen des Netzes, für jede Filiale des Netzes unterschiedlich sein kann und dementsprechend eingefärbt werden kann.
 Das Endergebnis zeigt somit die beschriebene farbliche Gravitationskarte.
-
-Für eine komplexere Berechnung mit mehr Faktoren kann das MCI-Modell von Nakanishi und Cooper verwendet werden, welches die Weiterentwicklung der einfachen Huff-Modells darstellt \cite{mciModell}.
 \newpage
 
 \section{Architektur}

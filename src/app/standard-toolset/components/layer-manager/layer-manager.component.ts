@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/
 import { LayerIdentifier } from '../../../layer/model/layer-identifier';
 import {BaseMapService} from '../../../base-map/base-map.service';
 
-type LayerManagerEntry = { layerIdentifier: LayerIdentifier, zIndex: number };
+type LayerManagerEntry = { layerIdentifier: LayerIdentifier, visibility: boolean };
 
 @Component({
   selector: 'app-layer-manager',
@@ -19,7 +19,7 @@ export class LayerManagerComponent {
   ) {
     this.layerManagerEntries = baseMapService.getLayers().getArray().map(layer => {
       return {layerIdentifier: layer.get('name'),
-              zIndex: layer.getZIndex()} as LayerManagerEntry;
+              visibility: layer.getVisible()} as LayerManagerEntry;
     });
   }
 
@@ -32,7 +32,4 @@ export class LayerManagerComponent {
       this.baseMapService.getLayers().getArray().find(layer => layer.get('name') === layerIdentifier).setVisible(false);
     }
   }
-
-  // Order by ascending property value
-  zIndexDescOrder = (a: LayerManagerEntry, b: LayerManagerEntry): number => b.zIndex - a.zIndex;
 }
