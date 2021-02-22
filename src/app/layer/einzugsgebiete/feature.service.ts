@@ -124,8 +124,8 @@ export class FeatureService {
     const newFilialeProperties: FilialeProperties = {
       id,
       type: FeatureTypeEnum.FILIALE,
-      parkplaetze: 0,
-      verkaufsflaeche: 0,
+      parkplaetze: 90,
+      verkaufsflaeche: 900,
       attractiveness: 0,
       coordinates: (feature.getGeometry() as Point).getCoordinates()
     };
@@ -159,10 +159,13 @@ export class FeatureService {
     const filiale = this._storeMap.find(store => store.id === filialId);
     let maxProbability = 0;
 
+    if(filiale.attractiveness === 0) {
+      filiale.attractiveness = this.calculateAttractivenessForFiliale(filiale.parkplaetze, filiale.verkaufsflaeche);
+    }
+
     this._zensusMap.forEach(gebiet => {
       let netzProbability = 0;
-      let filialProbability: number;
-      filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
+      const filialProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(filiale.coordinates, gebiet.coordinates), this.DIST_DECAY);
       this._storeMap.forEach(store => {
         netzProbability += Math.pow(store.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates), this.DIST_DECAY);
       });
@@ -228,8 +231,8 @@ export class FeatureService {
     //   feature.set('indicator', 9);
     // }
     else {
-      gebiet.indicator = 10;
-      feature.set('indicator', 10);
+      gebiet.indicator = 9;
+      feature.set('indicator', 9);
     }
   }
 

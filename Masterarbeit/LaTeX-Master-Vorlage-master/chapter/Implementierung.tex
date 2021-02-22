@@ -166,7 +166,7 @@ OpenLayers definiert standardmäßig für jeden Vector Layer einen Stil, der die
 Soll dieser Stil geändert werden, muss auf dem Layer ein neuer Stil definiert werden.
 Dies kann über ein statisches Style-Objekt erfolgen oder über eine dynamische Style-Funktion.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, label={code:filialStyle}]
 	
 	const filialStyle = new Style({
 		image: new Icon({
@@ -397,5 +397,147 @@ Die Aktivierung des Knopfes erfolgt über die einfache Validierung der Werte auf
 Der Knopf zur Berechnung des Huff-Modells ruft eine Funktion im Feature-Service auf, die die Berechnung für die ausgewählte Filiale durchführen soll.
 Über den Schließ-Knopf (Icon: \emph{close}, siehe Abbildung \ref{img:filiale}) wird das Objektfenster geschlossen und der Wert des Observables \emph{currentlySelectedFeature\$} auf \emph{null} gesetzt.
 
-Mit der Implementierung des Objektfensters sind nun sämtliche Komponenten der Anwendung bereit, die für die Funktion der Berechnung des Huff-Modells und anschließenden farbliche Färbung der Zensusgebiete erforderlich sind.
+Mit der Implementierung des Objektfensters sind nun sämtliche Komponenten der Anwendung bereit, die für Berechnung des Huff-Modells und anschließenden farbliche Einfärbung der Zensusgebiete erforderlich sind.
 
+Die Berechnung des Huff-Modells erfolgt im Feature Service.
+Die für das Huff-Modell erforderliche Parameter Attraktivität und Faktor der Attraktivität $\alpha$, sowie Distanz und Faktor der Distanzfunktion $\beta$ müssen bestimmt werden.
+Wie bereits im Kapitel \ref{subsec:gravitationmodel} zum Gravitationsmodell nach Huff erläutert, sind die Faktoren $\alpha$ und $\beta$ für die Berechnung im realen Wirtschaftsumfeld empirisch anhand von realen Markt- und Wirtschaftsdaten aus Umfragen mit Kunden zu analysieren und zu bestimmen.
+Für den Prototypen sind diese Werte auf 1,5 für $\alpha$ und 1,5 für $\beta$ festgelegt.
+Angenommen wird also, dass je attraktiver eine Filiale ist desto Wahrscheinlicher auch ein Besuch eines Kunden ist.
+Ebenso, je näher ein Kunde an einer Filiale wohnt desto wahrscheinlicher ist auch hier der Besuch der Filiale.\\
+Die Attraktivität A der Filiale wird über die Summe der Parkplätze und Verkaufsfläche berechnet.
+Je größer eine Filiale desto größer ist wahrscheinlich das Sortiment und die Menge der Lebensmittel.
+Und je mehr Parkplätze vor der Filiale vorhanden sind desto mehr Kunden können angezogen werden, die einen weiteren Anreiseweg haben oder mehr auf einmal einkaufen wollen.
+Für die Berechnung der Attraktivität sind viele weitere Parameter denkbar jedoch bieten die Anzahl der Parkplätze und die Verkaufsfläche in Quadratmetern aus den aufgeführten Gründen eine fundierte Grundlage für die Bewertung der Attraktivität.\\
+Die Distanz D der Filiale zu den Gebieten ist eine einfache Distanzberechnung in OpenLayers vom Standort der Filiale zum Mittelpunkt des jeweiligen Gebiets.
+Zunächst werden aus den Features der Gebiete über \emph{Type Assertion} Multipolygone über die OpenLayers interne Funktionen zur Mittelpunktbestimmung bieten.
+Da Multipolygone mehrere Mittelpunkte haben, wird der erste Eintrag aus dem Array gewählt.\\
+OpenLayers bietet für die Längen- und Größenberechnung verschiedene Funktionen, die sich in der Berechnung unter Einbezug der Projektion unterscheiden \footcite{openlayers_measure_example}.
+Die Koordinaten der Filiale und des Mittelpunkts des Gebiets werden zu einem \emph{LineString} Objekt zusammengefasst \footcite{openlayers_linestring}.
+Von dieser Linie wird nun die Länge berechnet.
+Wird die einfache Berechnung \emph{LineString.getLength()} verwendet, berechnet OpenLayers die Länge anhand von Orthodromen \footcite{orthodrome_frassek} oder der Großkreisdistanz \footcite{great_circle_distance}.
+Wenn auch hervorragend für Flugdistanzen verwendbar, lässt diese Berechnung die Ergebnisse für Entfernungen auf dem Boden ungenau werden.\\
+Über das \emph{Sphere} Paket von OpenLayers lässt sich aber eine Länge anhand der Projektion der Karte berechnen, welches zu den gewünschten Ergebnissen führt \footcite{openlayers_sphere}.
+
+\begin{lstlisting}[language=JavaScript]
+	
+	// distance decay
+	const DIST_DECAY = 1.5;
+	// attractiveness enhancement factor
+	const ATT_ENHANCE_FACTOR = 1.5;
+	
+	const centerCoordinates = (gebietFeature.getGeometry() as MultiPolygon).getInteriorPoints().getFirstCoordinate();
+	
+	const distance = ol_sphere.getLength(new LineString([filialCoordinates, centerCoordinates]), {projection: 'EPSG:3857'});
+	
+	const attractiveness = filiale.parkingSpaces + filiale.salesArea;
+	
+\end{lstlisting}
+
+Über den Knopf \emph{Berechne Huff-Modell} (Icon: \emph{miscellaneous\_services}, siehe Abbildung \ref{img:filiale}) im Objektfenster der ausgewählten Filiale wird die Id der Filiale an den Feature Service übergeben und die Berechnung gestartet.
+Über die Id wird das Feature der entsprechenden Filiale im Filiallayer identifiziert und kann bearbeitet werden.\\
+Die Wahrscheinlichkeit des Besuchs eines Gebiets für die ausgewählte Filiale innerhalb des gesamten Filialnetzes ergibt sich, wenn die Wahrscheinlichkeit der ausgewählten Filiale ins Verhältnis zur Netzwahrscheinlichkeit gesetzt wird.
+Für die Filiale errechnet sich die Wahrscheinlichkeit des Besuchs der einzelnen Gebiete daher anhand von zwei \emph{ForEach} Schleifen.
+Zunächst wird über alle Gebiete iteriert, um die Wahrscheinlichkeit sämtlicher Gebiete für die ausgewählte Filiale zu berechnen.
+In der Schleife der Gebiete muss für jedes Gebiet über die Filialen iteriert werden, um die Menge der Wahrscheinlichkeiten aller Filialen zu dem Gebiet zu berechnen.
+
+\begin{lstlisting}[language=JavaScript]
+	
+	zensusgebiete.forEach(gebiet => {
+		// probability for all stores
+		let netProbability = 0;
+		
+		// probability for the selected store alone
+		const storeProbability = Math.pow(filiale.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(distance, this.DIST_DECAY);
+		
+		filialen.forEach(store => {
+			netProbability += Math.pow(store.attractiveness, this.ATT_ENHANCE_FACTOR) / Math.pow(this.calculateDistancesForFiliale(store.coordinates, gebiet.coordinates), this.DIST_DECAY);
+		});
+	
+		// probability inside net of stores
+		gebiet.probability = storeProbability / netProbability;
+
+		// marketshare
+		gebiet.marketShare = gebiet.spendituteGroc * gebiet.probability;
+		gebiet.marketSharePercentage = gebiet.marketShare / gebiet.spendituteGroc;
+	});
+\end{lstlisting}
+
+Nachdem jedes Gebiet Besuchswahrscheinlichkeiten ausgerechnet bekommen hat, wird der Marktanteil prozentual sowie monetär für ein besseres Verständnis sowie eine bessere Einordnung errechnet.
+Hierzu werden die Ausgaben des Gebiets für Lebensmittel im Monat mit der Wahrscheinlichkeit des Besuchs multipliziert, um den Anteil der Lebensmittelausgaben in Euro des Gebiets für die ausgewählte Filiale zu errechnen.
+Wird dieser Betrag nun ins Verhältnis zu den Gesamtausgaben für Lebensmittel im Gebiet gesetzt, errechnet sich der prozentuale Anteil.
+Erfolgten diese Schritte für alle Gebiete und werden die Beträge des Anteils der Ausgaben der Filiale und der Gesamtausgaben pro Gebiet summiert, ergibt sich der Marktanteil der Filiale im Netz in Euro und, im Verhältnis zu einander, in Prozent.
+
+\begin{lstlisting}[language=JavaScript]
+	
+	let marketShareTotal = 0;
+	let totalMarketExpenditure = 0;
+	this._zensusMap.forEach((gebiet: ZensusProperties) => {
+		marketShareTotal += gebiet.marketShare;
+		totalMarketExpenditure += gebiet.spendituteGroc;
+	});
+	filiale.marketShare = marketShareTotal;
+	filiale.marketSharePercentage = marketShareTotal / totalMarketExpenditure;
+	
+\end{lstlisting}
+
+Bei jeder Berechnung der Wahrscheinlichkeit des Besuchs der Gebiete für die ausgewählte Filiale wird final nun noch das Gebiet eingefärbt.
+Hierzu wird auf jedem abhängig der errechneten Wahrscheinlichkeit ein Indikator gesetzt, der einer bestimmten Farbe entspricht.
+
+\begin{lstlisting}[language=JavaScript]
+	
+	const probabilityInPercent = gebiet.probability * 100;
+	
+	if (probabilityInPercent > 80) {
+		gebiet.indicator = 1;
+	}
+	else if (probabilityInPercent < 80 && probabilityInPercent > 70) {
+		gebiet.indicator = 2;
+	}
+
+	...
+	
+	else {
+		gebiet.indicator = 9;
+	}
+\end{lstlisting}
+
+
+Dieser Indikator wird im Renderzyklus der Gebiete innerhalb der \emph{StyleFunction} pro Gebiet ausgelesen und das Gebiet entsprechend eingefärbt (ähnlich zur StyleFunction der Filialen \ref{code:filialStyle}).
+
+\begin{lstlisting}[language=JavaScript]
+	
+	protected readonly colorGradient: ColorInterface[] = [
+	{ gravitationalRing: 1, value: 'rgb(255,100,100)'},
+	{ gravitationalRing: 2, value: 'rgb(252,145,145)'},
+	{ gravitationalRing: 3, value: 'rgb(248,161,123)'},
+	{ gravitationalRing: 4, value: 'rgb(232,180,112)'},
+	{ gravitationalRing: 5, value: 'rgb(208,198,117)'},
+	{ gravitationalRing: 6, value: 'rgb(178,214,138)'},
+	{ gravitationalRing: 7, value: 'rgb(138,217,157)'},
+	{ gravitationalRing: 8, value: 'rgb(90,217,183)'},
+	{ gravitationalRing: 9, value: 'rgb(0,215,212)'}
+	];
+	
+	const gebieteStyle = new Style({
+		stroke: new Stroke({
+			color: 'white',
+			width: 2,
+			lineDash: [0.1, 7]
+		}),
+		fill: new Fill({
+			color: 'rgba(52, 164, 235, 0.5)'
+		})
+	});
+
+	const gebieteStyleFunction = (feature, resolution) => {
+		const indicator = feature.indicator;
+		
+		if (!indicator) {
+			return this.ezbLineStyle;
+		}
+		const color = colorGradient.find(color => color.gravitationalRing === indicator).value;
+		gebieteStyle.getFill().setColor(color);
+		return gebieteStyle;
+	}
+\end{lstlisting}
