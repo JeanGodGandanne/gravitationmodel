@@ -105,7 +105,7 @@ export class FeatureService {
             id: feature.get('id'),
             type: FeatureTypeEnum.FILIALE,
             attractiveness: this.calculateAttractivenessForFiliale(feature.get('parkplaetze'), feature.get('verkaufsflaeche')),
-            parkplaetze: feature.get('parkplaetze'),
+            parkplaetze: Math.round(feature.get('verkaufsflaeche') / 10),
             verkaufsflaeche: feature.get('verkaufsflaeche'),
             coordinates: (feature.getGeometry() as Point).getCoordinates()
           } as FilialeProperties,

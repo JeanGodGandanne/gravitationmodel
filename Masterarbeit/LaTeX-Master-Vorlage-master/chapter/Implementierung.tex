@@ -8,7 +8,7 @@ Beschriebene Funktionalitäten werden mit Bildausschnitten unterstützt.
 Die Anwendung wurde als Angular Projekt mittels der Angular CLI erstellt. 
 Über den CLI Befehl 
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, caption={Erstellen eines neuen Projektes}]
 $ ng new gravitationsmodel
 \end{lstlisting}
 
@@ -18,7 +18,7 @@ Eine \emph{package.json}, welche sämtliche Abhängigkeiten dokumentiert, wird b
 Um das Setup abzuschließen müssen weitere Abhängigkeiten in Form von \emph{npm packages} installiert werden.
 Über den Befehl 
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, caption={Hinzufügen des OpenLayers Pakets}]
 $ ng add ol
 \end{lstlisting}
 
@@ -27,14 +27,14 @@ fügt die CLI automatisch das Paket von OpenLayers hinzu und für die korrekte T
 Nachdem die technischen Voraussetzungen geschaffen sind kann mit der Implementierung begonnen werden.
 Auch hierbei bietet die CLI Unterstützung in Form von \emph{Scaffolding} Befehlen.
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, caption={Angular schematic Befehl zum Erstellen}]
 $ ng generate <schematic> [name]
 \end{lstlisting}
 
 generiert Komponenten, Services, Models, Klassen und weitere Code-Gerüste durch den passenden Präfix-Parameter und Namen.
 Angular Komponenten bestehen meist aus einer TypeScript-Klasse (\emph{.component.ts}), einem Template (\emph{.component.html}) sowie Dateien für Styling (\emph{.css} oder \emph{.scss}) und Tests (\emph{.component.spec.ts}).
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, caption={Erstellen der Objektfensterkomponente}]
 $ ng generate component objektfenster
 \end{lstlisting}
 
@@ -46,7 +46,7 @@ Ebenfalls im Zuge der Projekterstellung über die CLI werden Konfigurationsdatei
 
 Die Anwendung kann nun über 
 
-\begin{lstlisting}[language=bash]
+\begin{lstlisting}[language=bash, caption={Starten der Anwendung}]
 	$ ng serve
 \end{lstlisting}
 
@@ -59,7 +59,7 @@ Um diese darzustellen, muss zunächst ein OpenLayers Map-Objekt erstellt und in 
 Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
 Über das bereits installierte OpenLayers Paket wird das Map-Objekt importiert und initialisiert.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Erstellung der Karte}]
 
 	const targetId = 'map';
 	const longitude = 13.451338;
@@ -110,7 +110,7 @@ Hierzu zählen:
 Als nächstes wird der Hintergrundkarten-Layer hinzugefügt.
 Hierzu wird ein neuer Tilelayer initialisiert, eine neue Layer-Quelle (engl. Source) hinzugefügt und der Layer der Karte hinzugefügt.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Erstellung der Hintergrundkarte}]
 	
 	const backgroundLayer = new TileLayer();
 	backgroundLayer.setSource(new OSM());
@@ -130,7 +130,7 @@ Um den Layer später einmal einfach identifizieren zu können, wird dem Layer no
 Nach der Hintergrundkarte müssen nun noch Layer für die Filialen sowie die Zensusgebiete implementiert werden.
 In der OpenLayersMap-Komponente werden dazu zwei neue Layer mit passenden Source-Objekten angelegt.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Erstellung der Filial- und Gebietelayer}]
 
 	const filialLayer = new VectorImageLayer({
 		visible: true,
@@ -166,7 +166,7 @@ OpenLayers definiert standardmäßig für jeden Vector Layer einen Stil, der die
 Soll dieser Stil geändert werden, muss auf dem Layer ein neuer Stil definiert werden.
 Dies kann über ein statisches Style-Objekt erfolgen oder über eine dynamische Style-Funktion.
 
-\begin{lstlisting}[language=JavaScript, label={code:filialStyle}]
+\begin{lstlisting}[language=JavaScript, label={code:filialStyle}, caption={Erstellen des Filialstyles}]
 	
 	const filialStyle = new Style({
 		image: new Icon({
@@ -206,7 +206,7 @@ Da es sich jedoch um zu viele Einträge für eine manuelle Ergänzung der Marktd
 
 Die Datensätze werden über das Feature Format GeoJSON in OpenLayers eingelesen und in eine FeatureCollection (bei einzelnen Daten in ein Feature) umgewandelt, welche der jeweiligen Layer Source hinzugefügt wird.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Laden der GeoJSON-Dateien der Filialen und Gebiete}]
 
 		this.http.get('../assets/filialen.json').subscribe(value => {
 			const readFeatures = this.geoJSONFormat.readFeatures(value);
@@ -286,7 +286,7 @@ Im Layermanager können nun der Name und die Sichtbarkeit pro Layer dargestellt 
 Mit der Interaktion einer Checkbox wird über den zugehörigen Namen der entsprechende Layer im BaseMap-Service identifiziert und das \emph{Visible} Attribut angepasst.
 Der Layermanager erscheint als Fenster nach Aktivierung des entsprechenden Knopfes (Icon: \emph{layer}, siehe Abbildung \ref{img:toolset}).
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Layermanager}]
 	
 type LayerManagerEntry = { layerIdentifier: LayerIdentifier, visibility: boolean };
 
@@ -313,7 +313,7 @@ setLayerVisibility(event: any, layerIdentifier: LayerIdentifier): void {
 Vervollständigt wird das Werkzeug-Set durch die Interaktion eine neue Filiale auf der Karte zu setzen.
 OpenLayers bietet hierzu eine Draw-Interaktion, die es erlaubt einer Layersource ein neues Feature hinzuzufügen.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Draw-Interaktion}]
 
 private addDrawInteraction(): void {
 	this.drawInteraction = new Draw({
@@ -400,7 +400,7 @@ Der Knopf zur Berechnung des Huff-Modells ruft eine Funktion im Feature-Service 
 Mit der Implementierung des Objektfensters sind nun sämtliche Komponenten der Anwendung bereit, die für Berechnung des Huff-Modells und anschließenden farbliche Einfärbung der Zensusgebiete erforderlich sind.
 
 Die Berechnung des Huff-Modells erfolgt im Feature Service.
-Die für das Huff-Modell erforderliche Parameter Attraktivität und Faktor der Attraktivität $\alpha$, sowie Distanz und Faktor der Distanzfunktion $\beta$ müssen bestimmt werden.
+Die für das Huff-Modell erforderliche Parameter Attraktivität A und Faktor der Attraktivität $\alpha$, sowie Distanz D und Faktor der Distanzfunktion $\beta$ müssen bestimmt werden.
 Wie bereits im Kapitel \ref{subsec:gravitationmodel} zum Gravitationsmodell nach Huff erläutert, sind die Faktoren $\alpha$ und $\beta$ für die Berechnung im realen Wirtschaftsumfeld empirisch anhand von realen Markt- und Wirtschaftsdaten aus Umfragen mit Kunden zu analysieren und zu bestimmen.
 Für den Prototypen sind diese Werte auf 1,5 für $\alpha$ und 1,5 für $\beta$ festgelegt.
 Angenommen wird also, dass je attraktiver eine Filiale ist desto Wahrscheinlicher auch ein Besuch eines Kunden ist.
@@ -419,7 +419,7 @@ Wird die einfache Berechnung \emph{LineString.getLength()} verwendet, berechnet 
 Wenn auch hervorragend für Flugdistanzen verwendbar, lässt diese Berechnung die Ergebnisse für Entfernungen auf dem Boden ungenau werden.\\
 Über das \emph{Sphere} Paket von OpenLayers lässt sich aber eine Länge anhand der Projektion der Karte berechnen, welches zu den gewünschten Ergebnissen führt \footcite{openlayers_sphere}.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Huff-Modell Variablen und Parameter}]
 	
 	// distance decay
 	const DIST_DECAY = 1.5;
@@ -441,7 +441,7 @@ Für die Filiale errechnet sich die Wahrscheinlichkeit des Besuchs der einzelnen
 Zunächst wird über alle Gebiete iteriert, um die Wahrscheinlichkeit sämtlicher Gebiete für die ausgewählte Filiale zu berechnen.
 In der Schleife der Gebiete muss für jedes Gebiet über die Filialen iteriert werden, um die Menge der Wahrscheinlichkeiten aller Filialen zu dem Gebiet zu berechnen.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Berechnung des Huff-Modells}]
 	
 	zensusgebiete.forEach(gebiet => {
 		// probability for all stores
@@ -468,7 +468,7 @@ Hierzu werden die Ausgaben des Gebiets für Lebensmittel im Monat mit der Wahrsc
 Wird dieser Betrag nun ins Verhältnis zu den Gesamtausgaben für Lebensmittel im Gebiet gesetzt, errechnet sich der prozentuale Anteil.
 Erfolgten diese Schritte für alle Gebiete und werden die Beträge des Anteils der Ausgaben der Filiale und der Gesamtausgaben pro Gebiet summiert, ergibt sich der Marktanteil der Filiale im Netz in Euro und, im Verhältnis zu einander, in Prozent.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Martkanteil Berechnung}]
 	
 	let marketShareTotal = 0;
 	let totalMarketExpenditure = 0;
@@ -482,9 +482,9 @@ Erfolgten diese Schritte für alle Gebiete und werden die Beträge des Anteils d
 \end{lstlisting}
 
 Bei jeder Berechnung der Wahrscheinlichkeit des Besuchs der Gebiete für die ausgewählte Filiale wird final nun noch das Gebiet eingefärbt.
-Hierzu wird auf jedem abhängig der errechneten Wahrscheinlichkeit ein Indikator gesetzt, der einer bestimmten Farbe entspricht.
+Hierzu wird auf jedem Feature abhängig der errechneten Wahrscheinlichkeit ein Indikator gesetzt, der einer bestimmten Farbe entspricht.
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Setzen des Einfärbeindikators}]
 	
 	const probabilityInPercent = gebiet.probability * 100;
 	
@@ -505,18 +505,18 @@ Hierzu wird auf jedem abhängig der errechneten Wahrscheinlichkeit ein Indikator
 
 Dieser Indikator wird im Renderzyklus der Gebiete innerhalb der \emph{StyleFunction} pro Gebiet ausgelesen und das Gebiet entsprechend eingefärbt (ähnlich zur StyleFunction der Filialen \ref{code:filialStyle}).
 
-\begin{lstlisting}[language=JavaScript]
+\begin{lstlisting}[language=JavaScript, caption={Einfärben der Gebiete}]
 	
 	protected readonly colorGradient: ColorInterface[] = [
-	{ gravitationalRing: 1, value: 'rgb(255,100,100)'},
-	{ gravitationalRing: 2, value: 'rgb(252,145,145)'},
-	{ gravitationalRing: 3, value: 'rgb(248,161,123)'},
-	{ gravitationalRing: 4, value: 'rgb(232,180,112)'},
-	{ gravitationalRing: 5, value: 'rgb(208,198,117)'},
-	{ gravitationalRing: 6, value: 'rgb(178,214,138)'},
-	{ gravitationalRing: 7, value: 'rgb(138,217,157)'},
-	{ gravitationalRing: 8, value: 'rgb(90,217,183)'},
-	{ gravitationalRing: 9, value: 'rgb(0,215,212)'}
+		{ gravitationalRing: 1, value: 'rgb(255, 0, 0)'},
+		{ gravitationalRing: 2, value: 'rgb(255, 70, 0)'},
+		{ gravitationalRing: 3, value: 'rgb(255, 105, 0)'},
+		{ gravitationalRing: 4, value: 'rgb(255, 134, 0)'},
+		{ gravitationalRing: 5, value: 'rgb(255, 160, 0)'},
+		{ gravitationalRing: 6, value: 'rgb(246, 185, 0)'},
+		{ gravitationalRing: 7, value: 'rgb(241, 206, 31)'},
+		{ gravitationalRing: 8, value: 'rgb(236, 227, 66)'},
+		{ gravitationalRing: 9, value: 'rgb(231, 247, 98)'}
 	];
 	
 	const gebieteStyle = new Style({
@@ -541,3 +541,14 @@ Dieser Indikator wird im Renderzyklus der Gebiete innerhalb der \emph{StyleFunct
 		return gebieteStyle;
 	}
 \end{lstlisting}
+
+Für die Farben der einzelnen Gravitationsringe wurde ein Farbgradient von Rot zu Gelb gewählt.
+Besonders hohe Besuchswahrscheinlichkeiten werden mit einer Farbe aus dem roten Spektrum des Gradienten dargestellt und mit abnehmender Wahrscheinlichkeit wird das Gebiet zunehmend gelber.
+Das berechnete Modell kann in der Abbildung \ref{img:calc_modell} begutachtet werden.
+
+\begin{figure}[H]
+	\makebox[\textwidth][c]{
+		\includegraphics[scale=0.4]{resources/images/modell_calculated.png}}
+	\caption{Bildschirmausschnitt des Prototypen nach der Berechnung des Huff-Modells für Filiale 27}
+	\label{img:calc_modell}
+\end{figure}

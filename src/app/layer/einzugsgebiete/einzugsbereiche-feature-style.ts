@@ -1,6 +1,6 @@
 import Style from 'ol/style/Style';
 import Text from 'ol/style/Text';
-import Feature, {FeatureLike} from 'ol/Feature';
+import {FeatureLike} from 'ol/Feature';
 import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
 
@@ -30,19 +30,15 @@ export default class EinzugsbereicheFeatureStyle {
   });
 
   protected readonly colorGradient: ColorInterface[] = [
-    { gravitationalRing: 1, value: 'rgb(255,100,100)'},
-    { gravitationalRing: 2, value: 'rgb(252,145,145)'},
-    { gravitationalRing: 3, value: 'rgb(248,161,123)'},
-    { gravitationalRing: 4, value: 'rgb(232,180,112)'},
-    { gravitationalRing: 5, value: 'rgb(208,198,117)'},
-    { gravitationalRing: 6, value: 'rgb(178,214,138)'},
-    { gravitationalRing: 7, value: 'rgb(138,217,157)'},
-    { gravitationalRing: 8, value: 'rgb(90,217,183)'},
-    { gravitationalRing: 9, value: 'rgb(0,215,212)'},
-    { gravitationalRing: 10, value: 'rgb(0,200,236)'},
-    { gravitationalRing: 11, value: 'rgb(0,180,255)'},
-    { gravitationalRing: 12, value: 'rgb(0,155,255)'},
-    { gravitationalRing: 13, value: 'rgb(95,122,251)'}
+    { gravitationalRing: 1, value: 'rgb(255, 0, 0)'},
+    { gravitationalRing: 2, value: 'rgb(255, 70, 0)'},
+    { gravitationalRing: 3, value: 'rgb(255, 105, 0)'},
+    { gravitationalRing: 4, value: 'rgb(255, 134, 0)'},
+    { gravitationalRing: 5, value: 'rgb(255, 160, 0)'},
+    { gravitationalRing: 6, value: 'rgb(246, 185, 0)'},
+    { gravitationalRing: 7, value: 'rgb(241, 206, 31)'},
+    { gravitationalRing: 8, value: 'rgb(236, 227, 66)'},
+    { gravitationalRing: 9, value: 'rgb(231, 247, 98)'}
   ];
 
   constructor(private fillColor: string) {
@@ -69,7 +65,7 @@ export default class EinzugsbereicheFeatureStyle {
       if (!indicator) {
         return this.ezbLineStyle;
       }
-      const color = this.colorGradient.find(color => color.gravitationalRing === indicator).value;
+      const color = this.colorGradient.find(colorGradient => colorGradient.gravitationalRing === indicator).value;
       this.ezbLineStyle.getFill().setColor(color);
       return this.ezbLineStyle;
     };
