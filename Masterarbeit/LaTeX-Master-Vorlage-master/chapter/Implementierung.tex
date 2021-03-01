@@ -87,15 +87,17 @@ Das View-Objekt besteht aus einer Center-Koordinate und der initialen Zoomstufe 
 Zu beachten ist ebenfalls hierbei die Transformation der Koordinaten von EPSG:4326 in das in OpenLayers standardmäßig genutzte EPSG:3857 über die Funktion \emph{fromLonLat}.
 Die Karte wird ebenfalls mit Standard-Interactions und Standard-Controls initialisiert jedoch sind noch keine Layer hinzugefügt.
 Somit ist jetzt auch noch nichts auf der Karte zu sehen und lediglich bereits erwähnte Controls und Interactions sind sichtbar und bedienbar.
-Hierzu zählen:
+Zu den Controls zählen:
 
-\begin{itemize}[Controls]
+\begin{itemize}
 	\item Zoom
 	\item Rotate (Unsichtbar bei Rotation 0)
 	\item Attribution
 \end{itemize}
 
-\begin{itemize}[Interactions]
+Sowie Interactions:
+
+\begin{itemize}
 	\item Drag rotate
 	\item Drag pan
 	\item Drag zoom

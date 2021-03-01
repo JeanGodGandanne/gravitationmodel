@@ -1,12 +1,12 @@
 \chapter{Konzept}
 \label{ch:concept}
-Die Algorithmen und Prozesse einer Filialplanung spiegeln sehr gut einen allgemeinen Anwendungsfall moderner GIS. 
+Die Algorithmen und Prozesse einer Filialplanung geben sehr gut einen allgemeinen Anwendungsfall moderner GIS wieder. 
 Neben einer einfachen Hintergrundkarte sind die Mitarbeiter auf Zeichenwerkzeuge, Geo-Daten-Anzeige, thematische Karten und Kennzahlen Berechnungen angewiesen, um akkurate und fundierte Prognosen und Planungen treffen zu können.
 Viele theoretische Konzepte und Prozesse passieren hierbei im Hintergrund und sind nicht direkt ersichtlich.
 
-
 In den folgenden Kapiteln werden Prozesse der Standortanalyse beschrieben und der Fokus auf das Gravitationsmodell von Huff als Algorithmus zur Bestimmung des Marktanteils gelegt.
 Ebenso wird die daraus entstehende Architektur des Prototyps vorgestellt.
+
 \section{Algorithmen und Prozesse}
 Die Filialplanung ist ein Prozess, der sich aus mehreren Teilprozessen zusammensetzt. 
 Einer dieser Teilprozesse ist die Standortanalyse bezogen auf Filialen.
@@ -19,39 +19,41 @@ Wo befindet sich der ideale Standort, um eine neue Filiale zu eröffnen?
 
 Um diese Frage fundiert beantworten zu können, ergeben sich mehrere vorliegende Fragen:
 
-Wo kann ich überhaupt eine neue Filiale eröffnen?
-
-Was ist mit meinen Konkurrenten, was ist mit Kannibalisierung meiner eigenen Filialen?
-
-Wie kann ich folglich also sicherstellen, dass sich mein Gesamtumsatz durch die Neueröffnung steigert?\\
+Wo kann ich überhaupt eine neue Filiale eröffnen?\\
+Was ist mit meinen Konkurrenten, was ist mit Kannibalisierung meiner eigenen Filialen?\\
+Wie kann ich folglich also sicherstellen, dass sich mein Gesamtumsatz durch die Neueröffnung steigert?
 
 Die Suche nach dem idealen Standort beginnt zunächst bei der Eingrenzung möglicher Standorte.
 Im modernen Stadtbild ist die Anzahl freier Standorte begrenzt.
 Meist bestimmt das Angebot die Möglichkeiten.
 
 Existiert nun eine Liste möglicher Standorte, muss für jeden Standort der Einfluss auf das bestehende Filialnetz erfasst werden.
-Das bestehende Netz kann nur eigene Filialen beinhalten, um die Kannibalisierung meines eigenen Netzes durch eine Neueröffnung zu analysieren, oder Konkurrenzfilialen und Lager einschliessen, um den Einfluss auf den Gesamtmarkt zu berechnen.
+Das bestehende Netz kann nur eigene Filialen beinhalten, um die Kannibalisierung meines eigenen Netzes durch eine Neueröffnung zu analysieren, oder Konkurrenzfilialen und Lager einschließen, um den Einfluss auf den Gesamtmarkt zu berechnen.
 
 Wichtige Parameter für die Berechnung des Marktanteils der Filialen im Netz sind Attraktivität, Nähe zu Zielgruppen und die Entfernung zu anderen Filialen.
 
-Über das Huff-Modell kann die Marktanteil-Auswirkung aller Standorte berechnet werden.
+Über das Huff-Modell kann die Auswirkung auf den Marktanteil aller Standorte berechnet werden.
 Im Folgenden wird das Modell und zugehörige Komponenten im Detail vorgestellt.
 
-
-
-Um eine realistische Abbildung der Welt auf eine Karte zu bringen benötigt es eine Umrechnung eines Ovales, quasi der Erdkugel, auf eine Rechteck, im Fall eines Web-Gis des Bildschirms. 
 \subsection{Gravitationsmodell}
 \label{subsec:gravitationmodel}
-Das \textit{Huff-Modell} (engl. Huff Gravitation Model) ist ein mathematisches Modell zur Abgrenzung und Segmentierung von Marktgebieten \cite{Roy2004}.
-Das Modell bestimmt die Wahrscheinlichkeit, mit der Kunden einen Standort (Filiale, Einkaufszentrum) in Abhängigkeit von Distanz und Attraktivität aufsuchen. 
+Gravitationsmodelle in der Ökonomie leiten sich vom newtonschen Gravitationsmodell ab und beschreiben den Einfluss der Marktgrößen verschiedener Länder (meist das BIP) und der Entfernung zwischen beiden auf die bilateralen Handelsströme zwischen den Ländern.\\
+Das \textit{Huff-Modell} (engl. Huff Gravitation Model) ist ein mathematisches Modell zur Abgrenzung und Segmentierung von Marktgebieten, welches sich direkt aus deterministischen Modellen zur Anwendung von Gravitationsmodellen in der Bestimmung von Einzugsgebieten im Einzelhandel von William J. Reilly und P.D. Converse ableitet \footcite{reilly_law_1931} \footcite{converse_new_1949}.
+Das Modell bestimmt die Wahrscheinlichkeit, mit der Kunden einen Standort (Filiale, Einkaufszentrum) in Abhängigkeit von Distanz und Attraktivität aufsuchen \footcite{arcgis_funktionsweise_huff}. 
 Die Formel wird im allgemeinen wie folgt dargestellt:
 
-\begin{figure}
-	\centering
-	\includegraphics[]{resources/images/huff_model.jpg}
-	\caption{Formel des Huff-Modells}
-	\label{img:huff_formula}
-\end{figure}
+\begin{equation}
+	P_{i j}=\frac{A_{i}^{\alpha} / D_{i j}^{-\beta}}{\sum_{i=1}^{n}\left(A_{i}^{\alpha} / D_{i j}^{-\beta}\right)}
+\end{equation}
+
+Dabei gilt:
+
+\( P_{i j} \) = die Wahrscheinlichkeit, mit der Kunde j in Filiale i einkauft;\\
+\( A_{i} \) = ein Maß für die Attraktivität der einzelnen Filiale i;\\
+\( D_{i j} \) = die Entfernung von Kunde j zu Filiale i;\\ 
+\( \alpha \) = ein Exponent, der auf die Attraktivität angewendet wird, um die Wahrscheinlichkeit von attraktiveren Standorten zu vergrößern;\\ 
+\( \beta \) = ein Exponent, der auf die Entfernung angewendet wird, um die Wahrscheinlichkeit von entfernten Standorten zu verringern;\\
+n = die Anzahl der Filialen.
 
 Die Wahrscheinlichkeiten werden nun auf der Karte als Punkte dargestellt, die rund um den Standort platziert werden. 
 Die Punkte der selben Wahrscheinlichkeiten werden zu Isowahrscheinlichkeitslinien verbunden. 
@@ -67,7 +69,7 @@ So würde ein potenzieller Kunde aus Brandenburg wahrscheinlich auch in einer Fi
 Berechnet wird also ein Einzugsbereich, um die Filiale herum.
 Ob dies nun eine maximale Fahrtzeit von 30 Minuten ist oder eher eine maximale Distanz von 30 Kilometern, ist auf die einzelne Filiale oder den gewählten Standard der Berechnung zurückzuführen.
 
-Um die Huff-Formel korrekt kalibrieren zu können, genauer gesagt die Parameter alpha und beta empirisch bestimmen zu können, müssen folgende Schritte befolgt werden:
+Um das Modell korrekt kalibrieren zu können, genauer gesagt die Parameter $\alpha$ und $\beta$ empirisch bestimmen zu können, müssen folgende Schritte befolgt werden \footcite{huff_calibrating_2008}:
 
 \begin{itemize}
 	\item Abgrenzung des Erhebungsgebiets
@@ -80,16 +82,17 @@ Um die Huff-Formel korrekt kalibrieren zu können, genauer gesagt die Parameter 
 	\item Studie durchführen für die Frequenz in welcher Kunden Einrichtungen besuchen
 \end{itemize}
 
-Weiterführend muss bestimmt werden wie und ob sich das Potenzial über den Verlauf der Distanz des Einzugsbereiches verändert.
+Der Parameter $\alpha$ sollte nun normalerweise aus den Studienergebnissen abgeleitet werden, indem für die Abhängigkeit der Attraktivität einer Filiale mit der wirklichen Besucherzahl der Filiale ein Faktor bestimmt wird.
+Im Prototypen wird diese Zahl auf 1,5 festgesetzt und somit der Attraktivität einer Filiale eine erhöhte Wichtigkeit beigemessen.\\
+Weiterführend muss nun auch noch bestimmt werden wie und ob sich das Potenzial über den Verlauf der Distanz des Einzugsbereiches verändert, dieses Potential äußert sich im Modell über den Parameter $\beta$.
 Bleibt das Potenzial konstant, würde dies bedeuten die Kunden in den äußeren Bereichen des Gebiets kommen mit der gleichen Wahrscheinlichkeit in die Filiale wie die Kunden in den unmittelbar angrenzenden Bereichen.
 Aber gegenteilig wäre ein linear abnehmendes Potenzial wahrscheinlich ebenso nicht vollständig realitätsgetreu, da Kunden ab einer Distanz, die zu groß für den Fuß-Weg wäre, eher das Auto oder den öffentlichen Nahverkehr wählen und dann eventuell direkt zu einer attraktiveren Filiale weiter weg fahren würden. 
 Daher kann als grundlegende Distanzfunktion quasi eine beliebig komplizierte Formel gewählt werden.
-Aus Gründen der Vereinfachung und Demonstration wird für den Prototyp eine einfache linear abnehmende Distanzfunktion gewählt.
+Aus Gründen der Vereinfachung und Demonstration wird für den Prototyp eine einfache linear abnehmende Distanzfunktion gewählt, welche den Parameter $\beta$ auf 1,5 festlegt.\\
 
 Nachdem nun zunächst die Potenzialberechnung für eine einzelne Filiale anhand der beschriebenen Parameter und Funktionen erfolgen konnte gilt es nun das Potenzial in einem bestehendem Filialnetz zu berechnen.
 Als Ergebnis wird hierbei eine Wahrscheinlichkeitsberechnung für sämtliche Filialen des Netzes erwartet, sodass jedem Feld des summierten Gesamt-Einzugsgebietes einen Wahrscheinlichkeitswert zugeordnet werden kann, der beeinflusst von sämtlichen anderen Filialen des Netzes, für jede Filiale des Netzes unterschiedlich sein kann und dementsprechend eingefärbt werden kann.
 Das Endergebnis zeigt somit die beschriebene farbliche Gravitationskarte.
-\newpage
 
 \section{Architektur}
 Die Architektur der Anwendung ergibt sich hauptsächlich aus den fachlichen Anforderungen und technischen Voraussetzungen. 
