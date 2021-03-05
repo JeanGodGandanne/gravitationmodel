@@ -6,7 +6,6 @@ import Stroke from 'ol/style/Stroke';
 import Feature from 'ol/Feature';
 import Icon from 'ol/style/Icon';
 import {IconFileFormat} from '../shared/icon-file-format';
-import {ObjectWindowService} from '../../object-window/object-window.service';
 
 /**
  * Style generator for Filialen

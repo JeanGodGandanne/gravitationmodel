@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {ObjectWindowService} from './object-window/object-window.service';
-import {InfoBoxService} from './info-box/service/info-box.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +7,7 @@ import {InfoBoxService} from './info-box/service/info-box.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Masterarbeit';
+  title = 'Huff-Modell';
 
   constructor(public objectWindowService: ObjectWindowService) {
   }

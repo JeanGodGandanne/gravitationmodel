@@ -184,16 +184,6 @@ export class FeatureService {
       .getFeatures().find(zgebiet => zgebiet.get('FID') === gebiet.id);
     const wahrscheinlichkeitInProzent = gebiet.probability * 100;
 
-    // const firstDecil = this.calculateGravitationalDecil(maxProbability, 1);
-    // const secondDecil = this.calculateGravitationalDecil(maxProbability, 2);
-    // const thirdDecil = this.calculateGravitationalDecil(maxProbability, 3);
-    // const fourthDecil = this.calculateGravitationalDecil(maxProbability, 4);
-    // const fifthDecil = this.calculateGravitationalDecil(maxProbability, 5);
-    // const sixthDecil = this.calculateGravitationalDecil(maxProbability, 6);
-    // const seventhDecil = this.calculateGravitationalDecil(maxProbability, 7);
-    // const eightsDecil = this.calculateGravitationalDecil(maxProbability, 8);
-    // const ninthDecil = this.calculateGravitationalDecil(maxProbability, 9);
-
     if (wahrscheinlichkeitInProzent > 80) {
       gebiet.indicator = 1;
       feature.set('indicator', 1);
@@ -226,24 +216,10 @@ export class FeatureService {
       gebiet.indicator = 8;
       feature.set('indicator', 8);
     }
-    // else if (wahrscheinlichkeitInProzent < 50 && wahrscheinlichkeitInProzent > 40) {
-    //   gebiet.indicator = 9;
-    //   feature.set('indicator', 9);
-    // }
     else {
       gebiet.indicator = 9;
       feature.set('indicator', 9);
     }
-  }
-
-  private sortZensusMap(a: ZensusProperties, b: ZensusProperties): number {
-    if (a.probability < b.probability) {
-      return -1;
-    }
-    if (a.probability > b.probability) {
-      return 1;
-    }
-    return 0;
   }
 
   private calculateMarketShare(filiale: FilialeProperties): void {
@@ -275,16 +251,6 @@ export class FeatureService {
   private calculateDistanceDecayFactor(): number {
     // Je weiter die Filiale von einem Kunden entfernt ist, desto unwahrscheinlicher ist der Besuch
     return 1.5;
-  }
-
-  /**
-   * calculate the gravitational decay (10% of maximal probability for each gravitational layer) to color gebiete
-   * @param total
-   * @param decil
-   * @private
-   */
-  private calculateGravitationalDecil(total: number, decil: number): number {
-    return total + decil * (total * 0.1);
   }
 
   private getNextID(): number {

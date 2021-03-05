@@ -1,8 +1,6 @@
 import FeatureLayer from '../shared/feature-layer';
 import EinzugsbereicheFeatureStyle from './einzugsbereiche-feature-style';
 import {HttpClient} from '@angular/common/http';
-import VectorLayer from 'ol/layer/Vector';
-import {FeatureService} from './feature.service';
 import VectorImageLayer from 'ol/layer/VectorImage';
 import {LayerIdentifier} from '../model/layer-identifier';
 
@@ -25,8 +23,6 @@ export default class EinzugsbereicheLayer extends FeatureLayer {
       imageRatio: 2
     });
 
-    const grid = this.createTileGrid(2048,
-        10);
     const source = this.createVectorSource(); // do not load smaller tiles to prevent many requests, assuming there is no more detail
     layer.setSource(source);
 

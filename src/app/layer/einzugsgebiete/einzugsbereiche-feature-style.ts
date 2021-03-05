@@ -1,12 +1,11 @@
 import Style from 'ol/style/Style';
-import Text from 'ol/style/Text';
 import {FeatureLike} from 'ol/Feature';
 import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
 
 export interface ColorInterface {
-  gravitationalRing: number,
-  value: string
+  gravitationalRing: number;
+  value: string;
 }
 
 /**
@@ -17,17 +16,7 @@ export interface ColorInterface {
  */
 export default class EinzugsbereicheFeatureStyle {
 
-  private ezbLabelIconStyleSvg = new Style();
   private ezbLineStyle = new Style();
-
-  private textStyle = new Text({
-    text: '',
-    textBaseline: 'middle',
-    font: 'bold 13px OpenSans-Bold, Open Sans',
-    overflow: true,
-    offsetY: -32,
-    offsetX: 14
-  });
 
   protected readonly colorGradient: ColorInterface[] = [
     { gravitationalRing: 1, value: 'rgb(255, 0, 0)'},
@@ -59,9 +48,6 @@ export default class EinzugsbereicheFeatureStyle {
   getStyleFunction(): (feature: FeatureLike) => Style {
     return (feature: FeatureLike): Style => {
       const indicator = feature.get('indicator');
-      // if (feature.get('selected') === true) {
-      //   this.ezbLineStyle.getStroke().setColor('black');
-      // }
       if (!indicator) {
         return this.ezbLineStyle;
       }
