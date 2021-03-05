@@ -1,7 +1,7 @@
 \chapter{Konzept}
 \label{ch:concept}
-Die Algorithmen und Prozesse einer Filialplanung geben sehr gut einen allgemeinen Anwendungsfall moderner GIS wieder. 
-Neben einer einfachen Hintergrundkarte sind die Mitarbeiter auf Zeichenwerkzeuge, Geo-Daten-Anzeige, thematische Karten und Kennzahlen Berechnungen angewiesen, um akkurate und fundierte Prognosen und Planungen treffen zu können.
+Die Algorithmen und Prozesse einer Filialplanung geben einen allgemeinen Anwendungsfall moderner GIS wieder. 
+Neben einer einfachen Hintergrundkarte sind die Mitarbeiter auf Zeichenwerkzeuge, Geo-Daten-Anzeige, thematische Karten und Kennzahlenberechnungen angewiesen, um akkurate und fundierte Prognosen und Planungen treffen zu können.
 Viele theoretische Konzepte und Prozesse passieren hierbei im Hintergrund und sind nicht direkt ersichtlich.
 
 In den folgenden Kapiteln werden Prozesse der Standortanalyse beschrieben und der Fokus auf das Gravitationsmodell von Huff als Algorithmus zur Bestimmung des Marktanteils gelegt.
@@ -11,31 +11,31 @@ Ebenso wird die daraus entstehende Architektur des Prototyps vorgestellt.
 Die Filialplanung ist ein Prozess, der sich aus mehreren Teilprozessen zusammensetzt. 
 Einer dieser Teilprozesse ist die Standortanalyse bezogen auf Filialen.
 Die Wahl eines Standortes ist keinesfalls immer eindeutig und anhand des potenziellen Umsatzes der neuen Filiale zu erkennen.
-So kann es zum Beispiel durchaus sinnvoll sein eine Filiale trotz möglicher Kannibalisierung anderer eigener Filialen dennoch zu eröffnen, weil dies gleichzeitig zu Umsatzeinbußen bei Konkurrenzfilialen führt. 
+So kann es zum Beispiel durchaus sinnvoll sein, eine Filiale trotz möglicher Kannibalisierung anderer eigener Filialen dennoch zu eröffnen, weil dies gleichzeitig zu Umsatzeinbußen bei Konkurrenzfilialen führt. 
 Der eigene Marktanteil und Gesamtumsatz ist der entscheidende Faktor bei der Filialplanung.
-Durch die Anwendung ausgewählter Algorithmen gilt es also folgende Leitfrage zu beantworten:
+Durch die Anwendung ausgewählter Algorithmen gilt es folgende Leitfrage zu beantworten:
 
 Wo befindet sich der ideale Standort, um eine neue Filiale zu eröffnen?
 
-Um diese Frage fundiert beantworten zu können, ergeben sich mehrere vorliegende Fragen:
+Um diese Frage fundiert beantworten zu können, müssen zunächst folgende Fragen beantwortet werden:
 
-Wo kann ich überhaupt eine neue Filiale eröffnen?\\
-Was ist mit meinen Konkurrenten, was ist mit Kannibalisierung meiner eigenen Filialen?\\
-Wie kann ich folglich also sicherstellen, dass sich mein Gesamtumsatz durch die Neueröffnung steigert?
+Wo kann eine neue Filiale eröffnet werden?\\
+Was ist mit Konkurrenten, was ist mit Kannibalisierung der eigenen Filialen?\\
+Wie kann sichergestellt werden, dass sich der Gesamtumsatz durch die Neueröffnung steigert?
 
 Die Suche nach dem idealen Standort beginnt zunächst bei der Eingrenzung möglicher Standorte.
 Im modernen Stadtbild ist die Anzahl freier Standorte begrenzt.
 Meist bestimmt das Angebot die Möglichkeiten.\\
 Existiert nun eine Liste möglicher Standorte, muss für jeden Standort der Einfluss auf das bestehende Filialnetz erfasst werden.
-Das bestehende Netz kann nur eigene Filialen beinhalten, um die Kannibalisierung meines eigenen Netzes durch eine Neueröffnung zu analysieren, oder Konkurrenzfilialen und Lager einschließen, um den Einfluss auf den Gesamtmarkt zu berechnen.\\
+Das bestehende Netz kann nur eigene Filialen beinhalten, um die Kannibalisierung des eigenen Netzes durch eine Neueröffnung zu analysieren, oder Konkurrenzfilialen und Lager einschließen, um den Einfluss auf den Gesamtmarkt zu berechnen.\\
 Wichtige Parameter für die Berechnung des Marktanteils der Filialen im Netz sind Attraktivität, Nähe zu Zielgruppen und die Entfernung zu anderen Filialen.\\
 Über das Huff-Modell kann die Auswirkung auf den Marktanteil aller Standorte berechnet werden.
-Im Folgenden wird das Modell und zugehörige Komponenten im Detail vorgestellt.
+Im Folgenden werden das Modell und zugehörige Komponenten im Detail vorgestellt.
 
 Gravitationsmodelle in der Ökonomie leiten sich vom newtonschen Gravitationsmodell ab und beschreiben den Einfluss der Marktgrößen verschiedener Länder (meist das BIP) und der Entfernung zwischen beiden auf die bilateralen Handelsströme zwischen den Ländern.\\
 Das \textit{Huff-Modell} (engl. Huff Gravitation Model) ist ein mathematisches Modell zur Abgrenzung und Segmentierung von Marktgebieten, welches sich direkt aus deterministischen Modellen zur Anwendung von Gravitationsmodellen in der Bestimmung von Einzugsgebieten im Einzelhandel von William J. Reilly und P.D. Converse ableitet \footcite{reilly_law_1931} \footcite{converse_new_1949}.
 Das Modell bestimmt die Wahrscheinlichkeit, mit der Kunden einen Standort (Filiale, Einkaufszentrum) in Abhängigkeit von Distanz und Attraktivität aufsuchen \footcite{arcgis_funktionsweise_huff}. 
-Die Formel wird im allgemeinen wie folgt dargestellt:
+Die Formel wird im Allgemeinen wie folgt dargestellt:
 
 \begin{equation}
 	P_{i j}=\frac{A_{i}^{\alpha} / D_{i j}^{-\beta}}{\sum_{i=1}^{n}\left(A_{i}^{\alpha} / D_{i j}^{-\beta}\right)}
@@ -51,17 +51,17 @@ Dabei gilt:
 n = die Anzahl der Filialen.
 
 Die Wahrscheinlichkeiten werden nun auf der Karte als Punkte dargestellt, die rund um den Standort platziert werden. 
-Die Punkte der selben Wahrscheinlichkeiten werden zu Isowahrscheinlichkeitslinien verbunden. 
+Die Punkte dieser Wahrscheinlichkeiten werden zu Isowahrscheinlichkeitslinien verbunden. 
 So entstehen zu jedem Standort verschiedene Gravitationsebenen, die farblich gekennzeichnet werden. 
-Die Beeinflussung der verschiedenen Gravitationsebenen führt zu mehreren Farbverläufen, die ein komplexes Bild der Standort Landschaft bilden.
+Die Beeinflussung der verschiedenen Gravitationsebenen führt zu mehreren Farbverläufen, die ein komplexes Bild der Standortlandschaft bilden.
 In seiner einfachsten Form berücksichtigt das Modell nur die Distanz und eine simple Kennzahl der Attraktivität (zum Beispiel in Form eines Rankings) für die Wahrscheinlichkeitsberechnung. 
 Hierzu wird zunächst ein maximaler Einflussbereich der Filialstandorte definiert. 
 Dieser Bereich stellt die Grundlage der Berechnungen dar und muss deswegen bekannt und mit berechenbaren Kennzahlen gefüllt sein.
 Zur Bestimmung des Bereiches können einfache geografische Abstände oder Gebiete benutzt werden, wie zum Beispiel eine Berechnung auf Grundlage Berlins als Einflussbereichs.
-Vor Allem aber kommen zeitliche oder örtliche Parameter zum Einsatz.
+Vor allem aber kommen zeitliche oder örtliche Parameter zum Einsatz.
 So macht es aus wirtschaftlicher Sicht viel mehr Sinn das Gebiet anhand von Fahrzeitzonen zu berechnen.
-So würde ein potenzieller Kunde aus Brandenburg wahrscheinlich auch in einer Filiale in Berlin einkaufen gehen, wenn diese attraktiver, örtlich näher oder besser zu erreichen ist.
-Berechnet wird also ein Einzugsbereich, um die Filiale herum.
+Ein potenzieller Kunde aus Brandenburg würde wahrscheinlich auch in einer Filiale in Berlin einkaufen gehen, wenn diese attraktiver, örtlich näher oder besser zu erreichen ist.
+Berechnet wird also ein Einzugsbereich um die Filiale herum.
 Ob dies nun eine maximale Fahrtzeit von 30 Minuten ist oder eher eine maximale Distanz von 30 Kilometern, ist auf die einzelne Filiale oder den gewählten Standard der Berechnung zurückzuführen.
 
 Um das Modell korrekt kalibrieren zu können, genauer gesagt die Parameter $\alpha$ und $\beta$ empirisch bestimmen zu können, müssen folgende Schritte befolgt werden \footcite{huff_calibrating_2008}:
@@ -78,15 +78,16 @@ Um das Modell korrekt kalibrieren zu können, genauer gesagt die Parameter $\alp
 \end{itemize}
 
 Der Parameter $\alpha$ sollte nun normalerweise aus den Studienergebnissen abgeleitet werden, indem für die Abhängigkeit der Attraktivität einer Filiale mit der wirklichen Besucherzahl der Filiale ein Faktor bestimmt wird.
-Im Prototypen wird diese Zahl auf 1,5 festgesetzt und somit der Attraktivität einer Filiale eine erhöhte Wichtigkeit beigemessen.\\
-Weiterführend muss nun auch noch bestimmt werden wie und ob sich das Potenzial über den Verlauf der Distanz des Einzugsbereiches verändert, dieses Potential äußert sich im Modell über den Parameter $\beta$.
-Bleibt das Potenzial konstant, würde dies bedeuten die Kunden in den äußeren Bereichen des Gebiets kommen mit der gleichen Wahrscheinlichkeit in die Filiale wie die Kunden in den unmittelbar angrenzenden Bereichen.
-Aber gegenteilig wäre ein linear abnehmendes Potenzial wahrscheinlich ebenso nicht vollständig realitätsgetreu, da Kunden ab einer Distanz, die zu groß für den Fuß-Weg wäre, eher das Auto oder den öffentlichen Nahverkehr wählen und dann eventuell direkt zu einer attraktiveren Filiale weiter weg fahren würden. 
+Im Prototyp wird diese Zahl auf 1,5 festgesetzt und somit der Attraktivität einer Filiale eine erhöhte Wichtigkeit beigemessen.\\
+Weiterführend muss nun bestimmt werden, wie und ob sich das Potenzial über den Verlauf der Distanz des Einzugsbereiches verändert. 
+Dieses Potenzial äußert sich im Modell über den Parameter $\beta$.
+Bleibt das Potenzial konstant, würde dies bedeuten, dass die Kunden in den äußeren Bereichen des Gebiets mit der gleichen Wahrscheinlichkeit in die Filiale kommen, wie die Kunden in den unmittelbar angrenzenden Bereichen.
+Andererseits wäre ein linear abnehmendes Potenzial ebenso nicht realitätsgetreu, da Kunden ab einer Distanz, die zu groß für den Fußweg wäre, eher das Auto oder den öffentlichen Nahverkehr wählen und dann eventuell direkt zu einer attraktiveren Filiale weiter wegfahren würden. 
 Daher kann als grundlegende Distanzfunktion quasi eine beliebig komplizierte Formel gewählt werden.
 Aus Gründen der Vereinfachung und Demonstration wird für den Prototyp eine einfache linear abnehmende Distanzfunktion gewählt, welche den Parameter $\beta$ auf 1,5 festlegt.\\
 
-Nachdem nun zunächst die Potenzialberechnung für eine einzelne Filiale anhand der beschriebenen Parameter und Funktionen erfolgen konnte gilt es nun das Potenzial in einem bestehendem Filialnetz zu berechnen.
-Als Ergebnis wird hierbei eine Wahrscheinlichkeitsberechnung für sämtliche Filialen des Netzes erwartet, sodass jedem Feld des summierten Gesamt-Einzugsgebietes einen Wahrscheinlichkeitswert zugeordnet werden kann, der beeinflusst von sämtlichen anderen Filialen des Netzes, für jede Filiale des Netzes unterschiedlich sein kann und dementsprechend eingefärbt werden kann.
+Nachdem nun zunächst die Potenzialberechnung für eine einzelne Filiale anhand der beschriebenen Parameter und Funktionen erfolgen konnte, gilt es nun das Potenzial in einem bestehendem Filialnetz zu berechnen.
+Als Ergebnis wird hierbei eine Wahrscheinlichkeitsberechnung für sämtliche Filialen des Netzes erwartet, sodass jedem Feld des summierten Gesamt-Einzugsgebietes ein Wahrscheinlichkeitswert zugeordnet werden kann, der, beeinflusst von sämtlichen anderen Filialen des Netzes, für jede Filiale des Netzes unterschiedlich sein und dementsprechend eingefärbt werden kann.
 Das Endergebnis zeigt somit die beschriebene farbliche Gravitationskarte.
 
 \section{Architektur}
@@ -126,22 +127,17 @@ Der Karte werden drei Layer hinzugefügt:
 
 Fachlich betrachtet kann der Hintergrund-Layer auch als Hintergrundkarte bezeichnet werden, technisch ist er jedoch ebenso ein Layer wie die Filialen und Gebiete. 
 Die Layer werden im BaseMap-Service erstellt und der Karte in der OpenLayersMap-Komponente hinzugefügt.
-Zu den Layern gehören entsprechende Sources, über die Features in den Layer und somit dargestellt werden können.
-
+Zu den Layern gehören entsprechende Sources, über die Features in den Layer eingebunden und somit dargestellt werden können.\\
 Der Hintergrund-Layer ist ein Kachel-Layer (Englisch: Tile-Layer).
 Der Layer wird durch ein Gitter (Englisch: Grid) in einzelne Kacheln eingeteilt, die alle einzeln mit Bildern befüllt werden.
 Dies ist ein Optimierungsschritt, der den Datentransfer reduziert sowie die Renderingzeit und -performance verbessert.
-Die Kachelbilder werden über Http-Requests an die OpenStreetMap-API geladen.
-
+Die Kachelbilder werden über Http-Requests an die OpenStreetMap-API geladen.\\
 Die beiden Feature-Layer der Filialen und Gebiete sind Vektor-Layer (Englisch: Vector-Layer).
-Die jeweiligen Sources der Layer lesen die Features über lokale GeoJSON-Dateien im Feature-Service ein und befüllen den Layer im BaseMap-Service mit den Sourcen.
-
+Die jeweiligen Sources der Layer lesen die Features über lokale GeoJSON-Dateien im Feature-Service ein und befüllen den Layer im BaseMap-Service mit den Sourcen.\\
 Nun sind die Features über ihre Layer auf der Karte zu sehen und können über eine Selektions-Interaktion in der Karte ausgewählt werden.
 Über den SelectFeature-Service wird daraufhin das Objektfenster aktiviert, welches Informationen über das Feature enthält und die Berechnung des Huff-Modells für die selektierte Filiale starten kann.
-Die Daten des Features werden über den Objektfenster-Service in das Objektfenster injiziert.
-
-Über die Tool-Komponente kann eine neue Filiale auf die Karte gesetzt werden und die Layer gesteuert werden.
-
-Sobald eine neue Filiale auf der Karte gesetzt ist wird über den Neue-Filiale-Service ein weiteres Feature in die Filiale-LayerSource geladen und über das Objektfenster kann nun die Berechnung des Huff-Modells gestartet werden.
-
+Die Daten des Features werden über den Objektfenster-Service in das Objektfenster injiziert.\\
+Über die Tool-Komponente kann eine neue Filiale auf die Karte gesetzt und die Layer gesteuert werden.\\
+Sobald eine neue Filiale auf der Karte gesetzt ist, wird über den Neue-Filiale-Service ein weiteres Feature in die Filiale-LayerSource geladen. 
+Über das Objektfenster kann nun die Berechnung des Huff-Modells gestartet werden.\\
 Über das LayerManager-Tool kann im LayerManager-Service die Sichtbarkeit und Reihenfolge der Layer gesteuert werden.

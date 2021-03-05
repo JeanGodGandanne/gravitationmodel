@@ -4,7 +4,7 @@ Das Kapitel Implementierung erfasst die technische Dokumentation des erarbeitete
 Im Detail werden in den folgenden Seiten die technische Umsetzung des in Kapitel \ref{ch:concept} entworfenen Konzepts beschrieben. 
 Beschriebene Funktionalitäten werden mit Bildausschnitten unterstützt.
 
-Die Anwendung wurde als Angular Projekt mittels der Angular CLI erstellt. 
+Die Anwendung wurde als Angular Projekt mittels der Angular CLI (Command Line Interface) erstellt. 
 Über den CLI Befehl 
 
 \begin{lstlisting}[language=bash, caption={Erstellen eines neuen Projektes}]
@@ -14,16 +14,16 @@ $ ng new gravitationsmodel
 generiert die CLI ein kompilierbares und ausführbares Angular Projekt mit essentiellen Abhängigkeiten und Strukturen.
 Angular verwendet standardmäßig NPM als package manager.
 Eine \emph{package.json}, welche sämtliche Abhängigkeiten dokumentiert, wird bereits mit erstellt.
-Um das Setup abzuschließen müssen weitere Abhängigkeiten in Form von \emph{npm packages} installiert werden.
+Um das Setup abzuschließen, müssen weitere Abhängigkeiten in Form von \emph{npm packages} installiert werden.
 Über den Befehl 
 
 \begin{lstlisting}[language=bash, caption={Hinzufügen des OpenLayers Pakets}]
 $ ng add ol
 \end{lstlisting}
 
-fügt die CLI automatisch das Paket von OpenLayers hinzu und für die korrekte Typisierung in TypeScript das notwendige \emph{types} Paket für OpenLayers hinzu.
+fügt die CLI automatisch das Paket von OpenLayers und für die korrekte Typisierung in TypeScript das notwendige \emph{types} Paket für OpenLayers hinzu.
 
-Nachdem die technischen Voraussetzungen geschaffen sind kann mit der Implementierung begonnen werden.
+Nachdem die technischen Voraussetzungen geschaffen sind, kann mit der Implementierung begonnen werden.
 Auch hierbei bietet die CLI Unterstützung in Form von \emph{Scaffolding} Befehlen.
 
 \begin{lstlisting}[language=bash, caption={Angular schematic Befehl zum Erstellen}]
@@ -31,7 +31,7 @@ $ ng generate <schematic> [name]
 \end{lstlisting}
 
 generiert Komponenten, Services, Models, Klassen und weitere Code-Gerüste durch den passenden Präfix-Parameter und Namen.
-Angular Komponenten bestehen meist aus einer TypeScript-Klasse (\emph{.component.ts}), einem Template (\emph{.component.html}) sowie Dateien für Styling (\emph{.css} oder \emph{.scss}) und Tests (\emph{.component.spec.ts}).
+Angular Komponenten bestehen meist aus einer TypeScript-Klasse (\emph{component.ts}), einem Template (\emph{component.html}) sowie Dateien für Styling (\emph{css} oder \emph{scss}) und Tests (\emph{component.spec.ts}).
 
 \begin{lstlisting}[language=bash, caption={Erstellen der Objektfensterkomponente}]
 $ ng generate component objektfenster
@@ -39,7 +39,7 @@ $ ng generate component objektfenster
 
 erstellt \emph{objektfenster.component.ts}, \emph{objektfenster.component.html} sowie \emph{objektfenster.scss} und \emph{objektfenster.component.spec.ts} Dateien.
 
-Mit Hilfe der CLI lassen sich so die Code-Gerüste schnell erstellen und die CLI übernimmt sogar die in Angular nötige \emph{Dependency Injection} indem neue Komponenten direkt in der entsprechenden \emph{.module.ts} deklariert werden \footcite{angular_cli}.
+Mit Hilfe der CLI lassen sich so die Code-Gerüste schnell erstellen und die CLI übernimmt sogar die in Angular nötige \emph{Dependency Injection} indem neue Komponenten direkt in der entsprechenden \emph{module.ts} deklariert werden \footcite{angular_cli}.
 
 Ebenfalls im Zuge der Projekterstellung über die CLI werden Konfigurationsdateien angelegt, die wichtige Einstellungen zum Kompilieren, Bau, Start und Hosten (engl. host) der Anwendung enthalten.
 
@@ -81,11 +81,12 @@ Dies geschieht in der OpenLayersMap-Komponente und dem BaseMap-Service.
 
 \end{lstlisting}
 
-Die Karte wird mit der notwendigen Id des HTML-Elements, in welchem die Karte angezeigt werden soll, und einem View initialisiert.
+Die Karte wird mit der notwendigen ID des HTML-Elements, in welchem die Karte angezeigt werden soll, und einem View initialisiert.
 Das View-Objekt besteht aus einer Center-Koordinate und der initialen Zoomstufe und stellt den Begrenzungsrahmen (engl. Bounding Box) der Karte dar.
-Zu beachten ist ebenfalls hierbei die Transformation der Koordinaten von EPSG:4326 in das in OpenLayers standardmäßig genutzte EPSG:3857 über die Funktion \emph{fromLonLat}.
-Die Karte wird ebenfalls mit Standard-Interactions und Standard-Controls initialisiert jedoch sind noch keine Layer hinzugefügt.
-Somit ist jetzt auch noch nichts auf der Karte zu sehen und lediglich bereits erwähnte Controls und Interactions sind sichtbar und bedienbar.
+Zu beachten ist hierbei die Transformation der Koordinaten von EPSG:4326 in das in OpenLayers standardmäßig genutzte EPSG:3857 über die Funktion \emph{fromLonLat}.
+Die Karte wird ebenfalls mit Standard-Interactions und Standard-Controls initialisiert, jedoch sind noch keine Layer hinzugefügt.
+Somit ist jetzt auch noch nichts auf der Karte zu sehen. 
+Lediglich bereits erwähnte Controls und Interactions sind sichtbar und bedienbar.
 Zu den Controls zählen:
 
 \begin{itemize}
@@ -157,11 +158,11 @@ In der OpenLayersMap-Komponente werden dazu zwei neue Layer mit passenden Source
 	map.addLayer(gebieteLayer);
 \end{lstlisting}
 
-Bei der Initialisierung der Layer muss die Z-Ebene der Filialen höher sein, da sie später in der Anwendung über den Gebieten liegen sollen und nicht von diesen überlagert werden sollen.
+Bei der Initialisierung der Layer muss die Z-Ebene der Filialen höher sein, da sie später in der Anwendung über den Gebieten liegen soll und nicht von diesen überlagert werden soll.
 Bei VectorSources kann zwischen den Ladestrategien Tile und Bounding Box entschieden werden.
-Sie bestimmt wann neue Features auf der Karte geladen und angezeigt werden sollen.
+Sie bestimmt, wann neue Features auf der Karte geladen und angezeigt werden sollen.
 Bei der Tile-Strategie wird wie bei der Hintergrundkarte der Kartenausschnitt in ein Kachelgitter unterteilt und bei der Bounding Box Strategie wird der gesamte Kartenausschnitt (engl. Bounding Box) gewählt. 
-Bei besonders vielen Daten sollte auf die Tile-Strategie zurückgegriffen werden aber im Prototypen reicht die Bounding Box Strategie vollkommen aus.
+Bei besonders vielen Daten sollte auf die Tile-Strategie zurückgegriffen werden, aber im Prototypen reicht die Bounding Box Strategie aus.
 
 OpenLayers definiert standardmäßig für jeden Vector Layer einen Stil, der die einzelnen Features je nach Geometrietyp auf der Karte darstellt. 
 Soll dieser Stil geändert werden, muss auf dem Layer ein neuer Stil definiert werden.
@@ -200,10 +201,10 @@ Dies kann über ein statisches Style-Objekt erfolgen oder über eine dynamische 
 Nun werden realistische Geo- sowie Marktdaten benötigt.\\
 Die Filialen sind einfache Koordinaten im Raum Berlin.
 Ein Testdatensatz mit 97 Koordinaten wurde über geojson.io \footnote{ Website zur Generierung von GeoJSON \href{geojson.io}{geojson.io}} angelegt.
-Die Koordinatenliste wird bereits in GeoJSON angelegt und die Einträge müssen lediglich um eine Id, Anzahl der Parkplätze sowie die Verkaufsfläche der Filiale ergänzt werden.\\
+Die Koordinatenliste wird bereits in GeoJSON angelegt und die Einträge müssen lediglich um eine ID, Anzahl der Parkplätze sowie die Verkaufsfläche der Filiale ergänzt werden.\\
 Ein Testdatensatz mit 1220 Zensusgebieten des Geoportals Berlin \footcite{geoportal_berlin} wurde über das ArcGIS Hub \footcite{arcgis_verkehrszellen} heruntergeladen.
-Die Gebiete werden ebenfalls bereits in GeoJSON exportiert.
-Da es sich jedoch um zu viele Einträge für eine manuelle Ergänzung der Marktdaten handelt, werden Marktdaten für die einzelnen Gebiete beim einlesen der Datei ergänzt.
+Die Gebiete wurden ebenfalls bereits in GeoJSON exportiert.
+Da es sich jedoch um zu viele Einträge für eine manuelle Ergänzung der Marktdaten handelt, werden Marktdaten für die einzelnen Gebiete beim Einlesen der Datei ergänzt.
 
 Die Datensätze werden über das Feature Format GeoJSON in OpenLayers eingelesen und in eine FeatureCollection (bei einzelnen Daten in ein Feature) umgewandelt, welche der jeweiligen Layer Source hinzugefügt wird.
 
@@ -232,11 +233,11 @@ Die Datensätze werden über das Feature Format GeoJSON in OpenLayers eingelesen
 \end{lstlisting}
 
 Es handelt sich bei den Filial- sowie Gebietsdaten um fiktionale Daten, jedoch sollten diese einen repräsentativen Charakter haben und möglichst nah an realistischen Marktdaten gewählt werden.
-Als Referenz der Parkplätze und Verkaufsfläche dienen Werte der Statistik "Entwicklung der durchschnittlichen Verkaufsfläche der Lebensmittel-Discountmärkte Lidl in Deutschland in den Jahren 2009 bis 2019 (in Quadratmetern)" von handelsdaten.de \footcite{handelsdaten_lidl} sowie die Anlage zu Nummer 51.11 der Verwaltungsvorschrift zu Landesbauordnung Nordrhein-Westfalen \footcite{bauo_5111}.
+Als Referenz der Parkplätze und Verkaufsfläche dienen Werte der Statistik \glqq Entwicklung der durchschnittlichen Verkaufsfläche der Lebensmittel-Discountmärkte Lidl in Deutschland in den Jahren 2009 bis 2019 (in Quadratmetern)\glqq von handelsdaten.de \footcite{handelsdaten_lidl} sowie die Anlage zu Nummer 51.11 der Verwaltungsvorschrift zu Landesbauordnung Nordrhein-Westfalen \footcite{bauo_5111}.
 Aus den Quellen lässt sich eine durchschnittliche Verkaufsfläche von 898 Quadratmetern sowie 1 Parkplatz pro 10 Quadratmetern Verkaufsfläche erschließen.
-Um den Filialen verschiedene Verkaufsflächen und Parkplätze zuzuordnen wurden Zufallszahlen im Bereich 798 bis 998 für die Verkaufsfläche gewählt sowie die sich daraus ergebende Anzahl der Parkplätze.\\
+Um den Filialen verschiedene Verkaufsflächen und Parkplätze zuzuordnen, wurden Zufallszahlen im Bereich 798 bis 998 für die Verkaufsfläche gewählt sowie die sich daraus ergebende Anzahl der Parkplätze.\\
 Bei den Marktdaten der Gebiete handelt es sich um Angaben zu Anzahl der Einwohner, durchschnittliche Kaufkraft und durchschnittliche Ausgaben für Lebensmittel pro Gebiet.
-Als Referenz für die Marktdaten dienen Werte der Statistik "Kaufkraft je Einwohner nach Bundesländern im Jahr 2021" von statista.de \footcite{statista_gfk} sowie Werte der Statistik "Konsumausgaben privater Haushalte in Deutschland" vom Statistischen Bundesamt \footcite{destatis_konsumausgaben}.
+Als Referenz für die Marktdaten dienen Werte der Statistik \glqq Kaufkraft je Einwohner nach Bundesländern im Jahr 2021\glqq von statista.de \footcite{statista_gfk} sowie Werte der Statistik \glqq Konsumausgaben privater Haushalte in Deutschland\glqq vom Statistischen Bundesamt \footcite{destatis_konsumausgaben}.
 Aus den Quellen lässt sich eine durchschnittliche Kaufkraft pro Einwohner pro Monat (kurz DKpEpM) von 1.819 € für Berlin sowie durchschnittliche Ausgaben für Nahrungsmittel pro Monat pro Haushalt (kurz DAfNpMpH) von 356 € für Deutschland erschließen. 
 Aus Gründen der Einfachheit ergeben sich daraus die Kennzahlen pro Gebiet wie folgt:
 
@@ -280,9 +281,9 @@ Zu den benutzen Komponenten zählen Material Button \footcite{team_angular_mater
 
 Um eine bessere Visualisierung einzelner Featurelayer zu ermöglichen, sollen die Layer einzeln aus- beziehungsweise eingeblendet werden können.
 Dies geschieht im Werkzeug Layermanager.
-Hierzu müssen also innerhalb des Werkzeuges alle Layer angezeigt werden und über eine Checkbox die Sichtbarkeit verändert werden können.\\
+Hierzu müssen also innerhalb des Werkzeuges alle Layer angezeigt und über eine Checkbox die Sichtbarkeit verändert werden können.\\
 Für die Konfiguration des Layermanagers werden zunächst über den BaseMap-Service alle Layer der Karte abgerufen.
-Aus den Layer-Objekten werden nun Name- und Sichtbarkeit -Eigenschaften in jeweils ein neues LayerManagerEntry-Objekt extrahiert.
+Aus den Layer-Objekten werden nun Namens- und Sichtbarkeitseigenschaften in jeweils ein neues LayerManagerEntry-Objekt extrahiert.
 Im Layermanager können nun der Name und die Sichtbarkeit pro Layer dargestellt werden, wobei die Sichtbarkeit als Checkbox dargestellt wird.
 Mit der Interaktion einer Checkbox wird über den zugehörigen Namen der entsprechende Layer im BaseMap-Service identifiziert und das \emph{Visible} Attribut angepasst.
 Der Layermanager erscheint als Fenster nach Aktivierung des entsprechenden Knopfes (Icon: \emph{layer}, siehe Abbildung \ref{img:toolset}).
@@ -311,7 +312,7 @@ setLayerVisibility(event: any, layerIdentifier: LayerIdentifier): void {
 }
 \end{lstlisting}
 
-Vervollständigt wird das Werkzeug-Set durch die Interaktion eine neue Filiale auf der Karte zu setzen.
+Vervollständigt wird das Werkzeug-Set durch die Interaktion, eine neue Filiale auf die Karte zu setzen.
 OpenLayers bietet hierzu eine Draw-Interaktion, die es erlaubt einer Layersource ein neues Feature hinzuzufügen.
 
 \begin{lstlisting}[language=JavaScript, caption={Draw-Interaktion}]
@@ -335,11 +336,12 @@ private addDrawInteraction(): void {
 }
 \end{lstlisting}
 
-In der Initialisierung der Interaktion wird festgelegt, dass nur Punkte erstellt werden können, sowie über einen \emph{NEW\_STORE\_INTERACTION\_STYLE} wird dem Punkt ein eigener Style zugewiesen (ersichtlich in Abbildung \ref{img:toolset}).
+In der Initialisierung der Interaktion wird festgelegt, dass nur Punkte erstellt werden können.
+Über einen \emph{NEW\_STORE\_INTERACTION\_STYLE} wird dem Punkt dann ein eigener Style zugewiesen (ersichtlich in Abbildung \ref{img:toolset}).
 Ebenso wird ein temporärer Layer für die neu gesetzte Filiale für die Dauer der Interaktion definiert.
-Da auf der neuen Filiale die Attribute Parkplätze und Verkaufsfläche, sowie die Attraktivität noch nicht gesetzt wurden, ist es einfacher für die Interaktionsdauer einen temporären Layer zu verwenden, der nach Interaktionsende das erstellte Feature an den Feature-Service übergibt, wo die fehlenden Attribute gesetzt werden und das Feature in den Filiallayer übertragen wird. 
+Da auf der neuen Filiale die Attribute Parkplätze und Verkaufsfläche sowie die Attraktivität noch nicht gesetzt wurden, ist es einfacher für die Interaktionsdauer einen temporären Layer zu verwenden, der nach Interaktionsende das erstellte Feature an den Feature-Service übergibt, wo die fehlenden Attribute gesetzt werden und das Feature in den Filiallayer übertragen wird. 
 Sobald die Interaktion der Karte hinzugefügt wurde, muss lediglich bei Aktivierung der temporäre Layer der Karte hinzugefügt werden, damit die Interaktion sichtbar ist.
-Ebenso müssen andere Interaktionen, vor Allem die Feature-Selektierung der Filialen und Gebiete (Implementierung erfolgt im späteren Verlauf des Kapitels), deaktiviert werden, damit es hierbei nicht zu ungewollten, parallelen Interaktionsaufrufen kommt.
+Ebenso müssen andere Interaktionen, vor allem die Feature-Selektierung der Filialen und Gebiete (Implementierung erfolgt im späteren Verlauf des Kapitels), deaktiviert werden, damit es hier nicht zu ungewollten, parallelen Interaktionsaufrufen kommt.
 Sobald eine neue Filiale gesetzt wurde, muss der Layer wieder entfernt, die Interaktion deaktiviert und andere Interaktionen reaktiviert werden.
 Aktiviert wird die Interaktion über den entsprechenden Knopf auf der Karte (Icon: \emph{add\_icon}, siehe Abbildung \ref{img:toolset}).
 
@@ -355,13 +357,13 @@ In einer Angular Anwendung werden Komponenten über mehrere Lifecycle-Zyklen ins
 So erfolgt ein initiales Rendering des Templates und der Daten und Änderungen werden über eine \emph{ChangeDetection} erkannt und neu gerendert.
 Um Fehler während des ChangeDetection-Lifecycles zu verhindern, erfolgt die Datenübertragung mit Obersvables \footcite{angular_lifecycle}.\\
 Im Fall des Objektfensters subscribed die Komponente sich auf das \emph{currentlySelectedFeature\$} des Objektfenster-Services.
-Dies bedeutet die Komponente erhält über ein Event direkt die neuesten Änderungen sobald sich das Observable ändert. 
+Dies bedeutet die Komponente erhält über ein Event direkt die neuesten Änderungen, sobald sich das Observable ändert. 
 Es erfolgt also kein expliziter, synchroner Datenaufruf, sondern das Observable sendet asynchron Änderungen an alle Subscriber.
 Somit kann die Selektierung eines neuen Features problemlos an das Objektfenster weitergeleitet werden und die neuen Daten werden korrekt dargestellt. \\
 Das Objektfenster für Filialen zeigt die folgenden Informationen:
 
 \begin{itemize}
-	\item Id
+	\item ID
 	\item Parkplätze
 	\item Verkaufsfläche in Quadratmetern
 	\item Marktanteil in Euro \footnote{\label{afterCalc}Nach Berechnung des Huff-Modells}
@@ -371,7 +373,7 @@ Das Objektfenster für Filialen zeigt die folgenden Informationen:
 Für ein Gebiet werden folgende Informationen angezeigt:
 
 \begin{itemize}
-	\item Id
+	\item ID
 	\item Einwohner
 	\item Kaufkraft in Euro (Durchschnitt pro Monat pro Person)
 	\item Ausgaben für Lebensmittel (Durchschnitt pro Monat pro Haushalt) 
@@ -393,7 +395,7 @@ Bei bestehenden Filialen lässt sich somit aber auch die Berechnung des Huff-Mod
 
 Das Objektfenster öffnet sich automatisch nach dem Anlegen einer neuen Filiale.
 Hierbei werden die Parkplätze und Verkaufsfläche zunächst mit jeweils dem Wert Null angelegt und angezeigt.
-Bevor das Huff-Modell berechnet werden kann, müssen valide Werte in beide Felder eingetragen werden, da solange der Knopf deaktiviert ist.
+Bevor das Huff-Modell berechnet werden kann, müssen valide Werte in beide Felder eingetragen werden, da der Knopf solange deaktiviert ist.
 Die Aktivierung des Knopfes erfolgt über die einfache Validierung der Werte auf eine positive Zahl.\\
 Der Knopf zur Berechnung des Huff-Modells ruft eine Funktion im Feature-Service auf, die die Berechnung für die ausgewählte Filiale durchführen soll.
 Über den Schließ-Knopf (Icon: \emph{close}, siehe Abbildung \ref{img:filiale}) wird das Objektfenster geschlossen und der Wert des Observables \emph{currentlySelectedFeature\$} auf \emph{null} gesetzt.
@@ -404,12 +406,12 @@ Die Berechnung des Huff-Modells erfolgt im Feature Service.
 Die für das Huff-Modell erforderliche Parameter Attraktivität A und Faktor der Attraktivität $\alpha$, sowie Distanz D und Faktor der Distanzfunktion $\beta$ müssen bestimmt werden.
 Wie bereits im Abschnitt zum Gravitationsmodell im Kapitel \ref{sec:gis} nach Huff erläutert, sind die Faktoren $\alpha$ und $\beta$ für die Berechnung im realen Wirtschaftsumfeld empirisch anhand von realen Markt- und Wirtschaftsdaten aus Umfragen mit Kunden zu analysieren und zu bestimmen.
 Für den Prototypen sind diese Werte auf 1,5 für $\alpha$ und 1,5 für $\beta$ festgelegt.
-Angenommen wird also, dass je attraktiver eine Filiale ist desto Wahrscheinlicher auch ein Besuch eines Kunden ist.
-Ebenso, je näher ein Kunde an einer Filiale wohnt desto wahrscheinlicher ist auch hier der Besuch der Filiale.\\
+Angenommen wird also, dass der Besuch eines Kunden umso wahrscheinlicher ist, je attraktiver die Filiale ist.
+Ebenso ist der Besuch der Filiale umso wahrscheinlicher, je näher ein Kunde an der Filiale wohnt.\\
 Die Attraktivität A der Filiale wird über die Summe der Parkplätze und Verkaufsfläche berechnet.
 Je größer eine Filiale desto größer ist wahrscheinlich das Sortiment und die Menge der Lebensmittel.
 Und je mehr Parkplätze vor der Filiale vorhanden sind desto mehr Kunden können angezogen werden, die einen weiteren Anreiseweg haben oder mehr auf einmal einkaufen wollen.
-Für die Berechnung der Attraktivität sind viele weitere Parameter denkbar jedoch bieten die Anzahl der Parkplätze und die Verkaufsfläche in Quadratmetern aus den aufgeführten Gründen eine fundierte Grundlage für die Bewertung der Attraktivität.\\
+Für die Berechnung der Attraktivität sind viele weitere Parameter denkbar, jedoch bieten die Anzahl der Parkplätze und die Verkaufsfläche in Quadratmetern aus den aufgeführten Gründen eine fundierte Grundlage für die Bewertung der Attraktivität.\\
 Die Distanz D der Filiale zu den Gebieten ist eine einfache Distanzberechnung in OpenLayers vom Standort der Filiale zum Mittelpunkt des jeweiligen Gebiets.
 Zunächst werden aus den Features der Gebiete über \emph{Type Assertion} Multipolygone über die OpenLayers interne Funktionen zur Mittelpunktbestimmung bieten.
 Da Multipolygone mehrere Mittelpunkte haben, wird der erste Eintrag aus dem Array gewählt.\\
@@ -435,8 +437,8 @@ Wenn auch hervorragend für Flugdistanzen verwendbar, lässt diese Berechnung di
 	
 \end{lstlisting}
 
-Über den Knopf \emph{Berechne Huff-Modell} (Icon: \emph{miscellaneous\_services}, siehe Abbildung \ref{img:filiale}) im Objektfenster der ausgewählten Filiale wird die Id der Filiale an den Feature Service übergeben und die Berechnung gestartet.
-Über die Id wird das Feature der entsprechenden Filiale im Filiallayer identifiziert und kann bearbeitet werden.\\
+Über den Knopf \emph{Berechne Huff-Modell} (Icon: \emph{miscellaneous\_services}, siehe Abbildung \ref{img:filiale}) im Objektfenster der ausgewählten Filiale wird die ID der Filiale an den Feature Service übergeben und die Berechnung gestartet.
+Über die ID wird das Feature der entsprechenden Filiale im Filiallayer identifiziert und kann bearbeitet werden.\\
 Die Wahrscheinlichkeit des Besuchs eines Gebiets für die ausgewählte Filiale innerhalb des gesamten Filialnetzes ergibt sich, wenn die Wahrscheinlichkeit der ausgewählten Filiale ins Verhältnis zur Netzwahrscheinlichkeit gesetzt wird.
 Für die Filiale errechnet sich die Wahrscheinlichkeit des Besuchs der einzelnen Gebiete daher anhand von zwei \emph{ForEach} Schleifen.
 Zunächst wird über alle Gebiete iteriert, um die Wahrscheinlichkeit sämtlicher Gebiete für die ausgewählte Filiale zu berechnen.
@@ -465,7 +467,7 @@ In der Schleife der Gebiete muss für jedes Gebiet über die Filialen iteriert w
 \end{lstlisting}
 
 Nachdem jedes Gebiet Besuchswahrscheinlichkeiten ausgerechnet bekommen hat, wird der Marktanteil prozentual sowie monetär für ein besseres Verständnis sowie eine bessere Einordnung errechnet.
-Hierzu werden die Ausgaben des Gebiets für Lebensmittel im Monat mit der Wahrscheinlichkeit des Besuchs multipliziert, um den Anteil der Lebensmittelausgaben in Euro des Gebiets für die ausgewählte Filiale zu errechnen.
+Hierzu werden die Ausgaben des Gebiets für Lebensmittel im Monat mit der Wahrscheinlichkeit des Besuchs multipliziert, um den Anteil der Lebensmittelausgaben des Gebiets in Euro für die ausgewählte Filiale zu errechnen.
 Wird dieser Betrag nun ins Verhältnis zu den Gesamtausgaben für Lebensmittel im Gebiet gesetzt, errechnet sich der prozentuale Anteil.
 Erfolgten diese Schritte für alle Gebiete und werden die Beträge des Anteils der Ausgaben der Filiale und der Gesamtausgaben pro Gebiet summiert, ergibt sich der Marktanteil der Filiale im Netz in Euro und, im Verhältnis zu einander, in Prozent.
 
@@ -482,7 +484,7 @@ Erfolgten diese Schritte für alle Gebiete und werden die Beträge des Anteils d
 	
 \end{lstlisting}
 
-Bei jeder Berechnung der Wahrscheinlichkeit des Besuchs der Gebiete für die ausgewählte Filiale wird final nun noch das Gebiet eingefärbt.
+Bei jeder Berechnung der Wahrscheinlichkeit des Besuchs der Gebiete für die ausgewählte Filiale wird final noch das Gebiet eingefärbt.
 Hierzu wird auf jedem Feature abhängig der errechneten Wahrscheinlichkeit ein Indikator gesetzt, der einer bestimmten Farbe entspricht.
 
 \begin{lstlisting}[language=JavaScript, caption={Setzen des Einfärbeindikators}]
