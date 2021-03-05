@@ -2,6 +2,7 @@
 
 For technical instructions read chapters below.
 This prototype displays the usage of the Huff model in store planning or location analysis processes.
+Before starting you need to install dependencies via `npm install` in the same directory the package.json is located in.
 In order start the project run `ng serve` or `npm start` or see *Development Server*.
 Once the page is loaded you should see a map focused on Berlin with census areas and stores.
 You can click every feature on the map which should open an object window with additional information for the feature.
